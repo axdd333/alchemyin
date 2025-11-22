@@ -1,256 +1,160 @@
-/**
- * ALCHEMYIN: THE COSMIC COLUMN RESTORED
- * Nihilistic Luxury + Ancient Motif
- */
-
-const CONFIG = {
-    color: {
-        bg: 0xEAE8E3,
-        lines: 0x111111,
-        particles: 0x000000
-    },
-    camera: {
-        fov: 35,
-        z: 18,
-        introZ: 12 // The closer position after the dolly-in
-    },
-    temple: {
-        columnHeight: 4,
-        baseWidth: 7,
-        pedimentHeight: 1.5
-    }
-};
-
-class VoidTemple {
-    constructor() {
-        this.canvas = document.querySelector('#temple-canvas');
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
-        this.mouse = new THREE.Vector2(0, 0);
-
-        this.init();
-        this.createTempleArtifact();
-        this.addAtmosphere();
-        this.events();
-        this.animateIntro();
-        this.render();
-    }
-
-    init() {
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(CONFIG.color.bg);
-        this.scene.fog = new THREE.FogExp2(CONFIG.color.bg, 0.04); 
-
-        this.camera = new THREE.PerspectiveCamera(CONFIG.camera.fov, this.width / this.height, 0.1, 100);
-        this.camera.position.set(0, 0, CONFIG.camera.z); // Start position
-
-        this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: false });
-        this.renderer.setSize(this.width, this.height);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        // Lighting: Subtle directional light for shading
-        const light = new THREE.DirectionalLight(CONFIG.color.light, 0.6);
-        light.position.set(10, 15, 10);
-        this.scene.add(light);
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-    }
-
-    createTempleArtifact() {
-        this.artifact = new THREE.Group();
-
-        // Material: Stark, almost invisible wireframe
-        const lineMat = new THREE.LineBasicMaterial({
-            color: CONFIG.color.lines,
-            transparent: true,
-            opacity: 0.1,
-            linewidth: 1
-        });
-
-        const heavyMat = new THREE.LineBasicMaterial({
-            color: CONFIG.color.lines,
-            transparent: true,
-            opacity: 0.4,
-            linewidth: 1
-        });
-
-        // 1. THE PILLARS (The Structure) - Minimal vertical lines
-        const pillarGeo = new THREE.BoxGeometry(0.2, CONFIG.temple.columnHeight, 0.2);
-        const columnCount = 4;
-        const spacing = 2;
-        const offset = ((columnCount - 1) * spacing) / 2;
-
-        for (let i = 0; i < columnCount; i++) {
-            const pillar = new THREE.LineSegments(new THREE.EdgesGeometry(pillarGeo), lineMat);
-            pillar.position.set((i * spacing) - offset, 0, 0);
-            this.artifact.add(pillar);
-        }
-
-        // 2. THE BASE (The Foundation)
-        const baseGeo = new THREE.BoxGeometry(CONFIG.temple.baseWidth, 0.2, 2);
-        const base = new THREE.LineSegments(new THREE.EdgesGeometry(baseGeo), lineMat);
-        base.position.y = -CONFIG.temple.columnHeight / 2 - 0.1;
-        this.artifact.add(base);
-
-        // 3. THE COSMIC ARC (The Celestial Element)
-        // Arc intersecting the structure
-        const arcRadius = 3.5;
-        const arcGeo = new THREE.TorusGeometry(arcRadius, 0.01, 3, 100, Math.PI * 1.5); // 3/4 circle
-        this.arc = new THREE.LineSegments(new THREE.EdgesGeometry(arcGeo), heavyMat);
-        this.arc.rotation.z = Math.PI / 2;
-        this.arc.position.y = 1.5;
-        this.artifact.add(this.arc);
-
-        // 4. THE CORE (The Intelligence) - Floating Icosahedron
-        const coreGeo = new THREE.IcosahedronGeometry(0.8, 0);
-        this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), lineMat);
-        this.core.position.set(0, 1.5, 0);
-        this.artifact.add(this.core);
-
-        this.scene.add(this.artifact);
-    }
-
-    addAtmosphere() {
-        // Floating dust motes
-        const count = 300;
-        const pos = new Float32Array(count * 3);
-        for(let i=0; i<count*3; i++) {
-            pos[i] = (Math.random() - 0.5) * 20;
-        }
-        const geo = new THREE.BufferGeometry();
-        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        const mat = new THREE.PointsMaterial({
-            color: CONFIG.color.particles,
-            size: 0.03,
-            transparent: true,
-            opacity: 0.1
-        });
-        this.particles = new THREE.Points(geo, mat);
-        this.scene.add(this.particles);
-    }
-
-    animateIntro() {
-        document.getElementById('loader').classList.remove('loaded');
-        const duration = 3000;
-        const startZ = CONFIG.camera.z;
-        const endZ = CONFIG.camera.introZ;
-        let startTime = null;
-
-        const loop = (time) => {
-            if (!startTime) startTime = time;
-            const elapsed = (time - startTime) / 1000;
-            const t = Math.min(elapsed / (duration / 1000), 1);
-            
-            // Ease out cubic
-            const ease = 1 - Math.pow(1 - t, 3);
-            this.camera.position.z = startZ + (endZ - startZ) * ease;
-
-            if (t < 1) requestAnimationFrame(loop);
-            else document.getElementById('loader').classList.add('loaded');
-        };
-        requestAnimationFrame(loop);
-    }
-
-    events() {
-        window.addEventListener('resize', () => {
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
-            this.camera.aspect = this.width / this.height;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(this.width, this.height);
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            this.mouseX = (e.clientX / this.width) * 2 - 1;
-            this.mouseY = -(e.clientY / this.height) * 2 + 1;
-        });
-    }
-
-    render() {
-        const time = Date.now() * 0.0005;
-
-        // 1. Artifact Rotation & Float (Hypnotic)
-        if (this.artifact) {
-            this.artifact.rotation.y += 0.001; 
-            this.artifact.position.y = Math.sin(time * 0.8) * 0.05;
-        }
-
-        // 2. Core Animation (Faster spin for the engine of wisdom)
-        if (this.core) {
-            this.core.rotation.x = time * 0.5;
-            this.core.rotation.z = time * 0.3;
-        }
-
-        // 3. Parallax Camera (Subtle movement to feel spatial)
-        this.camera.position.x += (this.mouseX * 1.0 - this.camera.position.x) * 0.05;
-        this.camera.position.y = (this.mouseY * 0.5);
-        this.camera.lookAt(0, 0, 0);
-
-        // 4. Particle Drift
-        if (this.particles) {
-            this.particles.rotation.y = time * 0.01;
-        }
-
-        this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(this.render.bind(this));
-    }
+:root {
+    /* The Palette of "Nothingness" */
+    --void-bg: #EAE8E3; /* Bone / Cold Limestone */
+    --void-fog: #EAE8E3; 
+    --ink: #0F0F0F;     /* Absolute Black */
+    --ink-sub: rgba(15, 15, 15, 0.4);
+    
+    /* Dimensions */
+    --nav-height: 120px;
 }
-// subtle wirefield in the hero
-(function () {
-  const canvas = document.getElementById("wisdom-field");
-  if (!canvas) return;
 
-  const ctx = canvas.getContext("2d");
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-  let width, height, t;
-  const density = 26; // grid spacing
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--void-bg);
+}
 
-  function resize() {
-    width = canvas.clientWidth;
-    height = canvas.clientHeight;
-    const ratio = window.devicePixelRatio || 1;
-    canvas.width = width * ratio;
-    canvas.height = height * ratio;
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-  }
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    cursor: crosshair;
+}
 
-  function draw(time) {
-    if (!t) t = time;
-    const dt = (time - t) / 1000;
-    t = time;
+/* --- LOADER (The Veil) --- */
+#loader {
+    position: fixed;
+    inset: 0;
+    background-color: var(--void-bg);
+    z-index: 100; /* Above everything */
+    transition: opacity 1.5s ease-in-out, visibility 1.5s;
+    opacity: 1;
+    visibility: visible;
+}
 
-    ctx.clearRect(0, 0, width, height);
-    ctx.lineWidth = 0.6;
-    ctx.strokeStyle = "rgba(0,0,0,0.10)";
+#loader.loaded {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
 
-    const cx = width / 2;
-    const cy = height / 2;
+/* --- TEXTURE --- */
+.noise-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    opacity: 0.06;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
-    for (let x = -density * 2; x < width + density * 2; x += density) {
-      ctx.beginPath();
-      for (let y = -density * 2; y < height + density * 2; y += density) {
-        const dx = (x - cx) / width;
-        const dy = (y - cy) / height;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+/* --- HEADER --- */
+.header-layer {
+    position: fixed;
+    top: 5vh;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    color: #fff;
+}
 
-        const wave =
-          Math.sin(dist * 9 - time * 0.0009) * 10 * Math.exp(-dist * 2.4);
+.brand-mark {
+    font-family: 'Bodoni Moda', serif;
+    font-style: italic;
+    font-weight: 500; /* Refined for legibility */
+    font-size: clamp(2rem, 3vw, 3rem);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.2rem;
+    opacity: 0;
+    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+}
 
-        const px = x;
-        const py = y + wave;
+.brand-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    opacity: 0;
+    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.7s;
+}
 
-        if (y === -density * 2) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      ctx.stroke();
-    }
+/* --- NAV --- */
+.nav-layer {
+    position: fixed;
+    bottom: 6vh;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+}
 
-    requestAnimationFrame(draw);
-  }
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 6vw;
+}
 
-  resize();
-  window.addEventListener("resize", resize);
-  requestAnimationFrame(draw);
-})();
+.link {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink);
+    opacity: 0.4;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    padding: 10px 0;
+}
 
-// Enter The Void
-window.addEventListener('DOMContentLoaded', () => new VoidTemple());
+.link:hover {
+    opacity: 1;
+    letter-spacing: 0.3em;
+}
+
+.link::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: var(--ink);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateX(-50%);
+}
+
+.link:hover::after {
+    width: 100%;
+}
+
+/* --- VIEWPORT --- */
+.viewport {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+}
+
+#artifact-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    outline: none;
+}
+
+@keyframes fadeDescend {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
