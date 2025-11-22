@@ -10,9 +10,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 </head>
 <body>
-  <div class="page">
+  <div id="vanta-bg" class="page">
 
     <header class="top-bar">
       <div class="logo">ALCHEMY INDUSTRIES</div>
@@ -32,7 +35,9 @@
             <p class="hero-subheading">
               We design ultra minimal digital experiences for brands that think three moves ahead.
             </p>
-            <button class="btn btn-primary" data-scroll="#capabilities">Enter the Lab</button>
+            <button class="btn btn-primary" data-scroll="#capabilities">
+              Enter the Lab
+            </button>
             <p class="hero-meta">
               Operating in the space between design, code, and strategy.
             </p>
@@ -61,8 +66,7 @@
             <article class="card">
               <h3 class="card-title">Interface Design</h3>
               <p class="card-body">
-                Minimal, high contrast interfaces for web and product.
-                We design for clarity, not decoration.
+                Minimal, high contrast interfaces for web and product. We design for clarity, not decoration.
               </p>
             </article>
 
@@ -88,34 +92,32 @@
           <div class="section-label">EXPERIMENTS</div>
           <h2 class="section-heading">Selected work.</h2>
 
-          <div class="stack">
-            <article class="card card-horizontal">
-              <div class="card-tag">PROJECT</div>
-              <div class="card-main">
+          <!-- Swiper Carousel -->
+          <div class="swiper-container">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide card-carousel">
                 <h3 class="card-title">WHITE NOISE</h3>
                 <p class="card-subtitle">A frictionless interface concept for a stealth AI product.</p>
                 <p class="card-body">We reduced the UI to a bare signal: typography, spacing, and motion only.</p>
               </div>
-            </article>
-
-            <article class="card card-horizontal">
-              <div class="card-tag">PROJECT</div>
-              <div class="card-main">
+              <div class="swiper-slide card-carousel">
                 <h3 class="card-title">LABORATORY X</h3>
                 <p class="card-subtitle">Brand system for a research collective.</p>
                 <p class="card-body">A monochrome identity with flexible layouts for print and screen.</p>
               </div>
-            </article>
-
-            <article class="card card-horizontal">
-              <div class="card-tag">PROJECT</div>
-              <div class="card-main">
+              <div class="swiper-slide card-carousel">
                 <h3 class="card-title">NEBULA FRAME</h3>
                 <p class="card-subtitle">Concept framework for future facing dashboards.</p>
                 <p class="card-body">Built a modular grid that adapts to new data streams without visual noise.</p>
               </div>
-            </article>
+              <!-- add more slides if you want -->
+            </div>
+            <!-- Add Navigation -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
           </div>
+
         </div>
       </section>
 
@@ -142,7 +144,10 @@
 
   </div>
 
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
-
