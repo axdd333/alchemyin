@@ -1,177 +1,131 @@
 /**
- * Alchemyin: House of Wisdom
- * Immersive Digital Temple v2.0
+ * ALCHEMYIN: THE VOID STATE
+ * "Perfection is achieved not when there is nothing more to add, 
+ * but when there is nothing left to take away."
  */
 
 const CONFIG = {
-    colors: {
-        bg: 0xF2EFE9,
-        lines: 0x2A2A2A, // Dark Charcoal for high contrast
-        floor: 0x8A8A8A,
-        accent: 0xBFA88F  // Antique Gold
+    color: {
+        bg: 0xEAE8E3,
+        object: 0x111111,
+        light: 0xffffff
     },
     camera: {
-        fov: 50,
-        startPos: { x: 0, y: 1, z: 25 }, // Start far away
-        endPos: { x: 0, y: 1.5, z: 14 }  // End position (The "Step Inside" effect)
+        fov: 35, // Narrow FOV for cinematic look
+        z: 12
     }
 };
 
-class ImmersiveWorld {
+class VoidExperience {
     constructor() {
-        this.canvas = document.querySelector('#webgl-canvas');
+        this.canvas = document.querySelector('#artifact-canvas');
         this.width = window.innerWidth;
         this.height = window.innerHeight;
-        
-        // Mouse state for parallax
         this.mouseX = 0;
         this.mouseY = 0;
-        this.targetRotationX = 0;
-        this.targetRotationY = 0;
 
         this.init();
-        this.createEnvironment();
-        this.createTemple();
-        this.addParticles(); // Atmospheric dust
-        this.setupEvents();
-        
-        // Reveal animation
-        setTimeout(() => {
-            document.querySelector('#loader').classList.add('loaded');
-            this.animateIntro();
-        }, 500);
-
+        this.createArtifact();
+        this.addAtmosphere();
+        this.events();
         this.render();
     }
 
     init() {
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(CONFIG.colors.bg);
-        // Fog gives depth - objects fade into the limestone distance
-        this.scene.fog = new THREE.FogExp2(CONFIG.colors.bg, 0.045);
+        this.scene.background = new THREE.Color(CONFIG.color.bg);
+        this.scene.fog = new THREE.FogExp2(CONFIG.color.bg, 0.08); // Dense fog
 
         this.camera = new THREE.PerspectiveCamera(CONFIG.camera.fov, this.width / this.height, 0.1, 100);
-        this.camera.position.set(CONFIG.camera.startPos.x, CONFIG.camera.startPos.y, CONFIG.camera.startPos.z);
+        this.camera.position.set(0, 0, CONFIG.camera.z);
 
-        this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
+        this.renderer = new THREE.WebGLRenderer({ 
+            canvas: this.canvas, 
+            antialias: true,
+            alpha: false 
+        });
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Lighting: Stark, studio-like
+        const ambient = new THREE.AmbientLight(CONFIG.color.bg, 0.6);
+        this.scene.add(ambient);
+
+        const spot = new THREE.DirectionalLight(CONFIG.color.light, 0.8);
+        spot.position.set(5, 10, 5);
+        this.scene.add(spot);
     }
 
-    createEnvironment() {
-        // Infinite Floor Grid fading into fog
-        const gridHelper = new THREE.GridHelper(60, 60, CONFIG.colors.floor, CONFIG.colors.bg);
-        gridHelper.position.y = -2;
-        gridHelper.material.opacity = 0.15;
-        gridHelper.material.transparent = true;
-        this.scene.add(gridHelper);
-    }
+    createArtifact() {
+        this.artifact = new THREE.Group();
 
-    createTemple() {
-        this.templeGroup = new THREE.Group();
-
-        // Material: Thin, precise charcoal lines
+        // Material: Thin, precise vector lines
         const lineMat = new THREE.LineBasicMaterial({
-            color: CONFIG.colors.lines,
+            color: CONFIG.color.object,
             transparent: true,
-            opacity: 0.25,
+            opacity: 0.15, // Barely visible
             linewidth: 1
         });
-        
-        // Material: Subtle glowing accent for the "Wisdom" object
-        const accentMat = new THREE.LineBasicMaterial({
-            color: CONFIG.colors.accent,
+
+        const heavyMat = new THREE.LineBasicMaterial({
+            color: CONFIG.color.object,
             transparent: true,
-            opacity: 0.6
+            opacity: 0.8, // Stark contrast
+            linewidth: 1
         });
 
-        // 1. Columns (Neoclassical)
-        const colGeo = new THREE.CylinderGeometry(0.3, 0.35, 5, 8, 1, true);
-        const colEdges = new THREE.EdgesGeometry(colGeo);
-        
-        const colCount = 6;
-        const spacing = 1.2;
-        const totalW = (colCount - 1) * spacing;
-        
-        for(let i = 0; i < colCount; i++) {
-            const col = new THREE.LineSegments(colEdges, lineMat);
-            col.position.set(-totalW/2 + i*spacing, 0.5, 0);
-            // Slight random rotation for "ancient" imperfection
-            col.rotation.y = Math.random() * 0.5;
-            this.templeGroup.add(col);
-        }
+        // 1. THE ARC (Celestial)
+        // A large, incomplete circle representing the unfinished work
+        const arcGeo = new THREE.TorusGeometry(3, 0.01, 3, 100, Math.PI * 1.5);
+        this.arc = new THREE.LineSegments(new THREE.EdgesGeometry(arcGeo), heavyMat);
+        this.arc.rotation.z = Math.PI / 4;
+        this.artifact.add(this.arc);
 
-        // 2. Architrave (Top Beam)
-        const beamGeo = new THREE.BoxGeometry(totalW + 1, 0.6, 1);
-        const beam = new THREE.LineSegments(new THREE.EdgesGeometry(beamGeo), lineMat);
-        beam.position.y = 3.3;
-        this.templeGroup.add(beam);
+        // 2. THE MONOLITH (Structure)
+        // A wireframe cube intersected by the arc
+        const boxGeo = new THREE.BoxGeometry(2, 4, 2);
+        const boxEdges = new THREE.EdgesGeometry(boxGeo);
+        this.monolith = new THREE.LineSegments(boxEdges, lineMat);
+        this.artifact.add(this.monolith);
 
-        // 3. Floating "Wisdom" Geometric Core (The Avant-Garde Element)
-        // A dual-rotating Icosahedron floating in the center
-        const coreGeo = new THREE.IcosahedronGeometry(0.8, 0);
-        this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), accentMat);
-        this.core.position.set(0, 1.5, 0);
-        this.templeGroup.add(this.core);
+        // 3. THE CORE (Wisdom)
+        // A dense inner geometry floating in the center
+        const coreGeo = new THREE.OctahedronGeometry(0.5, 0);
+        this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), heavyMat);
+        this.artifact.add(this.core);
 
-        // 4. Outer Ring (The "Orbit")
-        const ringGeo = new THREE.TorusGeometry(2.5, 0.02, 3, 64);
-        this.ring = new THREE.LineSegments(new THREE.EdgesGeometry(ringGeo), lineMat);
-        this.ring.rotation.x = Math.PI / 2;
-        this.ring.position.y = 1.5;
-        this.templeGroup.add(this.ring);
+        // 4. THE HORIZON (Context)
+        // A single line representing the ground
+        const gridGeo = new THREE.PlaneGeometry(20, 20, 20, 20);
+        const gridEdges = new THREE.EdgesGeometry(gridGeo);
+        this.grid = new THREE.LineSegments(gridEdges, lineMat);
+        this.grid.rotation.x = Math.PI / 2;
+        this.grid.position.y = -2.5;
+        this.artifact.add(this.grid);
 
-        this.scene.add(this.templeGroup);
+        this.scene.add(this.artifact);
     }
 
-    addParticles() {
-        // Floating dust motes to show air/volume
-        const particleCount = 100;
-        const geo = new THREE.BufferGeometry();
-        const positions = [];
-
-        for(let i=0; i<particleCount; i++) {
-            positions.push((Math.random() - 0.5) * 20); // x
-            positions.push((Math.random() - 0.5) * 10); // y
-            positions.push((Math.random() - 0.5) * 20); // z
+    addAtmosphere() {
+        // Particles: The dust of the void
+        const count = 200;
+        const pos = new Float32Array(count * 3);
+        for(let i=0; i<count*3; i++) {
+            pos[i] = (Math.random() - 0.5) * 15;
         }
-
-        geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         const mat = new THREE.PointsMaterial({
-            color: CONFIG.colors.lines,
-            size: 0.03,
+            color: 0x000000,
+            size: 0.02,
             transparent: true,
             opacity: 0.2
         });
-
         this.particles = new THREE.Points(geo, mat);
         this.scene.add(this.particles);
     }
 
-    animateIntro() {
-        // "Dolly In" effect - simulated smooth camera move
-        const start = { z: CONFIG.camera.startPos.z };
-        const end = { z: CONFIG.camera.endPos.z };
-        
-        // Simple easing function
-        let progress = 0;
-        const duration = 2500; // ms
-        const startTime = Date.now();
-
-        const dolly = () => {
-            const now = Date.now();
-            progress = Math.min((now - startTime) / duration, 1);
-            // Ease out cubic
-            const ease = 1 - Math.pow(1 - progress, 3);
-            
-            this.camera.position.z = start.z + (end.z - start.z) * ease;
-
-            if(progress < 1) requestAnimationFrame(dolly);
-        };
-        dolly();
-    }
-
-    setupEvents() {
+    events() {
         window.addEventListener('resize', () => {
             this.width = window.innerWidth;
             this.height = window.innerHeight;
@@ -180,47 +134,38 @@ class ImmersiveWorld {
             this.renderer.setSize(this.width, this.height);
         });
 
-        // Mouse Parallax Interaction
         document.addEventListener('mousemove', (e) => {
-            // Normalize mouse position -1 to 1
+            // Normalized coordinates -1 to 1
             this.mouseX = (e.clientX / this.width) * 2 - 1;
             this.mouseY = -(e.clientY / this.height) * 2 + 1;
         });
     }
 
     render() {
-        const time = Date.now() * 0.001;
+        const time = Date.now() * 0.0005;
 
-        // 1. Temple Idle Animation (Breathing)
-        if(this.templeGroup) {
-            this.templeGroup.position.y = Math.sin(time * 0.5) * 0.1; // Float
-        }
-        
-        // 2. Core Animation (Wisdom spinning)
-        if(this.core) {
-            this.core.rotation.x = time * 0.2;
-            this.core.rotation.y = time * 0.3;
+        // 1. Slow, hypnotic rotation of the artifact
+        if (this.artifact) {
+            this.artifact.rotation.y = time * 0.1; 
         }
 
-        // 3. Ring Animation (Slow orbit)
-        if(this.ring) {
-            this.ring.rotation.z = time * 0.05;
-            this.ring.rotation.x = (Math.PI / 2) + Math.sin(time * 0.2) * 0.1;
+        // 2. The Core pulses and spins independently
+        if (this.core) {
+            this.core.rotation.x = time;
+            this.core.rotation.z = time * 0.5;
+            this.core.position.y = Math.sin(time * 2) * 0.1;
         }
 
-        // 4. Parallax - Smoothly interpolate camera position based on mouse
-        // This makes the world feel like it exists around the cursor
-        this.targetRotationX += (this.mouseX * 0.5 - this.targetRotationX) * 0.05;
-        this.targetRotationY += (this.mouseY * 0.2 - this.targetRotationY) * 0.05;
-
-        this.camera.position.x += (this.mouseX * 1.5 - this.camera.position.x) * 0.03;
-        this.camera.position.y = CONFIG.camera.endPos.y + (this.mouseY * 0.5);
-        this.camera.lookAt(0, 1, 0);
+        // 3. Parallax: The camera floats slightly based on mouse
+        // "Nihilistic" interaction is detached—the world moves, you don't.
+        this.camera.position.x += (this.mouseX * 0.5 - this.camera.position.x) * 0.05;
+        this.camera.position.y += (this.mouseY * 0.5 - this.camera.position.y) * 0.05;
+        this.camera.lookAt(0, 0, 0);
 
         this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(() => this.render());
+        requestAnimationFrame(this.render.bind(this));
     }
 }
 
-// Init
-window.addEventListener('DOMContentLoaded', () => new ImmersiveWorld());
+// Enter The Void
+window.addEventListener('DOMContentLoaded', () => new VoidExperience());
