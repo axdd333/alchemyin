@@ -1,10 +1,10 @@
 /**
- * ALCHEMYIN: THE VOID STATE
- * Base artifact + chamber overlay system
+ * ALCHEMYIN CORE OS
+ * Void environment + chamber / depth overlay system
  */
 
 const CONFIG = {
-    color: {
+    colors: {
         bg: 0xEAE8E3,
         object: 0x111111,
         light: 0xffffff
@@ -12,12 +12,23 @@ const CONFIG = {
     camera: {
         fov: 35,
         z: 12
+    },
+    motion: {
+        parallax: 0.5,
+        lerp: 0.05,
+        artifactSpin: 0.08,
+        coreSpinX: 0.6,
+        coreSpinZ: 0.3,
+        coreBobAmp: 0.12,
+        coreBobFreq: 2.2
     }
 };
 
+/* ---------- VOID EXPERIENCE (3D CONTEXT) ---------- */
+
 class VoidExperience {
-    constructor() {
-        this.canvas = document.querySelector('#artifact-canvas');
+    constructor(selector = '#artifact-canvas') {
+        this.canvas = document.querySelector(selector);
         if (!this.canvas || typeof THREE === 'undefined') return;
 
         this.width = window.innerWidth;
@@ -25,17 +36,19 @@ class VoidExperience {
         this.mouseX = 0;
         this.mouseY = 0;
 
+        this.render = this.render.bind(this);
+
         this.init();
         this.createArtifact();
         this.addAtmosphere();
-        this.events();
+        this.bindEvents();
         this.render();
     }
 
     init() {
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(CONFIG.color.bg);
-        this.scene.fog = new THREE.FogExp2(CONFIG.color.bg, 0.08);
+        this.scene.background = new THREE.Color(CONFIG.colors.bg);
+        this.scene.fog = new THREE.FogExp2(CONFIG.colors.bg, 0.08);
 
         this.camera = new THREE.PerspectiveCamera(
             CONFIG.camera.fov,
@@ -53,29 +66,27 @@ class VoidExperience {
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        const ambient = new THREE.AmbientLight(CONFIG.color.bg, 0.6);
+        const ambient = new THREE.AmbientLight(CONFIG.colors.light, 0.7);
         this.scene.add(ambient);
 
-        const spot = new THREE.DirectionalLight(CONFIG.color.light, 0.8);
-        spot.position.set(5, 10, 5);
-        this.scene.add(spot);
+        const directional = new THREE.DirectionalLight(CONFIG.colors.light, 0.55);
+        directional.position.set(6, 10, 6);
+        this.scene.add(directional);
     }
 
     createArtifact() {
         this.artifact = new THREE.Group();
 
         const lineMat = new THREE.LineBasicMaterial({
-            color: CONFIG.color.object,
+            color: CONFIG.colors.object,
             transparent: true,
-            opacity: 0.15,
-            linewidth: 1
+            opacity: 0.16
         });
 
         const heavyMat = new THREE.LineBasicMaterial({
-            color: CONFIG.color.object,
+            color: CONFIG.colors.object,
             transparent: true,
-            opacity: 0.8,
-            linewidth: 1
+            opacity: 0.82
         });
 
         // ARC (Celestial, unfinished circle)
@@ -90,7 +101,7 @@ class VoidExperience {
         this.monolith = new THREE.LineSegments(boxEdges, lineMat);
         this.artifact.add(this.monolith);
 
-        // CORE (Wisdom)
+        // CORE (Center)
         const coreGeo = new THREE.OctahedronGeometry(0.5, 0);
         this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), heavyMat);
         this.artifact.add(this.core);
@@ -107,7 +118,7 @@ class VoidExperience {
     }
 
     addAtmosphere() {
-        const count = 200;
+        const count = 220;
         const pos = new Float32Array(count * 3);
         for (let i = 0; i < count * 3; i++) {
             pos[i] = (Math.random() - 0.5) * 15;
@@ -115,7 +126,7 @@ class VoidExperience {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         const mat = new THREE.PointsMaterial({
-            color: 0x000000,
+            color: CONFIG.colors.object,
             size: 0.02,
             transparent: true,
             opacity: 0.2
@@ -124,7 +135,7 @@ class VoidExperience {
         this.scene.add(this.particles);
     }
 
-    events() {
+    bindEvents() {
         window.addEventListener('resize', () => {
             this.width = window.innerWidth;
             this.height = window.innerHeight;
@@ -140,126 +151,398 @@ class VoidExperience {
     }
 
     render() {
-        const time = Date.now() * 0.0005;
+        const time = Date.now() * 0.001;
 
         if (this.artifact) {
-            this.artifact.rotation.y = time * 0.1;
+            this.artifact.rotation.y = time * CONFIG.motion.artifactSpin * 0.1;
         }
 
         if (this.core) {
-            this.core.rotation.x = time;
-            this.core.rotation.z = time * 0.5;
-            this.core.position.y = Math.sin(time * 2) * 0.1;
+            this.core.rotation.x = time * CONFIG.motion.coreSpinX;
+            this.core.rotation.z = time * CONFIG.motion.coreSpinZ;
+            this.core.position.y = Math.sin(time * CONFIG.motion.coreBobFreq) * CONFIG.motion.coreBobAmp;
         }
 
-        this.camera.position.x += (this.mouseX * 0.5 - this.camera.position.x) * 0.05;
-        this.camera.position.y += (this.mouseY * 0.5 - this.camera.position.y) * 0.05;
+        if (this.particles) {
+            this.particles.rotation.y = time * 0.05;
+        }
+
+        const targetX = this.mouseX * CONFIG.motion.parallax;
+        const targetY = this.mouseY * CONFIG.motion.parallax;
+
+        this.camera.position.x += (targetX - this.camera.position.x) * CONFIG.motion.lerp;
+        this.camera.position.y += (targetY - this.camera.position.y) * CONFIG.motion.lerp;
         this.camera.lookAt(0, 0, 0);
 
         this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(this.render.bind(this));
+        requestAnimationFrame(this.render);
     }
 }
 
-/* --------- CHAMBER SYSTEM (UI) --------- */
+/* ---------- DATA LAYER: CHAMBERS & DOCUMENTS ---------- */
 
 const CHAMBERS = {
     philosophy: {
         label: 'Chamber I · Philosophy',
-        title: 'What a system believes about the world.',
+        title: 'What a system assumes about the world.',
         paragraphs: [
-            'Every system inherits a worldview, whether it admits it or not. This is where we make that explicit.',
-            'We work with questions of value, time, responsibility, and power: who the tool serves, what it conserves, and what it quietly destroys.'
+            'Every tool encodes a set of assumptions. This chamber is where those assumptions are made explicit instead of living quietly in the background.',
+            'We ask: under what conditions does this model still hold, and who carries the cost when it stops?'
         ]
     },
     systems: {
         label: 'Chamber II · Systems',
         title: 'The architecture that carries the weight.',
         paragraphs: [
-            'Interfaces, protocols, automation, feedback loops, observability. The boring parts that decide whether something lasts.',
-            'We prefer designs that can be explained on a single sheet of paper and maintained without heroics.'
+            'Interfaces, protocols, automation, and observability. The invisible structure that determines whether an idea survives contact with real environments.',
+            'We prefer systems that can be explained on a single sheet of paper and maintained by ordinary people, not heroes.'
         ]
     },
     artifacts: {
         label: 'Chamber III · Artifacts',
-        title: 'Surfaces that survive strange weather.',
+        title: 'Surfaces built to survive strange weather.',
         paragraphs: [
-            'Eventually everything condenses into artifacts: tools, dashboards, small devices, documents, scripts.',
-            'The work here is execution with disproportionate care: ergonomics, legibility, and the quiet discipline of not adding noise.'
+            'Eventually abstraction becomes matter: devices, dashboards, scripts, field tools. This is the layer where ideas accept the constraints of hardware, time, and exhaustion.',
+            'The emphasis is on ergonomics, legibility, and removing everything that does not directly serve use in the field.'
         ]
     },
     oracle: {
         label: 'Chamber IV · Oracle',
-        title: 'Structured doubt for irreversible decisions.',
+        title: 'Structured doubt for irreversible moves.',
         paragraphs: [
-            'This is the layer where information becomes counsel: simulations, scenario maps, and sensitivity analysis.',
-            'The goal is not prediction theater, but better questions before committing to moves that are expensive to reverse.'
+            'We treat forecasting as disciplined doubt rather than performance. Scenarios, sensitivities, and envelopes of failure, instead of single-line predictions.',
+            'The goal is to map the terrain before walking it, so that when we do commit, we know what we are trading for what.'
         ]
     }
 };
 
-function initChambers() {
-    const panel = document.getElementById('chamber-panel');
-    if (!panel) return;
+/* Example document scaffold for future depth view */
+const DOCUMENTS = {
+    // Example: a future internal paper
+    'american-favela': {
+        kicker: 'Field Note · AF-01',
+        title: 'The American Favela Thesis',
+        subtitle: 'Notes on infrastructure, precarity, and tools that do not assume stability.',
+        sections: [
+            {
+                heading: '1. Scope',
+                paragraphs: [
+                    'This document sketches the constraints of operating in environments where formal infrastructure is intermittent, informal, or adversarial.',
+                    'It exists to inform how devices, drones, and software should behave when continuity cannot be assumed.'
+                ]
+            },
+            {
+                heading: '2. Design Pressure',
+                paragraphs: [
+                    'Tools built for unstable contexts must prioritise recoverability, offline usefulness, and graceful degradation over marginal gains in ideal conditions.'
+                ]
+            }
+        ]
+    }
+};
 
-    const labelEl = panel.querySelector('.chamber-label');
-    const titleEl = panel.querySelector('.chamber-title');
-    const bodyEl = panel.querySelector('.chamber-body');
-    const closeBtn = panel.querySelector('.chamber-close');
+/* ---------- NAVIGATION CONTROLLER ---------- */
 
-    const links = document.querySelectorAll('.nav-links .link');
-
-    function openChamber(key) {
-        const data = CHAMBERS[key];
-        if (!data) return;
-
-        labelEl.textContent = data.label;
-        titleEl.textContent = data.title;
-
-        bodyEl.innerHTML = '';
-        data.paragraphs.forEach(text => {
-            const p = document.createElement('p');
-            p.textContent = text;
-            bodyEl.appendChild(p);
-        });
-
-        panel.classList.remove('chamber-panel--hidden');
-        panel.classList.add('chamber-panel--visible');
-        document.body.classList.add('chamber-open');
-        panel.setAttribute('aria-hidden', 'false');
+class NavController {
+    constructor({ linkSelector }) {
+        this.links = Array.from(document.querySelectorAll(linkSelector));
+        this.bind();
     }
 
-    function closeChamber() {
-        panel.classList.remove('chamber-panel--visible');
-        panel.classList.add('chamber-panel--hidden');
-        document.body.classList.remove('chamber-open');
-        panel.setAttribute('aria-hidden', 'true');
+    bind() {
+        this.links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const route = link.dataset.route || link.getAttribute('href').replace('#', '');
+                if (route) {
+                    window.location.hash = route;
+                }
+            });
+        });
     }
 
-    links.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const key = link.getAttribute('data-chamber');
-            openChamber(key);
+    setActiveByChamber(key) {
+        this.links.forEach(link => {
+            const chamber = link.getAttribute('data-chamber');
+            if (chamber === key) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
         });
-    });
+    }
 
-    closeBtn.addEventListener('click', closeChamber);
-
-    // Close on background click
-    panel.addEventListener('click', (e) => {
-        if (e.target === panel) closeChamber();
-    });
-
-    // ESC key closes panel
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeChamber();
-    });
+    clearActive() {
+        this.links.forEach(link => link.classList.remove('active'));
+    }
 }
 
-/* Boot everything */
+/* ---------- CHAMBER PANEL (SECTION-LEVEL BRIEFING) ---------- */
+
+class ChamberPanel {
+    constructor({ panelSelector, data, onRequestClose }) {
+        this.root = document.querySelector(panelSelector);
+        if (!this.root) return;
+
+        this.data = data || {};
+        this.onRequestClose = onRequestClose;
+
+        this.labelEl = this.root.querySelector('.chamber-label');
+        this.titleEl = this.root.querySelector('.chamber-title');
+        this.bodyEl = this.root.querySelector('.chamber-body');
+        this.closeBtn = this.root.querySelector('.chamber-close');
+
+        this.currentKey = null;
+
+        this.bind();
+    }
+
+    bind() {
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.requestClose());
+        }
+
+        this.root.addEventListener('click', (e) => {
+            if (e.target === this.root) {
+                this.requestClose();
+            }
+        });
+    }
+
+    requestClose() {
+        if (typeof this.onRequestClose === 'function') {
+            this.onRequestClose();
+        }
+    }
+
+    open(key) {
+        const data = this.data[key];
+        if (!data) return;
+
+        this.currentKey = key;
+
+        if (this.labelEl) this.labelEl.textContent = data.label || '';
+        if (this.titleEl) this.titleEl.textContent = data.title || '';
+
+        if (this.bodyEl) {
+            this.bodyEl.innerHTML = '';
+            (data.paragraphs || []).forEach(text => {
+                const p = document.createElement('p');
+                p.textContent = text;
+                this.bodyEl.appendChild(p);
+            });
+        }
+
+        this.root.classList.remove('chamber-panel--hidden');
+        this.root.classList.add('chamber-panel--visible');
+        this.root.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('chamber-open');
+        document.body.classList.remove('depth-open');
+    }
+
+    close() {
+        this.currentKey = null;
+        this.root.classList.remove('chamber-panel--visible');
+        this.root.classList.add('chamber-panel--hidden');
+        this.root.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('chamber-open');
+    }
+}
+
+/* ---------- DEPTH VIEW (LONG-FORM DOCUMENTS / ARCHIVE) ---------- */
+
+class DepthView {
+    constructor({ panelSelector, data, onRequestClose }) {
+        this.root = document.querySelector(panelSelector);
+        if (!this.root) return;
+
+        this.data = data || {};
+        this.onRequestClose = onRequestClose;
+
+        this.kickerEl = this.root.querySelector('.depth-kicker');
+        this.titleEl = this.root.querySelector('.depth-title');
+        this.subtitleEl = this.root.querySelector('.depth-subtitle');
+        this.bodyEl = this.root.querySelector('.depth-body');
+        this.closeBtn = this.root.querySelector('.depth-close');
+
+        this.currentId = null;
+
+        this.bind();
+    }
+
+    bind() {
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.requestClose());
+        }
+
+        this.root.addEventListener('click', (e) => {
+            if (e.target === this.root) {
+                this.requestClose();
+            }
+        });
+    }
+
+    requestClose() {
+        if (typeof this.onRequestClose === 'function') {
+            this.onRequestClose();
+        }
+    }
+
+    open(id) {
+        const doc = this.data[id];
+        if (!doc) return;
+
+        this.currentId = id;
+
+        if (this.kickerEl) this.kickerEl.textContent = doc.kicker || '';
+        if (this.titleEl) this.titleEl.textContent = doc.title || '';
+        if (this.subtitleEl) this.subtitleEl.textContent = doc.subtitle || '';
+
+        if (this.bodyEl) {
+            this.bodyEl.innerHTML = '';
+            (doc.sections || []).forEach(section => {
+                if (section.heading) {
+                    const h = document.createElement('h3');
+                    h.textContent = section.heading;
+                    this.bodyEl.appendChild(h);
+                }
+                (section.paragraphs || []).forEach(text => {
+                    const p = document.createElement('p');
+                    p.textContent = text;
+                    this.bodyEl.appendChild(p);
+                });
+            });
+        }
+
+        this.root.classList.remove('depth-view--hidden');
+        this.root.classList.add('depth-view--visible');
+        this.root.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('depth-open');
+        document.body.classList.remove('chamber-open');
+    }
+
+    close() {
+        this.currentId = null;
+        this.root.classList.remove('depth-view--visible');
+        this.root.classList.add('depth-view--hidden');
+        this.root.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('depth-open');
+    }
+}
+
+/* ---------- APP ORCHESTRATOR ---------- */
+
+class AlchemyApp {
+    constructor() {
+        this.state = {
+            mode: 'idle',      // 'idle' | 'chamber' | 'depth'
+            chamber: null,
+            docId: null
+        };
+
+        this.voidExperience = new VoidExperience('#artifact-canvas');
+
+        this.nav = new NavController({
+            linkSelector: '.nav-links .link'
+        });
+
+        this.chambers = new ChamberPanel({
+            panelSelector: '#chamber-panel',
+            data: CHAMBERS,
+            onRequestClose: () => {
+                // Return to idle state
+                if (window.location.hash) {
+                    window.location.hash = '';
+                }
+            }
+        });
+
+        this.depthView = new DepthView({
+            panelSelector: '#depth-view',
+            data: DOCUMENTS,
+            onRequestClose: () => {
+                if (window.location.hash) {
+                    window.location.hash = '';
+                }
+            }
+        });
+
+        window.addEventListener('hashchange', () => this.handleHash());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && window.location.hash) {
+                window.location.hash = '';
+            }
+        });
+
+        this.handleHash(); // initial load
+    }
+
+    handleHash() {
+        const raw = window.location.hash.replace(/^#/, '').trim();
+
+        if (!raw) {
+            this.goIdle();
+            return;
+        }
+
+        // Document route: #doc/<id>
+        if (raw.startsWith('doc/')) {
+            const id = raw.slice(4);
+            if (DOCUMENTS[id]) {
+                this.openDocument(id);
+            } else {
+                this.goIdle();
+            }
+            return;
+        }
+
+        // Chamber route: #philosophy, #systems, etc.
+        if (CHAMBERS[raw]) {
+            this.openChamber(raw);
+            return;
+        }
+
+        // Unknown route → idle
+        this.goIdle();
+    }
+
+    goIdle() {
+        this.state.mode = 'idle';
+        this.state.chamber = null;
+        this.state.docId = null;
+
+        this.nav.clearActive();
+        if (this.chambers) this.chambers.close();
+        if (this.depthView) this.depthView.close();
+    }
+
+    openChamber(key) {
+        if (!this.chambers) return;
+
+        this.state.mode = 'chamber';
+        this.state.chamber = key;
+        this.state.docId = null;
+
+        if (this.depthView) this.depthView.close();
+        this.nav.setActiveByChamber(key);
+        this.chambers.open(key);
+    }
+
+    openDocument(id) {
+        if (!this.depthView) return;
+
+        this.state.mode = 'depth';
+        this.state.docId = id;
+        this.state.chamber = null;
+
+        if (this.chambers) this.chambers.close();
+        this.nav.clearActive();
+        this.depthView.open(id);
+    }
+}
+
+/* ---------- BOOT ---------- */
 
 window.addEventListener('DOMContentLoaded', () => {
-    new VoidExperience();
-    initChambers();
+    new AlchemyApp();
 });
