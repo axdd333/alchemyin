@@ -1,16 +1,24 @@
 :root {
-    /* Semantic Palette */
-    --c-bg: #EAE8E3;        /* Limestone / Bone */
-    --c-ink: #111111;       /* Soft Black */
-    --c-ink-sub: #666460;   /* Muted Text */
+    /* Palette: Bone / Limestone / Ink */
+    --c-bg: #EAE8E3;
+    --c-bg-glass: rgba(234, 232, 227, 0.65);
+    --c-ink: #111111;
+    --c-ink-sub: #555350;
+    --c-ink-faint: #A3A19D;
     --c-border: rgba(17, 17, 17, 0.08);
     
     /* Dimensions */
-    --panel-width: 540px;
+    --nav-height: 100px;
+    --panel-width: 580px;
+    --depth-width: 720px;
+    
+    /* Easing */
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-sharp: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Reset & Base */
+/* --- Reset & Base --- */
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -20,25 +28,27 @@
 html, body {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: hidden; /* Scroll handled internally by overlays */
     background-color: var(--c-bg);
     font-family: 'Inter', sans-serif;
     color: var(--c-ink);
     -webkit-font-smoothing: antialiased;
-    cursor: crosshair; /* Adds to the precision/tool aesthetic */
+    cursor: crosshair;
 }
 
-/* Atmospheric Noise */
+/* --- Texture --- */
+
 .noise-layer {
     position: fixed;
     inset: 0;
     z-index: 50;
-    opacity: 0.05;
+    opacity: 0.07;
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Header UI */
+/* --- Header --- */
+
 .header-ui {
     position: fixed;
     top: 0;
@@ -48,7 +58,7 @@ html, body {
     z-index: 10;
     text-align: center;
     pointer-events: none;
-    mix-blend-mode: multiply; /* Blends text into the background texture */
+    mix-blend-mode: multiply;
 }
 
 .brand-mark {
@@ -68,11 +78,23 @@ html, body {
     letter-spacing: 0.25em;
     margin-top: 0.5rem;
     color: var(--c-ink-sub);
+    font-weight: 500;
     opacity: 0;
     animation: slideIn 1.4s var(--ease-out) forwards 0.4s;
 }
 
-/* Viewport & Canvas */
+.brand-epigraph {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 0.6rem;
+    color: var(--c-ink-faint);
+    margin-top: 0.8rem;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: slideIn 1.4s var(--ease-out) forwards 0.6s;
+}
+
+/* --- Viewport --- */
+
 .viewport {
     position: fixed;
     inset: 0;
@@ -86,35 +108,39 @@ html, body {
     outline: none;
 }
 
-/* Navigation UI */
+/* --- Navigation --- */
+
 .nav-ui {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding-bottom: 6vh;
+    height: var(--nav-height);
     z-index: 10;
     display: flex;
     justify-content: center;
+    align-items: center;
+    /* Gradient fade at bottom */
+    background: linear-gradient(to top, rgba(234,232,227,0.9), transparent); 
 }
 
 .nav-list {
     display: flex;
-    gap: 5vw;
+    gap: 4vw;
     list-style: none;
 }
 
 .nav-link {
     text-decoration: none;
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.7rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     color: var(--c-ink);
     opacity: 0.4;
     position: relative;
     padding: 12px 0;
-    transition: opacity 0.3s ease, letter-spacing 0.4s var(--ease-out);
+    transition: all 0.4s var(--ease-out);
 }
 
 .nav-link::after {
@@ -134,76 +160,160 @@ html, body {
     letter-spacing: 0.2em;
 }
 
-.nav-link:hover::after {
+.nav-link.active {
+    opacity: 1;
+}
+.nav-link.active::after {
     width: 100%;
 }
 
-/* Chamber Panel (Modal) */
-.chamber-panel {
+/* --- Overlays (Shared) --- */
+
+.overlay-panel {
     position: absolute;
     inset: 0;
     z-index: 20;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(234, 232, 227, 0.3);
+    backdrop-filter: blur(4px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s ease;
-    background: rgba(234, 232, 227, 0.2); /* Very subtle dim */
-    backdrop-filter: blur(2px); /* Slight depth of field effect */
 }
 
-.chamber-panel--visible {
+.chamber-panel--visible,
+.depth-view--visible {
     opacity: 1;
     pointer-events: auto;
 }
-.nav-link.active {
-    opacity: 1;
+
+.close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--c-ink-sub);
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+    z-index: 5;
 }
 
-.nav-link.active::after {
-    width: 100%;
+.close-btn:hover {
+    color: var(--c-ink);
 }
+
+/* --- Chamber Card (The Modal) --- */
 
 .chamber-card {
     position: relative;
     width: 90%;
     max-width: var(--panel-width);
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    padding: 3rem;
+    background: var(--c-bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 3.5rem 3rem;
     border-radius: 4px;
     box-shadow: 
-        0 20px 40px -10px rgba(0,0,0,0.05),
-        0 0 0 1px rgba(0,0,0,0.02);
-    transform: translateY(10px);
-    transition: transform 0.6s var(--ease-out);
+        0 20px 50px -10px rgba(0,0,0,0.05),
+        0 0 0 1px rgba(255,255,255,0.2);
+    transform: translateY(15px);
+    transition: transform 0.6s var(--ease-sharp);
 }
 
 .chamber-panel--visible .chamber-card {
     transform: translateY(0);
 }
 
-.chamber-close {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--c-ink-sub);
-    cursor: pointer;
-    transition: color 0.2s;
-    line-height: 1;
-}
-
-.chamber-close:hover {
-    color: var(--c-ink);
-}
-
 .chamber-label {
     display: block;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--c-ink-sub);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--c-border);
+    padding-bottom: 1rem;
+    display: inline-block;
+}
+
+.chamber-title {
+    font-family: 'Bodoni Moda', serif;
+    font-weight: 400;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+}
+
+.chamber-content p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--c-ink);
+    margin-bottom: 1.2rem;
+}
+.chamber-content p:last-child { margin-bottom: 0; }
+
+/* Internal Links within content */
+.doc-link {
+    color: var(--c-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--c-ink-sub);
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.doc-link:hover {
+    color: #000;
+    text-decoration-color: #000;
+}
+
+/* --- Depth View (Long Form) --- */
+
+.depth-scroll-container {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    padding: 8vh 0 12vh 0;
+    /* Hide scrollbar but allow scroll */
+    scrollbar-width: none; 
+}
+.depth-scroll-container::-webkit-scrollbar { display: none; }
+
+.depth-card {
+    position: relative;
+    width: 92%;
+    max-width: var(--depth-width);
+    background: #F2F0EB; /* Slightly lighter/cleaner for reading */
+    padding: 4rem 4rem 6rem 4rem;
+    border: 1px solid var(--c-border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+    min-height: 50vh;
+    transform: translateY(30px);
+    opacity: 0;
+    transition: transform 0.6s var(--ease-sharp), opacity 0.6s ease;
+}
+
+.depth-view--visible .depth-card {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.depth-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--c-border);
+}
+
+.depth-kicker {
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
@@ -211,35 +321,80 @@ html, body {
     margin-bottom: 1rem;
 }
 
-.chamber-title {
+.depth-title {
     font-family: 'Bodoni Moda', serif;
     font-weight: 400;
-    font-style: italic;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
     line-height: 1.2;
 }
 
-.chamber-content p {
-    font-size: 0.95rem;
-    line-height: 1.7;
+.depth-subtitle {
+    font-family: 'Bodoni Moda', serif;
+    font-style: italic;
+    color: var(--c-ink-sub);
+    font-size: 1.1rem;
+}
+
+.depth-body {
+    counter-reset: section;
+}
+
+.depth-section {
+    margin-bottom: 3.5rem;
+}
+
+.depth-section h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+    color: var(--c-ink-sub);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.depth-section h3::before {
+    counter-increment: section;
+    content: counter(section, upper-roman) ".";
+    position: absolute;
+    left: 0;
+    color: var(--c-border);
+    font-weight: 700;
+}
+
+.depth-section p {
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
     color: var(--c-ink);
-    margin-bottom: 1rem;
+    text-align: justify;
 }
 
-.chamber-content p:last-child {
-    margin-bottom: 0;
+.depth-footer {
+    text-align: center;
+    color: var(--c-border);
+    font-size: 1.5rem;
+    margin-top: 4rem;
 }
 
-/* Animations */
+/* --- Animations --- */
+
 @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-15px); }
+    from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Mobile */
+/* --- Mobile --- */
 @media (max-width: 768px) {
-    .nav-list { gap: 4vw; }
-    .nav-link { font-size: 0.65rem; }
-    .chamber-card { padding: 2rem; }
+    .nav-list { gap: 5vw; }
+    .nav-link { font-size: 0.6rem; }
+    
+    .chamber-card { padding: 2.5rem 1.5rem; }
+    .chamber-title { font-size: 1.5rem; }
+    
+    .depth-card { padding: 3rem 1.5rem; }
+    .depth-title { font-size: 1.8rem; }
 }
