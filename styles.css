@@ -488,4 +488,11 @@ body.depth-open .header-layer {
         max-height: calc(100vh - 2 * var(--unit));
         padding: calc(var(--unit) * 0.7);
     }
+    @media (max-width: 768px) {
+    body:not(.chamber-open):not(.depth-open) .brand-mark {
+        font-size: 1.9rem;
+    }
+    /* …keep your existing mobile rules… */
+}
+
 }
