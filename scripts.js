@@ -1,4 +1,3 @@
-// scripts.js
 /**
  * ALCHEMYIN: THE COSMIC COLUMN RESTORED
  * Nihilistic Luxury + Ancient Motif
@@ -14,7 +13,7 @@ const CONFIG = {
   camera: {
     fov: 35,
     z: 18,
-    introZ: 12 // The closer position after the dolly-in
+    introZ: 12
   },
   temple: {
     columnHeight: 4,
@@ -26,11 +25,16 @@ const CONFIG = {
 class VoidTemple {
   constructor() {
     this.canvas = document.querySelector("#temple-canvas");
-    if (!this.canvas || !window.THREE) return;
+
+    // If there’s no canvas or THREE failed to load, don’t block the UI
+    if (!this.canvas || typeof THREE === "undefined") {
+      const loader = document.getElementById("loader");
+      if (loader) loader.classList.add("loaded");
+      return;
+    }
 
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-
     this.mouseX = 0;
     this.mouseY = 0;
 
@@ -63,7 +67,6 @@ class VoidTemple {
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Subtle lighting
     const light = new THREE.DirectionalLight(CONFIG.color.light, 0.6);
     light.position.set(10, 15, 10);
     this.scene.add(light);
@@ -73,7 +76,6 @@ class VoidTemple {
   createTempleArtifact() {
     this.artifact = new THREE.Group();
 
-    // Wireframe materials
     const lineMat = new THREE.LineBasicMaterial({
       color: CONFIG.color.lines,
       transparent: true,
@@ -88,7 +90,7 @@ class VoidTemple {
       linewidth: 1
     });
 
-    // PILLARS
+    // Pillars
     const pillarGeo = new THREE.BoxGeometry(
       0.2,
       CONFIG.temple.columnHeight,
@@ -107,7 +109,7 @@ class VoidTemple {
       this.artifact.add(pillar);
     }
 
-    // BASE
+    // Base
     const baseGeo = new THREE.BoxGeometry(CONFIG.temple.baseWidth, 0.2, 2);
     const base = new THREE.LineSegments(
       new THREE.EdgesGeometry(baseGeo),
@@ -116,7 +118,7 @@ class VoidTemple {
     base.position.y = -CONFIG.temple.columnHeight / 2 - 0.1;
     this.artifact.add(base);
 
-    // COSMIC ARC
+    // Cosmic arc
     const arcRadius = 3.5;
     const arcGeo = new THREE.TorusGeometry(
       arcRadius,
@@ -130,7 +132,7 @@ class VoidTemple {
     this.arc.position.y = 1.5;
     this.artifact.add(this.arc);
 
-    // CORE (floating icosahedron)
+    // Core
     const coreGeo = new THREE.IcosahedronGeometry(0.8, 0);
     this.core = new THREE.LineSegments(
       new THREE.EdgesGeometry(coreGeo),
@@ -179,7 +181,7 @@ class VoidTemple {
       const elapsed = (time - startTime) / 1000;
       const t = Math.min(elapsed / (duration / 1000), 1);
 
-      const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const ease = 1 - Math.pow(1 - t, 3);
       this.camera.position.z = startZ + (endZ - startZ) * ease;
 
       if (t < 1) {
@@ -210,25 +212,21 @@ class VoidTemple {
   render() {
     const time = Date.now() * 0.0005;
 
-    // Artifact rotation & float
     if (this.artifact) {
       this.artifact.rotation.y += 0.001;
       this.artifact.position.y = Math.sin(time * 0.8) * 0.05;
     }
 
-    // Core spin
     if (this.core) {
       this.core.rotation.x = time * 0.5;
       this.core.rotation.z = time * 0.3;
     }
 
-    // Parallax camera
     this.camera.position.x +=
       (this.mouseX * 1.0 - this.camera.position.x) * 0.05;
     this.camera.position.y = this.mouseY * 0.5;
     this.camera.lookAt(0, 0, 0);
 
-    // Particle drift
     if (this.particles) {
       this.particles.rotation.y = time * 0.01;
     }
@@ -295,6 +293,13 @@ class VoidTemple {
   window.addEventListener("resize", resize);
   requestAnimationFrame(draw);
 })();
+
+/* Global: always fade loader after full page load as a safety net */
+
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+  if (loader) loader.classList.add("loaded");
+});
 
 /* Boot the temple once DOM is ready */
 
