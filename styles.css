@@ -1,4 +1,3 @@
-/* styles.css */
 /* ALCHEMYIN · HOUSE OF WISDOM
  * Cream stone, quiet type, computational temple
  */
@@ -209,7 +208,7 @@ body::before {
   color: rgba(0, 0, 0, 0.9);
 }
 
-/* Placeholder sections (for now just space anchors) */
+/* Placeholder sections (anchors only for now) */
 
 .placeholder-section {
   height: 0;
