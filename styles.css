@@ -16,6 +16,8 @@
 
   --accent-soft: #dfe4ff;
   --accent-ink: #25293a;
+  --accent-highlight: linear-gradient(120deg, #dae2ff, #f6f2ff);
+  --accent-glow: 0 10px 40px rgba(92, 102, 255, 0.18);
 
   --radius-card: 14px;
   --radius-pill: 999px;
@@ -55,6 +57,27 @@ body {
   background:
     radial-gradient(circle at top left, #f7f7fb 0, #ffffff 46%, #ffffff 100%);
   color: var(--ink-main);
+}
+
+.ambient-grid {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(34, 34, 42, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 34, 42, 0.035) 1px, transparent 1px);
+  background-size: 120px 120px;
+  mask-image:
+    radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.12), transparent 60%),
+    radial-gradient(circle at 82% 10%, rgba(0, 0, 0, 0.12), transparent 54%),
+    radial-gradient(circle at 50% 90%, rgba(0, 0, 0, 0.1), transparent 70%);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.site > *:not(.ambient-grid) {
+  position: relative;
+  z-index: 1;
 }
 
 .shell {
@@ -188,6 +211,56 @@ body {
   max-width: 440px;
 }
 
+.hero-signal-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.signal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: linear-gradient(135deg, #ffffff, #fbfbff);
+  box-shadow: var(--accent-glow);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.signal-chip.subtle {
+  background: #ffffff;
+  box-shadow: none;
+  color: var(--ink-muted);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  display: inline-block;
+  background-color: #9ea2ff;
+  position: relative;
+}
+
+.dot.live::after,
+.dot.pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(158, 162, 255, 0.6);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+.dot.pulse::after {
+  animation-duration: 3s;
+  box-shadow: 0 0 0 0 rgba(17, 17, 17, 0.12);
+}
+
 .hero-meta-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -291,6 +364,41 @@ body {
   margin-top: 18px;
 }
 
+.principles {
+  margin-top: 18px;
+  padding: 14px 16px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: calc(var(--radius-card) - 2px);
+  background: var(--accent-highlight);
+  box-shadow: var(--accent-glow);
+}
+
+.principles-heading {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px 8px;
+  border-radius: var(--radius-pill);
+  background: #ffffff;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  color: var(--ink-main);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
 /* ============================
    Practice / tiles
    ============================ */
@@ -371,6 +479,32 @@ body {
   top: 0;
   font-size: 10px;
   color: var(--ink-muted);
+}
+
+.practice-note {
+  margin-top: 24px;
+  padding: 16px 18px;
+  border: 1px solid var(--border-soft);
+  border-radius: calc(var(--radius-card) + 2px);
+  background: linear-gradient(120deg, #ffffff, #fafafd);
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.note-label {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.note-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-main);
 }
 
 /* ============================
@@ -646,6 +780,20 @@ body {
   transform: translateY(0);
 }
 
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 currentColor;
+    opacity: 0.8;
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 /* ============================
    Responsive
    ============================ */
@@ -670,6 +818,10 @@ body {
   }
 
   .grid-tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .practice-note {
     grid-template-columns: minmax(0, 1fr);
   }
 
