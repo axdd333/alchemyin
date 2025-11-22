@@ -157,6 +157,13 @@ html, body {
     opacity: 1;
     pointer-events: auto;
 }
+.nav-link.active {
+    opacity: 1;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
 
 .chamber-card {
     position: relative;
