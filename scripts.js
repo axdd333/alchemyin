@@ -1,7 +1,6 @@
 /**
- * ALCHEMYIN: THE VOID STATE
- * "Perfection is achieved not when there is nothing more to add, 
- * but when there is nothing left to take away."
+ * ALCHEMYIN: THE VOID STATE, EXTENDED
+ * 3D artifact + four chambers + inner scroll navigation
  */
 
 const CONFIG = {
@@ -11,7 +10,7 @@ const CONFIG = {
         light: 0xffffff
     },
     camera: {
-        fov: 35, // Narrow FOV for cinematic look
+        fov: 35,
         z: 12
     }
 };
@@ -19,6 +18,11 @@ const CONFIG = {
 class VoidExperience {
     constructor() {
         this.canvas = document.querySelector('#artifact-canvas');
+        if (!this.canvas || typeof THREE === 'undefined') {
+            // If Three.js fails, bail quietly
+            return;
+        }
+
         this.width = window.innerWidth;
         this.height = window.innerHeight;
         this.mouseX = 0;
@@ -34,20 +38,24 @@ class VoidExperience {
     init() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(CONFIG.color.bg);
-        this.scene.fog = new THREE.FogExp2(CONFIG.color.bg, 0.08); // Dense fog
+        this.scene.fog = new THREE.FogExp2(CONFIG.color.bg, 0.08);
 
-        this.camera = new THREE.PerspectiveCamera(CONFIG.camera.fov, this.width / this.height, 0.1, 100);
+        this.camera = new THREE.PerspectiveCamera(
+            CONFIG.camera.fov,
+            this.width / this.height,
+            0.1,
+            100
+        );
         this.camera.position.set(0, 0, CONFIG.camera.z);
 
-        this.renderer = new THREE.WebGLRenderer({ 
-            canvas: this.canvas, 
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: this.canvas,
             antialias: true,
-            alpha: false 
+            alpha: false
         });
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Lighting: Stark, studio-like
         const ambient = new THREE.AmbientLight(CONFIG.color.bg, 0.6);
         this.scene.add(ambient);
 
@@ -59,43 +67,38 @@ class VoidExperience {
     createArtifact() {
         this.artifact = new THREE.Group();
 
-        // Material: Thin, precise vector lines
         const lineMat = new THREE.LineBasicMaterial({
             color: CONFIG.color.object,
             transparent: true,
-            opacity: 0.15, // Barely visible
+            opacity: 0.15,
             linewidth: 1
         });
 
         const heavyMat = new THREE.LineBasicMaterial({
             color: CONFIG.color.object,
             transparent: true,
-            opacity: 0.8, // Stark contrast
+            opacity: 0.8,
             linewidth: 1
         });
 
-        // 1. THE ARC (Celestial)
-        // A large, incomplete circle representing the unfinished work
+        // ARC (Celestial)
         const arcGeo = new THREE.TorusGeometry(3, 0.01, 3, 100, Math.PI * 1.5);
         this.arc = new THREE.LineSegments(new THREE.EdgesGeometry(arcGeo), heavyMat);
         this.arc.rotation.z = Math.PI / 4;
         this.artifact.add(this.arc);
 
-        // 2. THE MONOLITH (Structure)
-        // A wireframe cube intersected by the arc
+        // MONOLITH (Structure)
         const boxGeo = new THREE.BoxGeometry(2, 4, 2);
         const boxEdges = new THREE.EdgesGeometry(boxGeo);
         this.monolith = new THREE.LineSegments(boxEdges, lineMat);
         this.artifact.add(this.monolith);
 
-        // 3. THE CORE (Wisdom)
-        // A dense inner geometry floating in the center
+        // CORE (Wisdom)
         const coreGeo = new THREE.OctahedronGeometry(0.5, 0);
         this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), heavyMat);
         this.artifact.add(this.core);
 
-        // 4. THE HORIZON (Context)
-        // A single line representing the ground
+        // HORIZON (Context)
         const gridGeo = new THREE.PlaneGeometry(20, 20, 20, 20);
         const gridEdges = new THREE.EdgesGeometry(gridGeo);
         this.grid = new THREE.LineSegments(gridEdges, lineMat);
@@ -107,10 +110,9 @@ class VoidExperience {
     }
 
     addAtmosphere() {
-        // Particles: The dust of the void
         const count = 200;
         const pos = new Float32Array(count * 3);
-        for(let i=0; i<count*3; i++) {
+        for (let i = 0; i < count * 3; i++) {
             pos[i] = (Math.random() - 0.5) * 15;
         }
         const geo = new THREE.BufferGeometry();
@@ -135,29 +137,44 @@ class VoidExperience {
         });
 
         document.addEventListener('mousemove', (e) => {
-            // Normalized coordinates -1 to 1
             this.mouseX = (e.clientX / this.width) * 2 - 1;
             this.mouseY = -(e.clientY / this.height) * 2 + 1;
         });
+
+        // Smooth scrolling for the four chambers
+        const links = document.querySelectorAll('.nav-links a');
+        const contentColumn = document.querySelector('.content-column');
+
+        if (contentColumn && links.length > 0) {
+            links.forEach((link) => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').slice(1);
+                    const target = document.getElementById(targetId);
+                    if (!target) return;
+
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            });
+        }
     }
 
     render() {
         const time = Date.now() * 0.0005;
 
-        // 1. Slow, hypnotic rotation of the artifact
         if (this.artifact) {
-            this.artifact.rotation.y = time * 0.1; 
+            this.artifact.rotation.y = time * 0.1;
         }
 
-        // 2. The Core pulses and spins independently
         if (this.core) {
             this.core.rotation.x = time;
             this.core.rotation.z = time * 0.5;
             this.core.position.y = Math.sin(time * 2) * 0.1;
         }
 
-        // 3. Parallax: The camera floats slightly based on mouse
-        // "Nihilistic" interaction is detached—the world moves, you don't.
         this.camera.position.x += (this.mouseX * 0.5 - this.camera.position.x) * 0.05;
         this.camera.position.y += (this.mouseY * 0.5 - this.camera.position.y) * 0.05;
         this.camera.lookAt(0, 0, 0);
@@ -167,5 +184,7 @@ class VoidExperience {
     }
 }
 
-// Enter The Void
-window.addEventListener('DOMContentLoaded', () => new VoidExperience());
+// Boot the void and the chambers
+window.addEventListener('DOMContentLoaded', () => {
+    new VoidExperience();
+});
