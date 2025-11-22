@@ -5,27 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alchemyin: House of Wisdom</title>
     
+    <meta name="description" content="Alchemyin is a small, quiet studio for philosophy, systems, artifacts, and the oracle layer of decision making.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    >
 
+    <!-- Three.js for the artifact -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+    <!-- Subtle noise over everything -->
     <div class="noise-overlay"></div>
 
+    <!-- Top inscription -->
     <header class="header-layer">
         <h1 class="brand-mark">Alchemyin</h1>
         <p class="brand-sub">House of Wisdom</p>
     </header>
 
+    <!-- Main viewport containing 3D artifact and the four "rooms" -->
     <main class="viewport">
+        <!-- 3D artifact background -->
         <canvas id="artifact-canvas"></canvas>
+
+        <!-- Central content column (the chambers) -->
+        <div class="content-column">
+            <!-- Intro / foyer -->
+            <section class="section section--intro">
+                <p class="section-label">Foyer</p>
+                <h2 class="section-title">A quiet room for serious work.</h2>
+                <p class="section-body">
+                    Alchemyin is a small, independent studio at the intersection of philosophy,
+                    systems design, and instrument building. The outer surface looks minimal.
+                    The inner surface is all detail: notation, structure, and long term thinking.
+                </p>
+            </section>
+
+            <!-- PHILOSOPHY -->
+            <section id="philosophy" class="section">
+                <p class="section-label">Chamber I</p>
+                <h2 class="section-title">Philosophy</h2>
+                <p class="section-body">
+                    Every system inherits a worldview, whether it admits it or not. This chamber
+                    is where we make that explicit. We work with questions of value, time,
+                    responsibility, and power: who is this tool for, what does it conserve,
+                    and what does it quietly destroy.
+                </p>
+                <p class="section-body">
+                    Instead of slogans, we prefer clear frames: tradeoff diagrams, failure
+                    modes, long horizon consequences. The output of this room is language,
+                    diagrams, and decision criteria that the rest of the project can lean on.
+                </p>
+            </section>
+
+            <!-- SYSTEMS -->
+            <section id="systems" class="section">
+                <p class="section-label">Chamber II</p>
+                <h2 class="section-title">Systems</h2>
+                <p class="section-body">
+                    Here we move from ideas to architecture. Interfaces, protocols, automation,
+                    feedback loops, observability, and the quiet glue between them. We design
+                    systems that can be explained, maintained, and extended without theatrics.
+                </p>
+                <p class="section-body">
+                    Sometimes this looks like shaping workflows for a small team. Sometimes it
+                    looks like mapping an entire product surface as a state machine. Sometimes
+                    it means saying no to an extra feature to keep the system legible.
+                </p>
+            </section>
+
+            <!-- ARTIFACTS -->
+            <section id="artifacts" class="section">
+                <p class="section-label">Chamber III</p>
+                <h2 class="section-title">Artifacts</h2>
+                <p class="section-body">
+                    Every decision eventually condenses into an artifact: a device, a tool,
+                    a dashboard, a document, a protocol, a tiny script. This chamber is about
+                    executing those with disproportionate care.
+                </p>
+                <p class="section-body">
+                    We build small things first: reference UIs, internal tools, survival
+                    devices, instrumentation. The focus is on ergonomics and longevity.
+                    No decoration, no theatrics, just surfaces that age well and stay coherent.
+                </p>
+            </section>
+
+            <!-- ORACLE -->
+            <section id="oracle" class="section section--oracle">
+                <p class="section-label">Chamber IV</p>
+                <h2 class="section-title">Oracle</h2>
+                <p class="section-body">
+                    The oracle layer is where everything feeds back into decision making.
+                    Simulations, scenario maps, forecasting tools, and slow, deliberate
+                    counsel for people who actually carry responsibility.
+                </p>
+                <p class="section-body">
+                    This is not prediction theater. It is structured doubt, sensitivity
+                    analysis, and a place to ask better questions before committing to
+                    irreversible moves.
+                </p>
+            </section>
+
+            <!-- Closing line -->
+            <section class="section section--outro">
+                <p class="section-body">
+                    If you are building something that must remain standing in strange weather,
+                    you are in the right house.
+                </p>
+            </section>
+        </div>
     </main>
 
+    <!-- Bottom navigation - the four rooms -->
     <nav class="nav-layer">
         <ul class="nav-links">
             <li><a href="#philosophy" class="link" data-text="Philosophy">Philosophy</a></li>
