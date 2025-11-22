@@ -1,145 +1,100 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Smooth scroll for in-page anchors
-  document.querySelectorAll('a[href^="#"]').forEach((link) => {
-    link.addEventListener("click", (event) => {
-      const targetId = link.getAttribute("href");
-      if (!targetId || targetId === "#") return;
-      const targetEl = document.querySelector(targetId);
-      if (targetEl) {
-        event.preventDefault();
-        targetEl.scrollIntoView({ behavior: "smooth" });
+const canvas = document.getElementById('mesh');
+const ctx = canvas.getContext('2d');
+
+let gridCols = 0;
+let gridRows = 0;
+let spacing = 120;
+let points = [];
+
+function createGrid() {
+  spacing = Math.max(Math.min(canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio) / 14, 90);
+  const width = canvas.width / window.devicePixelRatio;
+  const height = canvas.height / window.devicePixelRatio;
+
+  gridCols = Math.ceil(width / spacing) + 3;
+  gridRows = Math.ceil(height / spacing) + 3;
+  points = new Array(gridCols * gridRows);
+
+  for (let row = 0; row < gridRows; row++) {
+    for (let col = 0; col < gridCols; col++) {
+      const index = row * gridCols + col;
+      points[index] = {
+        baseX: col * spacing - spacing,
+        baseY: row * spacing - spacing,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.35 + Math.random() * 0.55,
+        amp: 8 + Math.random() * 12,
+      };
+    }
+  }
+}
+
+function resize() {
+  const { innerWidth, innerHeight, devicePixelRatio } = window;
+  canvas.width = innerWidth * devicePixelRatio;
+  canvas.height = innerHeight * devicePixelRatio;
+  canvas.style.width = `${innerWidth}px`;
+  canvas.style.height = `${innerHeight}px`;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  createGrid();
+}
+
+function draw(time) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(31, 26, 23, 0.08)';
+
+  const now = time * 0.001;
+  const tension = 0.45;
+
+  for (let row = 0; row < gridRows; row++) {
+    for (let col = 0; col < gridCols; col++) {
+      const index = row * gridCols + col;
+      const p = points[index];
+      const x = p.baseX + Math.sin(now * p.speed + p.phase) * p.amp;
+      const y = p.baseY + Math.cos(now * p.speed + p.phase) * p.amp;
+
+      // horizontal line
+      if (col < gridCols - 1) {
+        const right = points[index + 1];
+        const rx = right.baseX + Math.sin(now * right.speed + right.phase) * right.amp * tension;
+        const ry = right.baseY + Math.cos(now * right.speed + right.phase) * right.amp * tension;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(rx, ry);
+        ctx.stroke();
       }
-    });
+
+      // vertical line
+      if (row < gridRows - 1) {
+        const below = points[index + gridCols];
+        const bx = below.baseX + Math.sin(now * below.speed + below.phase) * below.amp * tension;
+        const by = below.baseY + Math.cos(now * below.speed + below.phase) * below.amp * tension;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
+      }
+    }
+  }
+
+  ctx.restore();
+  requestAnimationFrame(draw);
+}
+
+function animateReveals() {
+  const reveals = document.querySelectorAll('.reveal');
+  reveals.forEach((el, index) => {
+    setTimeout(() => {
+      el.classList.add('is-visible');
+    }, 320 + index * 180);
   });
+}
 
-  // Reveal on scroll
-  const revealEls = document.querySelectorAll(".reveal");
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    },
-    {
-      threshold: 0.18,
-      rootMargin: "0px 0px -10% 0px",
-    }
-  );
-  revealEls.forEach((el) => revealObserver.observe(el));
-
-  // Carousel logic
-  const track = document.getElementById("carousel-track");
-  const slides = track ? Array.from(track.children) : [];
-  const prevBtn = document.getElementById("prev-slide");
-  const nextBtn = document.getElementById("next-slide");
-  const indexLabel = document.getElementById("carousel-index");
-  const progressBar = document.getElementById("carousel-progress");
-  const dotsContainer = document.getElementById("carousel-dots");
-  const dots = [];
-
-  let currentIndex = 0;
-  const totalSlides = slides.length;
-  let autoTimer = null;
-  const autoDelay = 9000;
-
-  const updateCarousel = () => {
-    if (!track) return;
-
-    const offset = -currentIndex * 100;
-    track.style.transform = `translateX(${offset}%)`;
-
-    slides.forEach((slide, idx) => {
-      slide.classList.toggle("is-active", idx === currentIndex);
-    });
-
-    if (indexLabel) {
-      const humanIndex = String(currentIndex + 1).padStart(2, "0");
-      const humanTotal = String(totalSlides).padStart(2, "0");
-      indexLabel.textContent = `${humanIndex} / ${humanTotal}`;
-    }
-
-    if (progressBar) {
-      const fraction = totalSlides > 0 ? (currentIndex + 1) / totalSlides : 0;
-      progressBar.style.transform = `scaleX(${fraction})`;
-    }
-
-    dots.forEach((dot, idx) => {
-      dot.classList.toggle("is-active", idx === currentIndex);
-      dot.setAttribute("aria-current", idx === currentIndex ? "true" : "false");
-    });
-  };
-
-  const goToSlide = (index) => {
-    if (!track) return;
-    currentIndex = (index + totalSlides) % totalSlides;
-    updateCarousel();
-  };
-
-  const goToNext = () => goToSlide(currentIndex + 1);
-  const goToPrev = () => goToSlide(currentIndex - 1);
-
-  // Build dots
-  if (dotsContainer && totalSlides > 0) {
-    slides.forEach((_, idx) => {
-      const dot = document.createElement("button");
-      dot.className = "carousel-dot";
-      dot.type = "button";
-      dot.setAttribute("aria-label", `Go to slide ${idx + 1}`);
-      dot.addEventListener("click", () => {
-        goToSlide(idx);
-        startAuto();
-      });
-      dotsContainer.appendChild(dot);
-      dots.push(dot);
-    });
-  }
-
-  // Auto play
-  const startAuto = () => {
-    if (autoTimer) window.clearInterval(autoTimer);
-    autoTimer = window.setInterval(goToNext, autoDelay);
-  };
-
-  const stopAuto = () => {
-    if (autoTimer) window.clearInterval(autoTimer);
-  };
-
-  if (totalSlides > 0) {
-    updateCarousel();
-    startAuto();
-
-    prevBtn?.addEventListener("click", () => {
-      goToPrev();
-      startAuto();
-    });
-
-    nextBtn?.addEventListener("click", () => {
-      goToNext();
-      startAuto();
-    });
-
-    const carouselShell = document.querySelector(".carousel-shell");
-    if (carouselShell) {
-      ["mouseenter", "focusin"].forEach((evt) =>
-        carouselShell.addEventListener(evt, stopAuto)
-      );
-      ["mouseleave", "focusout"].forEach((evt) =>
-        carouselShell.addEventListener(evt, startAuto)
-      );
-    }
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") {
-        goToNext();
-        startAuto();
-      }
-      if (event.key === "ArrowLeft") {
-        goToPrev();
-        startAuto();
-      }
-    });
-  }
+window.addEventListener('resize', resize);
+window.addEventListener('DOMContentLoaded', () => {
+  resize();
+  requestAnimationFrame(draw);
+  animateReveals();
 });
