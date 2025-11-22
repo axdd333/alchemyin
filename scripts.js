@@ -430,6 +430,8 @@ class DepthView {
     }
 }
 
+/* ... [KEEP ALL EXISTING JAVASCRIPT ABOVE THIS LINE] ... */
+
 /* ---------- APP ORCHESTRATOR ---------- */
 
 class AlchemyApp {
@@ -466,8 +468,8 @@ class AlchemyApp {
             }
         });
 
-        /* header element for logo state */
-        this.header = document.querySelector('.header-layer');
+        /* header element for logo state (no longer needed for class toggling) */
+        // this.header = document.querySelector('.header-layer');
 
         window.addEventListener('hashchange', () => this.handleHash());
         document.addEventListener('keydown', (e) => {
@@ -479,10 +481,7 @@ class AlchemyApp {
         this.handleHash(); // initial load
     }
 
-    setHeaderCompact(isCompact) {
-        if (!this.header) return;
-        this.header.classList.toggle('header-layer--compact', isCompact);
-    }
+    // REMOVED: setHeaderCompact is no longer necessary as CSS uses body classes.
 
     handleHash() {
         const raw = window.location.hash.replace(/^#/, '').trim();
@@ -491,6 +490,7 @@ class AlchemyApp {
             this.goIdle();
             return;
         }
+// ... (rest of handleHash remains the same)
 
         // Document route: #doc/<id>
         if (raw.startsWith('doc/')) {
@@ -519,10 +519,10 @@ class AlchemyApp {
         this.state.docId = null;
 
         this.nav.clearActive();
-        if (this.chambers) this.chambers.close();
-        if (this.depthView) this.depthView.close();
+        if (this.chambers) this.chambers.close(); // ChamberPanel.close removes .chamber-open
+        if (this.depthView) this.depthView.close(); // DepthView.close removes .depth-open
 
-        this.setHeaderCompact(false);   // big elegant logo
+        // this.setHeaderCompact(false); // REMOVED
     }
 
     openChamber(key) {
@@ -534,9 +534,9 @@ class AlchemyApp {
 
         if (this.depthView) this.depthView.close();
         this.nav.setActiveByChamber(key);
-        this.chambers.open(key);
+        this.chambers.open(key); // ChamberPanel.open adds .chamber-open
 
-        this.setHeaderCompact(true);    // small caption logo
+        // this.setHeaderCompact(true); // REMOVED
     }
 
     openDocument(id) {
@@ -548,9 +548,9 @@ class AlchemyApp {
 
         if (this.chambers) this.chambers.close();
         this.nav.clearActive();
-        this.depthView.open(id);
+        this.depthView.open(id); // DepthView.open adds .depth-open
 
-        this.setHeaderCompact(true);    // small caption logo
+        // this.setHeaderCompact(true); // REMOVED
     }
 }
 
