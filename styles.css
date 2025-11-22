@@ -23,12 +23,29 @@ html, body {
 }
 
 body {
-    font-family: 'Inter', sans-serif; /* Clean baseline */
+    font-family: 'Inter', sans-serif;
     color: var(--ink);
-    cursor: crosshair; /* Precision cursor */
+    cursor: crosshair;
 }
 
-/* Texture: The "Grain" of Reality */
+/* --- LOADER (The Veil) --- */
+#loader {
+    position: fixed;
+    inset: 0;
+    background-color: var(--void-bg);
+    z-index: 100; /* Above everything */
+    transition: opacity 1.5s ease-in-out, visibility 1.5s;
+    opacity: 1;
+    visibility: visible;
+}
+
+#loader.loaded {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* --- TEXTURE --- */
 .noise-overlay {
     position: fixed;
     inset: 0;
@@ -38,7 +55,7 @@ body {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* --- TOP HEADER (The Authority) --- */
+/* --- HEADER --- */
 .header-layer {
     position: fixed;
     top: 5vh;
@@ -47,16 +64,16 @@ body {
     text-align: center;
     z-index: 10;
     pointer-events: none;
-    mix-blend-mode: difference; /* Reacts to the 3D behind it */
-    color: #fff; /* Inverted by difference mode */
+    mix-blend-mode: difference;
+    color: #fff;
 }
 
 .brand-mark {
     font-family: 'Bodoni Moda', serif;
     font-style: italic;
-    font-weight: 400;
+    font-weight: 500; /* Refined for legibility */
     font-size: clamp(2rem, 3vw, 3rem);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     margin-bottom: 0.2rem;
     opacity: 0;
     animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
@@ -71,7 +88,7 @@ body {
     animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.7s;
 }
 
-/* --- BOTTOM NAV (The Foundation) --- */
+/* --- NAV --- */
 .nav-layer {
     position: fixed;
     bottom: 6vh;
@@ -102,7 +119,6 @@ body {
     padding: 10px 0;
 }
 
-/* Hover Effect: The Glitch of Awareness */
 .link:hover {
     opacity: 1;
     letter-spacing: 0.3em;
@@ -124,7 +140,7 @@ body {
     width: 100%;
 }
 
-/* --- THE ARTIFACT (Canvas) --- */
+/* --- VIEWPORT --- */
 .viewport {
     position: fixed;
     inset: 0;
@@ -137,115 +153,6 @@ body {
     height: 100%;
     outline: none;
 }
-body {
-  background: #f7f3eb;
-  color: #111;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    sans-serif;
-}
-
-/* Hero layout */
-
-.hero {
-  position: relative;
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.hero-inner {
-  position: relative;
-  text-align: center;
-  z-index: 1;
-  padding: 4rem 1.5rem;
-}
-
-/* Temple mark */
-
-.temple-mark {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.temple-mark .arch {
-  display: block;
-  width: 5rem;
-  height: 2.6rem;
-  border: 1.5px solid #111;
-  border-bottom: none;
-  border-radius: 999px 999px 0 0;
-}
-
-.temple-mark .pillars {
-  position: relative;
-  display: block;
-  width: 4rem;
-  height: 2.6rem;
-  margin-top: 0.25rem;
-}
-
-.temple-mark .pillars::before,
-.temple-mark .pillars::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1.2px;
-  background: #111;
-}
-
-.temple-mark .pillars::before {
-  left: 0;
-}
-
-.temple-mark .pillars::after {
-  right: 0;
-}
-
-.hero-title {
-  font-family: "Playfair Display", "Times New Roman", serif;
-  font-weight: 400;
-  font-size: clamp(1.7rem, 2vw + 1rem, 2.2rem);
-  letter-spacing: 0.06em;
-  margin-bottom: 0.75rem;
-}
-
-.hero-subtitle {
-  max-width: 32rem;
-  margin: 0 auto;
-  font-size: 0.9rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.5);
-}
-
-/* Subtle paper noise (optional) */
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.35;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.13'/%3E%3C/svg%3E");
-}
-
-/* Canvas background */
-
-#wisdom-field {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  opacity: 0.4;
-}
-
 
 @keyframes fadeDescend {
     from { opacity: 0; transform: translateY(-20px); }
