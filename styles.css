@@ -118,6 +118,21 @@ body {
     opacity: 0;
     animation: fadeDescend 1.5s var(--ease-out) forwards 0.7s;
 }
+/* Header compacts when a chamber is open */
+body.chamber-open .brand-mark,
+body.depth-open .brand-mark {
+    font-size: 1.4rem;          /* smaller */
+    font-style: normal;         /* lose the italic drama */
+    letter-spacing: 0.12em;     /* more “caption” feel */
+    text-transform: uppercase;
+}
+
+body.chamber-open .brand-sub,
+body.depth-open .brand-sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    opacity: 0.8;               /* still visible, but subordinate */
+}
 
 /* BOTTOM NAV */
 
