@@ -1,311 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Alchemy Industries</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Alchemy Industries — a studio for ultra-minimal, future-facing systems." />
-  <link rel="stylesheet" href="styles.css" />
-
-  <!-- Typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&display=swap"
-    rel="stylesheet"
-  >
-</head>
-<body>
-  <div class="site">
-
-    <!-- Top navigation -->
-    <header class="top-bar">
-      <div class="shell top-bar-inner">
-        <div class="logo-mark">
-          <span class="logo-word">Alchemy</span>
-          <span class="logo-word muted">Industries</span>
-        </div>
-        <nav class="nav">
-          <a href="#about" class="nav-link">About</a>
-          <a href="#practice" class="nav-link">Practice</a>
-          <a href="#experiments" class="nav-link">Experiments</a>
-          <a href="#contact" class="nav-link">Contact</a>
-        </nav>
-      </div>
-    </header>
-
-    <main>
-
-      <!-- Hero -->
-      <section class="section hero" id="hero">
-        <div class="shell hero-grid">
-          <div class="hero-primary reveal">
-            <p class="eyebrow">Studio / Interface / Systems</p>
-            <h1 class="hero-title">
-              Future-facing<br />
-              systems, quietly<br />
-              engineered.
-            </h1>
-          </div>
-          <div class="hero-secondary reveal">
-            <p class="hero-body">
-              Alchemy Industries is a small design and technology practice
-              working at the edge of brands, interfaces, and product systems.
-              We remove friction until only the signal remains.
-            </p>
-            <div class="hero-meta-row">
-              <div class="hero-meta-block">
-                <span class="meta-label">Focus</span>
-                <span class="meta-value">Digital product, brand, interface</span>
-              </div>
-              <div class="hero-meta-block">
-                <span class="meta-label">Model</span>
-                <span class="meta-value">Selective, project-based.</span>
-              </div>
-            </div>
-            <button class="btn primary" data-scroll="#practice">
-              Enter practice
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- About -->
-      <section class="section" id="about">
-        <div class="shell layout-split">
-          <div class="column-label reveal">
-            <p class="section-label">About</p>
-          </div>
-          <div class="column-main reveal">
-            <h2 class="section-title">
-              A studio for controlled evolution.
-            </h2>
-            <p class="section-body">
-              We operate in the space between strategy, design, and engineering —
-              translating abstract ambition into precise interfaces and brand systems.
-              No templates, no decoration. Just work that feels inevitable once you see it.
-            </p>
-            <p class="section-body subtle">
-              Each engagement is intentionally small and focused. We collaborate with founders,
-              product leaders, and teams who care about detail at the atomic level.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Practice / capabilities -->
-      <section class="section" id="practice">
-        <div class="shell layout-split">
-          <div class="column-label reveal">
-            <p class="section-label">Practice</p>
-          </div>
-          <div class="column-main">
-            <div class="grid-tiles">
-              <article class="tile reveal">
-                <div class="tile-header">
-                  <span class="tile-label">01</span>
-                  <h3 class="tile-title">Interface systems</h3>
-                </div>
-                <p class="tile-body">
-                  Design systems, product UI, and interaction patterns for web and software.
-                  High-contrast, minimal surfaces that scale without visual noise.
-                </p>
-                <ul class="bullet-list">
-                  <li>Design systems & pattern libraries</li>
-                  <li>Application UI & data-heavy views</li>
-                  <li>Interactive prototypes</li>
-                </ul>
-              </article>
-
-              <article class="tile reveal">
-                <div class="tile-header">
-                  <span class="tile-label">02</span>
-                  <h3 class="tile-title">Brand architecture</h3>
-                </div>
-                <p class="tile-body">
-                  Visual identities and typographic systems for products and studios with long horizons.
-                  Calm, confident, and built to outlast trends.
-                </p>
-                <ul class="bullet-list">
-                  <li>Visual identity & logotypes</li>
-                  <li>Typography & grids</li>
-                  <li>Digital brand guidelines</li>
-                </ul>
-              </article>
-
-              <article class="tile reveal">
-                <div class="tile-header">
-                  <span class="tile-label">03</span>
-                  <h3 class="tile-title">Experiments & research</h3>
-                </div>
-                <p class="tile-body">
-                  Self-initiated and collaborative experiments that explore interaction, motion,
-                  and speculative product directions.
-                </p>
-                <ul class="bullet-list">
-                  <li>Concept interfaces & demos</li>
-                  <li>Motion and microinteraction studies</li>
-                  <li>Futures & narrative prototypes</li>
-                </ul>
-              </article>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Experiments carousel -->
-      <section class="section" id="experiments">
-        <div class="shell layout-split">
-          <div class="column-label reveal">
-            <p class="section-label">Experiments</p>
-          </div>
-
-          <div class="column-main">
-            <div class="carousel-shell reveal" aria-label="Selected work">
-              <div class="carousel-header">
-                <h2 class="section-title small">Selected interfaces & studies.</h2>
-                <div class="carousel-meta">
-                  <span class="carousel-index" id="carousel-index">01 / 03</span>
-                </div>
-              </div>
-
-              <div class="carousel-viewport">
-                <div class="carousel-track" id="carousel-track">
-                  <!-- Slide 1 -->
-                  <article class="carousel-slide is-active">
-                    <div class="badge-row">
-                      <span class="badge">Concept study</span>
-                      <span class="badge-soft">Stealth AI product</span>
-                    </div>
-                    <h3 class="carousel-title">WHITE NOISE</h3>
-                    <p class="carousel-lead">
-                      A frictionless interface for a signal-only AI workspace.
-                    </p>
-                    <p class="carousel-body">
-                      We removed traditional frames and chrome, designing a typography-first surface
-                      where hierarchy comes from motion, spacing, and light shifts rather than color.
-                    </p>
-                    <ul class="carousel-list">
-                      <li>Non-intrusive system status language</li>
-                      <li>Ambient motion for focus & flow</li>
-                      <li>Responsive grid tuned for dense inputs</li>
-                    </ul>
-                  </article>
-
-                  <!-- Slide 2 -->
-                  <article class="carousel-slide">
-                    <div class="badge-row">
-                      <span class="badge">Identity & system</span>
-                      <span class="badge-soft">Research collective</span>
-                    </div>
-                    <h3 class="carousel-title">LABORATORY X</h3>
-                    <p class="carousel-lead">
-                      A monochrome brand system for a distributed research group.
-                    </p>
-                    <p class="carousel-body">
-                      Built around a strict grid and a single weight of grotesk type, the system
-                      flexes from dense publications to lightweight product UIs without losing its voice.
-                    </p>
-                    <ul class="carousel-list">
-                      <li>Type-only wordmark and motion signature</li>
-                      <li>Print & interface alignment from one core grid</li>
-                      <li>Generative layout templates for long-form content</li>
-                    </ul>
-                  </article>
-
-                  <!-- Slide 3 -->
-                  <article class="carousel-slide">
-                    <div class="badge-row">
-                      <span class="badge">Interface framework</span>
-                      <span class="badge-soft">Data / dashboards</span>
-                    </div>
-                    <h3 class="carousel-title">NEBULA FRAME</h3>
-                    <p class="carousel-lead">
-                      A modular dashboard language for volatile, high-frequency data.
-                    </p>
-                    <p class="carousel-body">
-                      Nebula Frame treats each metric as a moving actor in a shared field,
-                      rather than a chart on a wall. Components reflow as conditions change,
-                      preserving orientation and context.
-                    </p>
-                    <ul class="carousel-list">
-                      <li>Component library for live data tiles</li>
-                      <li>Motion rules for entering / exiting metrics</li>
-                      <li>Dark and light modes sharing one structural logic</li>
-                    </ul>
-                  </article>
-                </div>
-              </div>
-
-              <div class="carousel-footer">
-                <div class="carousel-controls" aria-label="Carousel controls">
-                  <button class="circle-btn" id="prev-slide" aria-label="Previous project">
-                    ←
-                  </button>
-                  <button class="circle-btn" id="next-slide" aria-label="Next project">
-                    → 
-                  </button>
-                </div>
-                <div class="carousel-progress">
-                  <div class="carousel-progress-bar" id="carousel-progress"></div>
-                </div>
-              </div>
-            </div>
-
-            <p class="section-footnote reveal">
-              Additional work and in-progress studies available on request.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Contact -->
-      <section class="section" id="contact">
-        <div class="shell layout-split">
-          <div class="column-label reveal">
-            <p class="section-label">Contact</p>
-          </div>
-          <div class="column-main reveal">
-            <h2 class="section-title">
-              Open to a small number of new collaborations.
-            </h2>
-            <p class="section-body">
-              Share a short outline of what you are building, why it matters, and your timeline.
-              If it aligns with our practice, we will respond with a considered way forward —
-              not a template deck.
-            </p>
-
-            <div class="contact-box">
-              <a href="mailto:alchemy@example.com" class="contact-email">
-                alchemy@example.com
-              </a>
-              <div class="contact-notes">
-                <span>Helpful to include:</span>
-                <ul>
-                  <li>Two–three sentences on the product or initiative</li>
-                  <li>Relevant links or prototypes</li>
-                  <li>Rough timing and constraints</li>
-                </ul>
-              </div>
-            </div>
-
-            <p class="micro-copy">
-              Based online, collaborating across time zones.
-            </p>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <footer class="footer">
-      <div class="shell footer-inner">
-        <span class="footer-text">© <span id="year"></span> Alchemy Industries</span>
-        <span class="footer-text faded">Quietly operating in the background.</span>
-      </div>
-    </footer>
-  </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
+diff --git a/index.html b/index.html
+index 91e83665f3835cf988ba09c1fa5d4c6eea57d5c3..5d72a172aef52a2d1fd3eba0e63c0231c5680856 100644
+--- a/index.html
++++ b/index.html
+@@ -147,50 +147,59 @@
+                   <li>Motion and microinteraction studies</li>
+                   <li>Futures & narrative prototypes</li>
+                 </ul>
+               </article>
+             </div>
+           </div>
+         </div>
+       </section>
+ 
+       <!-- Experiments carousel -->
+       <section class="section" id="experiments">
+         <div class="shell layout-split">
+           <div class="column-label reveal">
+             <p class="section-label">Experiments</p>
+           </div>
+ 
+           <div class="column-main">
+             <div class="carousel-shell reveal" aria-label="Selected work">
+               <div class="carousel-header">
+                 <h2 class="section-title small">Selected interfaces & studies.</h2>
+                 <div class="carousel-meta">
+                   <span class="carousel-index" id="carousel-index">01 / 03</span>
+                 </div>
+               </div>
+ 
++              <div class="carousel-chrome" aria-label="Carousel status">
++                <span class="chrome-pill">Signal library</span>
++                <div class="chrome-datum">
++                  <span class="dot live" aria-hidden="true"></span>
++                  <span class="chrome-label">Auto-play on</span>
++                </div>
++                <div class="chrome-datum">Keyboard & hover aware</div>
++              </div>
++
+               <div class="carousel-viewport">
+                 <div class="carousel-track" id="carousel-track">
+                   <!-- Slide 1 -->
+                   <article class="carousel-slide is-active">
+                     <div class="badge-row">
+                       <span class="badge">Concept study</span>
+                       <span class="badge-soft">Stealth AI product</span>
+                     </div>
+                     <h3 class="carousel-title">WHITE NOISE</h3>
+                     <p class="carousel-lead">
+                       A frictionless interface for a signal-only AI workspace.
+                     </p>
+                     <p class="carousel-body">
+                       We removed traditional frames and chrome, designing a typography-first surface
+                       where hierarchy comes from motion, spacing, and light shifts rather than color.
+                     </p>
+                     <ul class="carousel-list">
+                       <li>Non-intrusive system status language</li>
+                       <li>Ambient motion for focus & flow</li>
+                       <li>Responsive grid tuned for dense inputs</li>
+                     </ul>
+                   </article>
+ 
+                   <!-- Slide 2 -->
+                   <article class="carousel-slide">
+@@ -213,65 +222,68 @@
+                     </ul>
+                   </article>
+ 
+                   <!-- Slide 3 -->
+                   <article class="carousel-slide">
+                     <div class="badge-row">
+                       <span class="badge">Interface framework</span>
+                       <span class="badge-soft">Data / dashboards</span>
+                     </div>
+                     <h3 class="carousel-title">NEBULA FRAME</h3>
+                     <p class="carousel-lead">
+                       A modular dashboard language for volatile, high-frequency data.
+                     </p>
+                     <p class="carousel-body">
+                       Nebula Frame treats each metric as a moving actor in a shared field,
+                       rather than a chart on a wall. Components reflow as conditions change,
+                       preserving orientation and context.
+                     </p>
+                     <ul class="carousel-list">
+                       <li>Component library for live data tiles</li>
+                       <li>Motion rules for entering / exiting metrics</li>
+                       <li>Dark and light modes sharing one structural logic</li>
+                     </ul>
+                   </article>
+                 </div>
++                <div class="carousel-dots" id="carousel-dots" aria-label="Slide selection"></div>
+               </div>
+ 
+               <div class="carousel-footer">
+                 <div class="carousel-controls" aria-label="Carousel controls">
+                   <button class="circle-btn" id="prev-slide" aria-label="Previous project">
+                     ←
+                   </button>
+                   <button class="circle-btn" id="next-slide" aria-label="Next project">
+                     → 
+                   </button>
+                 </div>
+                 <div class="carousel-progress">
+                   <div class="carousel-progress-bar" id="carousel-progress"></div>
+                 </div>
+               </div>
++
++              <p class="carousel-hint">Hover to pause, tap arrows or use ← → to explore.</p>
+             </div>
+ 
+             <p class="section-footnote reveal">
+               Additional work and in-progress studies available on request.
+             </p>
+           </div>
+         </div>
+       </section>
+ 
+       <!-- Contact -->
+       <section class="section" id="contact">
+         <div class="shell layout-split">
+           <div class="column-label reveal">
+             <p class="section-label">Contact</p>
+           </div>
+           <div class="column-main reveal">
+             <h2 class="section-title">
+               Open to a small number of new collaborations.
+             </h2>
+             <p class="section-body">
+               Share a short outline of what you are building, why it matters, and your timeline.
+               If it aligns with our practice, we will respond with a considered way forward —
+               not a template deck.
+             </p>
+ 
