@@ -167,6 +167,31 @@ body.depth-open .brand-sub {
     letter-spacing: 0.26em;
     opacity: 0.85;
 }
+/* Smooth transition between logo states */
+.brand-mark,
+.brand-sub {
+    transition:
+        font-size 0.35s var(--ease-out),
+        letter-spacing 0.35s var(--ease-out),
+        font-style 0.35s var(--ease-out),
+        text-transform 0.35s var(--ease-out),
+        opacity 0.3s ease;
+}
+
+/* Header becomes a small caption when working */
+.header-layer--compact .brand-mark {
+    font-size: 1.35rem !important;
+    font-style: normal !important;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.header-layer--compact .brand-sub {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.26em;
+    opacity: 0.85;
+}
+
 
 
 /* BOTTOM NAV */
