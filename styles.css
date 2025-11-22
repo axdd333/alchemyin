@@ -80,90 +80,104 @@ body {
     opacity: 0.35;
     mix-blend-mode: multiply;
 }
-/* HEADER */
 
-/* ... [KEEP ALL EXISTING CSS ABOVE THIS LINE] ... */
-
-/* HEADER */
+/* ========================================
+   HEADER & LOGO STATES (THE OCD FIX)
+   ========================================
+*/
 
 .header-layer {
     position: fixed;
     top: calc(3.5 * var(--unit));
     left: 0;
     width: 100%;
-    z-index: 10;
+    z-index: 60; /* Higher than panels (20/25) */
     pointer-events: none;
     text-align: center;
+    
+    /* Default Hero State: White, Blend Mode Difference */
+    color: #ffffff; 
     mix-blend-mode: difference;
-    color: #ffffff;
+    
     transition:
-        transform 0.4s var(--ease-out),
+        transform 0.5s var(--ease-out),
+        color 0.3s ease,
         opacity 0.3s ease;
 }
 
-/* if you don't have this wrapper, it's fine */
 .header-inner {
     display: inline-block;
     padding-inline: calc(var(--unit) * 0.75);
 }
 
-/* HERO STATE (no overlays – what you have in screenshot 1) */
-
 .brand-mark {
     font-family: 'Bodoni Moda', serif;
     font-style: italic;
     font-weight: 400;
-    font-size: clamp(2.2rem, 3vw, 3rem);  /* big, elegant */
+    font-size: clamp(2.2rem, 3vw, 3rem);
     letter-spacing: -0.02em;
     margin-bottom: 0.2rem;
+    
+    /* Animation for initial load */
     opacity: 0;
     animation: fadeDescend 1.5s var(--ease-out) forwards 0.5s;
+
+    /* Transition for state change */
+    transition:
+        font-size 0.4s var(--ease-out),
+        letter-spacing 0.4s var(--ease-out),
+        margin 0.4s var(--ease-out);
 }
 
 .brand-sub {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.3em;
+    
     opacity: 0;
     animation: fadeDescend 1.5s var(--ease-out) forwards 0.7s;
-}
 
-/* smooth interpolation between states */
-
-.brand-mark,
-.brand-sub {
     transition:
-        font-size 0.35s var(--ease-out),
-        letter-spacing 0.35s var(--ease-out),
-        font-style 0.35s var(--ease-out),
-        opacity 0.3s ease;
+        font-size 0.4s var(--ease-out),
+        letter-spacing 0.4s var(--ease-out),
+        opacity 0.4s var(--ease-out);
 }
 
-/* ───── COMPACT STATE: anytime a card or depth view is open ───── */
+/* ----------------------------------------
+   COMPACT STATE (When Card is Open)
+   ----------------------------------------
+   Triggered by body classes: .chamber-open or .depth-open
+*/
 
 body.chamber-open .header-layer,
 body.depth-open .header-layer {
-    transform: translateY(-0.8rem);  /* just a slight lift */
-    mix-blend-mode: normal; /* Restore to normal blending over the light card */
-    color: var(--ink); /* Change color to match the light background */
+    /* Slide up slightly */
+    transform: translateY(-20px);
+    
+    /* Turn OFF difference mode so it sits cleanly on the paper card */
+    mix-blend-mode: normal;
+    
+    /* Turn BLACK (Ink) to be visible on paper */
+    color: var(--ink);
 }
 
 body.chamber-open .brand-mark,
 body.depth-open .brand-mark {
-    font-size: 1.4rem !important;    /* smaller */
-    font-style: normal !important;   /* NOT italic: A subtle shift from "elegant" to "institutional" */
-    letter-spacing: 0.06em !important;
-    margin-bottom: 0.1rem !important; /* Tighten up the spacing */
+    /* Force the "Institutional" Look */
+    font-size: 1.5rem !important;
+    font-style: normal !important; /* Removes Italic */
+    letter-spacing: 0.05em !important; /* Tighter tracking */
+    margin-bottom: 0px !important;
 }
 
 body.chamber-open .brand-sub,
 body.depth-open .brand-sub {
-    font-size: 0.65rem !important;
-    letter-spacing: 0.24em !important; /* Slightly reduced tracking */
-    opacity: 0.9 !important;
+    font-size: 0.6rem !important;
+    letter-spacing: 0.15em !important;
+    opacity: 0.6 !important;
 }
 
-/* ... [KEEP ALL EXISTING CSS BELOW THIS LINE] ... */
+/* ======================================== */
 
 /* BOTTOM NAV */
 
@@ -233,7 +247,8 @@ body.depth-open .brand-sub {
 
 body.chamber-open .nav-layer,
 body.chamber-open .header-layer {
-    opacity: 0.78;
+    /* We handle header opacity in the specific header block now, 
+       so only dim nav here if you want */
 }
 
 body.chamber-open .noise-overlay {
@@ -258,7 +273,7 @@ body.chamber-open .noise-overlay {
 
 body.chamber-open #artifact-canvas,
 body.depth-open #artifact-canvas {
-    opacity: 0.7;
+    opacity: 0.4; /* Dim background more so card pops */
 }
 
 /* CHAMBER PANEL */
@@ -463,13 +478,6 @@ body.depth-open #artifact-canvas {
     margin-top: 0.7rem;
 }
 
-/* BODY STATE FLAG FOR DEPTH */
-
-body.depth-open .nav-layer,
-body.depth-open .header-layer {
-    opacity: 0.7;
-}
-
 /* Animations */
 
 @keyframes fadeDescend {
@@ -500,11 +508,4 @@ body.depth-open .header-layer {
         max-height: calc(100vh - 2 * var(--unit));
         padding: calc(var(--unit) * 0.7);
     }
-    @media (max-width: 768px) {
-    body:not(.chamber-open):not(.depth-open) .brand-mark {
-        font-size: 1.9rem;
-    }
-    /* …keep your existing mobile rules… */
-}
-
 }
