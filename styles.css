@@ -1,252 +1,235 @@
 :root {
-    /* Palette */
-    --void-bg: #EAE8E3; /* Bone / cold limestone */
-    --void-fog: #EAE8E3; 
-    --ink: #0F0F0F;
-    --ink-sub: rgba(15, 15, 15, 0.4);
-
-    /* Dimensions */
-    --nav-height: 120px;
+  --bg: #eae8e3;          /* stone */
+  --ink: #111111;
+  --ink-soft: rgba(17, 17, 17, 0.45);
 }
 
 /* Reset */
 
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    background-color: var(--void-bg);
-}
-
-/* We scroll inside the viewport/content, not the whole document */
+html,
 body {
-    font-family: 'Inter', sans-serif;
-    color: var(--ink);
-    cursor: crosshair;
-    overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg);
 }
 
-/* Texture: the grain */
+/* Body */
+
+body {
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--ink);
+  overflow: hidden; /* we scroll inside .content-column instead */
+}
+
+/* Grain overlay */
 
 .noise-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    opacity: 0.06;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.06;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Top header */
+/* Top inscription */
 
 .header-layer {
-    position: fixed;
-    top: 5vh;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    z-index: 10;
-    pointer-events: none;
-    mix-blend-mode: difference;
-    color: #fff;
+  position: fixed;
+  top: 5vh;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 5;
 }
 
 .brand-mark {
-    font-family: 'Bodoni Moda', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(2rem, 3vw, 3rem);
-    letter-spacing: -0.02em;
-    margin-bottom: 0.2rem;
-    opacity: 0;
-    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+  font-family: "Bodoni Moda", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2rem, 3vw, 3rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.2rem;
 }
 
 .brand-sub {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    opacity: 0;
-    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.7s;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
 }
 
 /* Bottom nav */
 
 .nav-layer {
-    position: fixed;
-    bottom: 6vh;
-    left: 0;
-    width: 100%;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
+  position: fixed;
+  bottom: 5vh;
+  left: 0;
+  width: 100%;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
 }
 
 .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 6vw;
+  list-style: none;
+  display: flex;
+  gap: 5vw;
 }
 
 .link {
-    text-decoration: none;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--ink);
-    opacity: 0.4;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    padding: 10px 0;
-}
-
-/* Hover effect */
-
-.link:hover {
-    opacity: 1;
-    letter-spacing: 0.3em;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--ink-soft);
+  padding-bottom: 0.25rem;
+  position: relative;
+  transition: color 0.3s ease, letter-spacing 0.3s ease;
 }
 
 .link::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    width: 0;
-    height: 1px;
-    background: var(--ink);
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    transform: translateX(-50%);
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--ink);
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.link:hover {
+  color: var(--ink);
+  letter-spacing: 0.28em;
 }
 
 .link:hover::after {
-    width: 100%;
+  width: 100%;
 }
 
-/* Viewport and artifact canvas */
+/* Main viewport */
 
 .viewport {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  z-index: 2;
 }
+
+/* Artifact canvas in the back */
 
 #artifact-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    outline: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+  z-index: 2;
 }
 
-/* Content column (four chambers) */
+/* Central content column */
 
 .content-column {
-    position: relative;
-    z-index: 5;
-    pointer-events: auto;
-    max-width: 720px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 22vh 2.5rem 18vh; /* leave room for header and nav */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 3;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 22vh 2.5rem 16vh; /* space for header + nav */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox hide */
+}
+
+.content-column::-webkit-scrollbar {
+  display: none; /* Chrome hide */
 }
 
 /* Sections */
 
 .section {
-    padding: 2.5rem 0;
-    border-top: 1px solid rgba(15, 15, 15, 0.1);
+  padding: 2.4rem 0;
+  border-top: 0.5px solid rgba(0, 0, 0, 0.08);
 }
 
 .section:first-of-type {
-    border-top: none;
+  border-top: none;
 }
 
 .section-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.24em;
-    color: var(--ink-sub);
-    margin-bottom: 0.6rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--ink-soft);
+  margin-bottom: 0.7rem;
 }
 
 .section-title {
-    font-family: 'Bodoni Moda', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: 1.7rem;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.8rem;
+  font-family: "Bodoni Moda", serif;
+  font-weight: 400;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.85rem;
+}
+
+.section-title--italic {
+  font-style: italic;
 }
 
 .section-body {
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: var(--ink);
-    max-width: 40rem;
-    margin-bottom: 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  max-width: 40rem;
+  color: var(--ink);
+  margin-bottom: 0.9rem;
 }
 
-/* Intro and outro tweaks */
+/* Oracle chamber: slightly different feel */
 
-.section--intro .section-title {
-    font-size: 1.5rem;
+.section--oracle .section-title {
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-style: normal;
 }
 
 .section--outro {
-    padding-bottom: 0;
+  padding-bottom: 0;
 }
 
-/* Oracle chamber slightly different tone */
-
-.section--oracle .section-title {
-    font-style: normal;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-size: 1rem;
-}
-
-.section--oracle .section-body {
-    color: rgba(15, 15, 15, 0.9);
-}
-
-/* Animations */
-
-@keyframes fadeDescend {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive */
+/* Responsive tweaks */
 
 @media (max-width: 768px) {
-    .nav-links {
-        gap: 2.8vw;
-    }
+  .brand-mark {
+    font-size: 1.9rem;
+  }
 
-    .content-column {
-        padding: 18vh 1.5rem 16vh;
-    }
+  .nav-links {
+    gap: 2.5vw;
+  }
 
-    .section {
-        padding: 2rem 0;
-    }
+  .content-column {
+    padding: 18vh 1.6rem 14vh;
+  }
 
-    .section-title {
-        font-size: 1.4rem;
-    }
+  .section {
+    padding: 2rem 0;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
 }
