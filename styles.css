@@ -7,7 +7,7 @@
     --gold-accent: #C0B090;
     
     /* Dimensions */
-    --header-height: 120px;
+    --header-height: 140px; /* Slight increase for the new font height */
     --footer-height: 100px;
 }
 
@@ -26,7 +26,7 @@ html, body {
 
 body {
     background: radial-gradient(circle at 50% 40%, var(--bg-center), var(--bg-edge));
-    font-family: 'Cinzel', serif;
+    font-family: 'Cinzel', serif; /* Default for UI/Nav */
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
 }
@@ -71,13 +71,15 @@ body::before {
     outline: none;
 }
 
-/* Typography */
+/* Typography - THE REFINED "IVY LEAGUE" LOOK */
 .title {
-    font-family: 'Pinyon Script', cursive;
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-    font-weight: 400;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500; /* Medium weight for authority */
+    font-size: clamp(2.5rem, 4.5vw, 4rem);
     color: var(--text-primary);
     text-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    letter-spacing: -0.02em; /* Tighter tracking for academic feel */
     opacity: 0;
     transform: translateY(-20px);
     animation: fadeReveal 1.8s ease-out forwards 0.5s;
@@ -105,9 +107,9 @@ body::before {
 .nav-link {
     text-decoration: none;
     font-family: 'Cinzel', serif;
-    font-size: clamp(0.85rem, 1.1vw, 1rem);
+    font-size: clamp(0.75rem, 0.9vw, 0.9rem);
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.25em; /* Wide spacing for brutalist elegance */
     color: var(--text-primary);
     opacity: 0.6;
     position: relative;
