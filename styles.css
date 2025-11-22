@@ -82,6 +82,10 @@ body {
 }
 /* HEADER */
 
+/* ... [KEEP ALL EXISTING CSS ABOVE THIS LINE] ... */
+
+/* HEADER */
+
 .header-layer {
     position: fixed;
     top: calc(3.5 * var(--unit));
@@ -140,22 +144,26 @@ body {
 body.chamber-open .header-layer,
 body.depth-open .header-layer {
     transform: translateY(-0.8rem);  /* just a slight lift */
+    mix-blend-mode: normal; /* Restore to normal blending over the light card */
+    color: var(--ink); /* Change color to match the light background */
 }
 
 body.chamber-open .brand-mark,
 body.depth-open .brand-mark {
     font-size: 1.4rem !important;    /* smaller */
-    font-style: normal !important;   /* NOT italic */
+    font-style: normal !important;   /* NOT italic: A subtle shift from "elegant" to "institutional" */
     letter-spacing: 0.06em !important;
-    /* no text-transform → stays “Alchemy” in Title Case */
+    margin-bottom: 0.1rem !important; /* Tighten up the spacing */
 }
 
 body.chamber-open .brand-sub,
 body.depth-open .brand-sub {
     font-size: 0.65rem !important;
-    letter-spacing: 0.24em !important;
+    letter-spacing: 0.24em !important; /* Slightly reduced tracking */
     opacity: 0.9 !important;
 }
+
+/* ... [KEEP ALL EXISTING CSS BELOW THIS LINE] ... */
 
 /* BOTTOM NAV */
 
