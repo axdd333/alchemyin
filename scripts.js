@@ -216,9 +216,7 @@ const CHAMBERS = {
     }
 };
 
-/* Example document scaffold for future depth view */
 const DOCUMENTS = {
-    // Example: a future internal paper
     'american-favela': {
         kicker: 'Field Note · AF-01',
         title: 'The American Favela Thesis',
@@ -336,6 +334,8 @@ class ChamberPanel {
         this.root.classList.remove('chamber-panel--hidden');
         this.root.classList.add('chamber-panel--visible');
         this.root.setAttribute('aria-hidden', 'false');
+        
+        // GLOBAL STATE FLAGS
         document.body.classList.add('chamber-open');
         document.body.classList.remove('depth-open');
     }
@@ -345,6 +345,8 @@ class ChamberPanel {
         this.root.classList.remove('chamber-panel--visible');
         this.root.classList.add('chamber-panel--hidden');
         this.root.setAttribute('aria-hidden', 'true');
+        
+        // GLOBAL STATE FLAGS
         document.body.classList.remove('chamber-open');
     }
 }
@@ -417,6 +419,8 @@ class DepthView {
         this.root.classList.remove('depth-view--hidden');
         this.root.classList.add('depth-view--visible');
         this.root.setAttribute('aria-hidden', 'false');
+        
+        // GLOBAL STATE FLAGS
         document.body.classList.add('depth-open');
         document.body.classList.remove('chamber-open');
     }
@@ -426,11 +430,11 @@ class DepthView {
         this.root.classList.remove('depth-view--visible');
         this.root.classList.add('depth-view--hidden');
         this.root.setAttribute('aria-hidden', 'true');
+        
+        // GLOBAL STATE FLAGS
         document.body.classList.remove('depth-open');
     }
 }
-
-/* ... [KEEP ALL EXISTING JAVASCRIPT ABOVE THIS LINE] ... */
 
 /* ---------- APP ORCHESTRATOR ---------- */
 
@@ -468,9 +472,6 @@ class AlchemyApp {
             }
         });
 
-        /* header element for logo state (no longer needed for class toggling) */
-        // this.header = document.querySelector('.header-layer');
-
         window.addEventListener('hashchange', () => this.handleHash());
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && window.location.hash) {
@@ -481,8 +482,6 @@ class AlchemyApp {
         this.handleHash(); // initial load
     }
 
-    // REMOVED: setHeaderCompact is no longer necessary as CSS uses body classes.
-
     handleHash() {
         const raw = window.location.hash.replace(/^#/, '').trim();
 
@@ -490,7 +489,6 @@ class AlchemyApp {
             this.goIdle();
             return;
         }
-// ... (rest of handleHash remains the same)
 
         // Document route: #doc/<id>
         if (raw.startsWith('doc/')) {
@@ -519,10 +517,8 @@ class AlchemyApp {
         this.state.docId = null;
 
         this.nav.clearActive();
-        if (this.chambers) this.chambers.close(); // ChamberPanel.close removes .chamber-open
-        if (this.depthView) this.depthView.close(); // DepthView.close removes .depth-open
-
-        // this.setHeaderCompact(false); // REMOVED
+        if (this.chambers) this.chambers.close();
+        if (this.depthView) this.depthView.close();
     }
 
     openChamber(key) {
@@ -534,9 +530,7 @@ class AlchemyApp {
 
         if (this.depthView) this.depthView.close();
         this.nav.setActiveByChamber(key);
-        this.chambers.open(key); // ChamberPanel.open adds .chamber-open
-
-        // this.setHeaderCompact(true); // REMOVED
+        this.chambers.open(key);
     }
 
     openDocument(id) {
@@ -548,9 +542,7 @@ class AlchemyApp {
 
         if (this.chambers) this.chambers.close();
         this.nav.clearActive();
-        this.depthView.open(id); // DepthView.open adds .depth-open
-
-        // this.setHeaderCompact(true); // REMOVED
+        this.depthView.open(id);
     }
 }
 
