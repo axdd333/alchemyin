@@ -1,29 +1,37 @@
 /**
- * ALCHEMYIN: THE VOID STATE
- * Base artifact + chamber overlay system
+ * ALCHEMY · THE VOID STATE
+ * 3D Context + Information Architecture
  */
 
 const CONFIG = {
-    color: {
+    colors: {
         bg: 0xEAE8E3,
-        object: 0x111111,
-        light: 0xffffff
+        lines: 0x111111,
+        fog: 0xEAE8E3
     },
     camera: {
         fov: 35,
-        z: 12
+        z: 14 // Pulled back slightly for scale
+    },
+    motion: {
+        lerp: 0.03, // Heavier, more cinematic movement
+        rotationSpeed: 0.0008
     }
 };
 
 class VoidExperience {
     constructor() {
         this.canvas = document.querySelector('#artifact-canvas');
-        if (!this.canvas || typeof THREE === 'undefined') return;
+        if (!this.canvas) return;
 
         this.width = window.innerWidth;
         this.height = window.innerHeight;
         this.mouseX = 0;
         this.mouseY = 0;
+        
+        // Target rotation values for smooth interpolation
+        this.targetRotX = 0;
+        this.targetRotY = 0;
 
         this.init();
         this.createArtifact();
@@ -34,8 +42,8 @@ class VoidExperience {
 
     init() {
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(CONFIG.color.bg);
-        this.scene.fog = new THREE.FogExp2(CONFIG.color.bg, 0.08);
+        this.scene.background = new THREE.Color(CONFIG.colors.bg);
+        this.scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.06);
 
         this.camera = new THREE.PerspectiveCamera(
             CONFIG.camera.fov,
@@ -53,73 +61,77 @@ class VoidExperience {
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        const ambient = new THREE.AmbientLight(CONFIG.color.bg, 0.6);
+        // Soft lighting setup
+        const ambient = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambient);
 
-        const spot = new THREE.DirectionalLight(CONFIG.color.light, 0.8);
-        spot.position.set(5, 10, 5);
-        this.scene.add(spot);
+        const directional = new THREE.DirectionalLight(0xffffff, 0.5);
+        directional.position.set(10, 10, 10);
+        this.scene.add(directional);
     }
 
     createArtifact() {
-        this.artifact = new THREE.Group();
+        this.artifactGroup = new THREE.Group();
 
-        const lineMat = new THREE.LineBasicMaterial({
-            color: CONFIG.color.object,
+        // Materials
+        const wireMat = new THREE.LineBasicMaterial({
+            color: CONFIG.colors.lines,
             transparent: true,
-            opacity: 0.15,
-            linewidth: 1
+            opacity: 0.1
         });
 
-        const heavyMat = new THREE.LineBasicMaterial({
-            color: CONFIG.color.object,
+        const structureMat = new THREE.LineBasicMaterial({
+            color: CONFIG.colors.lines,
             transparent: true,
-            opacity: 0.8,
-            linewidth: 1
+            opacity: 0.7
         });
 
-        // ARC (Celestial, unfinished circle)
-        const arcGeo = new THREE.TorusGeometry(3, 0.01, 3, 100, Math.PI * 1.5);
-        this.arc = new THREE.LineSegments(new THREE.EdgesGeometry(arcGeo), heavyMat);
+        // 1. The Monolith (Outer structure)
+        const boxGeo = new THREE.BoxGeometry(2.2, 4.5, 2.2);
+        this.monolith = new THREE.LineSegments(new THREE.EdgesGeometry(boxGeo), wireMat);
+        this.artifactGroup.add(this.monolith);
+
+        // 2. The Arc (Celestial context)
+        const arcGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100, Math.PI * 1.5);
+        this.arc = new THREE.LineSegments(new THREE.EdgesGeometry(arcGeo), structureMat);
         this.arc.rotation.z = Math.PI / 4;
-        this.artifact.add(this.arc);
+        this.artifactGroup.add(this.arc);
 
-        // MONOLITH (Structure)
-        const boxGeo = new THREE.BoxGeometry(2, 4, 2);
-        const boxEdges = new THREE.EdgesGeometry(boxGeo);
-        this.monolith = new THREE.LineSegments(boxEdges, lineMat);
-        this.artifact.add(this.monolith);
+        // 3. The Core (Wisdom/Center)
+        // Using an Icosahedron for more complexity than Octahedron
+        const coreGeo = new THREE.IcosahedronGeometry(0.6, 0);
+        this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), structureMat);
+        this.artifactGroup.add(this.core);
 
-        // CORE (Wisdom)
-        const coreGeo = new THREE.OctahedronGeometry(0.5, 0);
-        this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), heavyMat);
-        this.artifact.add(this.core);
+        // 4. The Grid (Grounding)
+        const gridGeo = new THREE.PlaneGeometry(25, 25, 20, 20);
+        const grid = new THREE.LineSegments(new THREE.EdgesGeometry(gridGeo), wireMat);
+        grid.rotation.x = Math.PI / 2;
+        grid.position.y = -3;
+        this.artifactGroup.add(grid);
 
-        // HORIZON (Context)
-        const gridGeo = new THREE.PlaneGeometry(20, 20, 20, 20);
-        const gridEdges = new THREE.EdgesGeometry(gridGeo);
-        this.grid = new THREE.LineSegments(gridEdges, lineMat);
-        this.grid.rotation.x = Math.PI / 2;
-        this.grid.position.y = -2.5;
-        this.artifact.add(this.grid);
-
-        this.scene.add(this.artifact);
+        this.scene.add(this.artifactGroup);
     }
 
     addAtmosphere() {
-        const count = 200;
+        const count = 300;
         const pos = new Float32Array(count * 3);
+        
+        // Create a cloud of points
         for (let i = 0; i < count * 3; i++) {
-            pos[i] = (Math.random() - 0.5) * 15;
+            pos[i] = (Math.random() - 0.5) * 20;
         }
+
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        
         const mat = new THREE.PointsMaterial({
-            color: 0x000000,
-            size: 0.02,
+            color: CONFIG.colors.lines,
+            size: 0.03,
             transparent: true,
-            opacity: 0.2
+            opacity: 0.15
         });
+
         this.particles = new THREE.Points(geo, mat);
         this.scene.add(this.particles);
     }
@@ -133,6 +145,7 @@ class VoidExperience {
             this.renderer.setSize(this.width, this.height);
         });
 
+        // Normalize mouse coordinates to -1 to 1
         document.addEventListener('mousemove', (e) => {
             this.mouseX = (e.clientX / this.width) * 2 - 1;
             this.mouseY = -(e.clientY / this.height) * 2 + 1;
@@ -140,74 +153,91 @@ class VoidExperience {
     }
 
     render() {
-        const time = Date.now() * 0.0005;
+        const time = Date.now() * CONFIG.motion.rotationSpeed;
 
-        if (this.artifact) {
-            this.artifact.rotation.y = time * 0.1;
+        // Artifact Rotation
+        if (this.artifactGroup) {
+            this.artifactGroup.rotation.y = Math.sin(time * 0.5) * 0.2; // Gentle sway
         }
 
+        // Core "Breathing" & Independent Rotation
         if (this.core) {
-            this.core.rotation.x = time;
-            this.core.rotation.z = time * 0.5;
-            this.core.position.y = Math.sin(time * 2) * 0.1;
+            this.core.rotation.x = time * 2;
+            this.core.rotation.y = time;
+            // Bobbing effect
+            this.core.position.y = Math.sin(Date.now() * 0.002) * 0.15;
+            // Breathing scale effect
+            const scale = 1 + Math.sin(Date.now() * 0.0015) * 0.05;
+            this.core.scale.set(scale, scale, scale);
         }
 
-        this.camera.position.x += (this.mouseX * 0.5 - this.camera.position.x) * 0.05;
-        this.camera.position.y += (this.mouseY * 0.5 - this.camera.position.y) * 0.05;
+        // Arc Rotation
+        if (this.arc) {
+            this.arc.rotation.z += 0.001;
+        }
+
+        // Camera Inertia (Smooth mouse look)
+        const targetX = this.mouseX * 0.8;
+        const targetY = this.mouseY * 0.8;
+        
+        this.camera.position.x += (targetX - this.camera.position.x) * CONFIG.motion.lerp;
+        this.camera.position.y += (targetY - this.camera.position.y) * CONFIG.motion.lerp;
         this.camera.lookAt(0, 0, 0);
+
+        // Subtle particle rotation
+        if (this.particles) {
+            this.particles.rotation.y = time * 0.1;
+        }
 
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(this.render.bind(this));
     }
 }
 
-/* --------- CHAMBER SYSTEM (UI) --------- */
+/* --------- CHAMBER DATA & UI SYSTEM --------- */
 
 const CHAMBERS = {
     philosophy: {
-        label: 'Chamber I · Philosophy',
-        title: 'What a system believes about the world.',
+        label: 'Chamber I · The Thesis',
+        title: 'What the system believes about the world.',
         paragraphs: [
-            'Every system inherits a worldview, whether it admits it or not. This is where we make that explicit.',
-            'We work with questions of value, time, responsibility, and power: who the tool serves, what it conserves, and what it quietly destroys.'
+            'Every system inherits a worldview. The code is merely the enforcement mechanism of a philosophy.',
+            'We ask questions of value, time, and consequence: who does this tool serve, what does it conserve, and what does it quietly destroy in the pursuit of efficiency?'
         ]
     },
     systems: {
-        label: 'Chamber II · Systems',
-        title: 'The architecture that carries the weight.',
+        label: 'Chamber II · The Engine',
+        title: 'Architecture that carries the weight.',
         paragraphs: [
-            'Interfaces, protocols, automation, feedback loops, observability. The boring parts that decide whether something lasts.',
-            'We prefer designs that can be explained on a single sheet of paper and maintained without heroics.'
+            'This is the domain of protocols, feedback loops, and observability. The boring parts that determine longevity.',
+            'We prefer designs that can be explained on a single sheet of paper. Complexity is not a sign of intelligence; it is often a sign of unresolved conflict.'
         ]
     },
     artifacts: {
-        label: 'Chamber III · Artifacts',
-        title: 'Surfaces that survive strange weather.',
+        label: 'Chamber III · The Surface',
+        title: 'Objects that survive strange weather.',
         paragraphs: [
-            'Eventually everything condenses into artifacts: tools, dashboards, small devices, documents, scripts.',
-            'The work here is execution with disproportionate care: ergonomics, legibility, and the quiet discipline of not adding noise.'
+            'Eventually, abstract logic must condense into artifacts: interfaces, dashboards, devices, and scripts.',
+            'The work here is execution with disproportionate care. We focus on ergonomics, legibility, and the quiet discipline of removing noise until only the signal remains.'
         ]
     },
     oracle: {
-        label: 'Chamber IV · Oracle',
+        label: 'Chamber IV · The Forecast',
         title: 'Structured doubt for irreversible decisions.',
         paragraphs: [
-            'This is the layer where information becomes counsel: simulations, scenario maps, and sensitivity analysis.',
-            'The goal is not prediction theater, but better questions before committing to moves that are expensive to reverse.'
+            'Where information becomes counsel. We use simulations and sensitivity analysis to map the terrain before walking it.',
+            'The goal is not prediction theater, but better questions. We measure twice so we only have to cut once.'
         ]
     }
 };
 
 function initChambers() {
     const panel = document.getElementById('chamber-panel');
-    if (!panel) return;
-
     const labelEl = panel.querySelector('.chamber-label');
     const titleEl = panel.querySelector('.chamber-title');
-    const bodyEl = panel.querySelector('.chamber-body');
+    const bodyEl = panel.querySelector('.chamber-content');
     const closeBtn = panel.querySelector('.chamber-close');
-
-    const links = document.querySelectorAll('.nav-links .link');
+    const links = document.querySelectorAll('.nav-link');
 
     function openChamber(key) {
         const data = CHAMBERS[key];
@@ -225,17 +255,16 @@ function initChambers() {
 
         panel.classList.remove('chamber-panel--hidden');
         panel.classList.add('chamber-panel--visible');
-        document.body.classList.add('chamber-open');
         panel.setAttribute('aria-hidden', 'false');
     }
 
     function closeChamber() {
         panel.classList.remove('chamber-panel--visible');
         panel.classList.add('chamber-panel--hidden');
-        document.body.classList.remove('chamber-open');
         panel.setAttribute('aria-hidden', 'true');
     }
 
+    // Link Event Listeners
     links.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -244,21 +273,17 @@ function initChambers() {
         });
     });
 
+    // Closing Logic
     closeBtn.addEventListener('click', closeChamber);
-
-    // Close on background click
     panel.addEventListener('click', (e) => {
         if (e.target === panel) closeChamber();
     });
-
-    // ESC key closes panel
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeChamber();
     });
 }
 
-/* Boot everything */
-
+/* Boot */
 window.addEventListener('DOMContentLoaded', () => {
     new VoidExperience();
     initChambers();
