@@ -1,11 +1,9 @@
 :root {
     /* The Palette of "Nothingness" */
-    --void-bg: #EAE8E3; /* Bone / Cold Limestone */
+    --void-bg: #EAE8E3; 
     --void-fog: #EAE8E3; 
-    --ink: #0F0F0F;     /* Absolute Black */
+    --ink: #0F0F0F;    
     --ink-sub: rgba(15, 15, 15, 0.4);
-    
-    /* Dimensions */
     --nav-height: 120px;
 }
 
@@ -28,12 +26,12 @@ body {
     cursor: crosshair;
 }
 
-/* --- LOADER (The Veil) --- */
+/* LOADER: Essential for the "Reveal" */
 #loader {
     position: fixed;
     inset: 0;
     background-color: var(--void-bg);
-    z-index: 100; /* Above everything */
+    z-index: 100;
     transition: opacity 1.5s ease-in-out, visibility 1.5s;
     opacity: 1;
     visibility: visible;
@@ -45,7 +43,6 @@ body {
     pointer-events: none;
 }
 
-/* --- TEXTURE --- */
 .noise-overlay {
     position: fixed;
     inset: 0;
@@ -55,7 +52,6 @@ body {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* --- HEADER --- */
 .header-layer {
     position: fixed;
     top: 5vh;
@@ -71,7 +67,7 @@ body {
 .brand-mark {
     font-family: 'Bodoni Moda', serif;
     font-style: italic;
-    font-weight: 500; /* Refined for legibility */
+    font-weight: 500;
     font-size: clamp(2rem, 3vw, 3rem);
     letter-spacing: -0.03em;
     margin-bottom: 0.2rem;
@@ -88,7 +84,6 @@ body {
     animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.7s;
 }
 
-/* --- NAV --- */
 .nav-layer {
     position: fixed;
     bottom: 6vh;
@@ -140,7 +135,6 @@ body {
     width: 100%;
 }
 
-/* --- VIEWPORT --- */
 .viewport {
     position: fixed;
     inset: 0;
