@@ -2,56 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alchemy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Alchemy · The Void State</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <!-- Three.js for the artifact -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
-    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- Grain / noise -->
-    <div class="noise-overlay"></div>
+    <div class="noise-layer"></div>
 
-    <!-- Top inscription -->
-    <header class="header-layer">
-        <h1 class="brand-mark">Alchemy</h1>
-        <p class="brand-sub">So the Model Holds</p>
+    <header class="header-ui">
+        <div class="header-content">
+            <h1 class="brand-mark">Alchemy</h1>
+            <p class="brand-sub">So the Model Holds</p>
+        </div>
     </header>
 
-    <!-- Void + artifact -->
     <main class="viewport">
         <canvas id="artifact-canvas"></canvas>
 
-        <!-- Chamber panel (hidden by default) -->
         <section id="chamber-panel" class="chamber-panel chamber-panel--hidden" aria-hidden="true">
-            <div class="chamber-surface">
-                <button class="chamber-close" type="button" aria-label="Close">
+            <article class="chamber-card">
+                <button class="chamber-close" type="button" aria-label="Close View">
                     &times;
                 </button>
-                <p class="chamber-label"></p>
-                <h2 class="chamber-title"></h2>
-                <div class="chamber-body"></div>
-            </div>
+                <header class="chamber-header">
+                    <span class="chamber-label"></span>
+                    <h2 class="chamber-title"></h2>
+                </header>
+                <div class="chamber-content"></div>
+            </article>
         </section>
     </main>
 
-    <!-- Bottom nav (four rooms) -->
-    <nav class="nav-layer">
-        <ul class="nav-links">
-            <li><a href="#philosophy" class="link" data-chamber="philosophy">Philosophy</a></li>
-            <li><a href="#systems" class="link" data-chamber="systems">Systems</a></li>
-            <li><a href="#artifacts" class="link" data-chamber="artifacts">Artifacts</a></li>
-            <li><a href="#oracle" class="link" data-chamber="oracle">Oracle</a></li>
+    <nav class="nav-ui">
+        <ul class="nav-list">
+            <li><a href="#philosophy" class="nav-link" data-chamber="philosophy">Philosophy</a></li>
+            <li><a href="#systems" class="nav-link" data-chamber="systems">Systems</a></li>
+            <li><a href="#artifacts" class="nav-link" data-chamber="artifacts">Artifacts</a></li>
+            <li><a href="#oracle" class="nav-link" data-chamber="oracle">Oracle</a></li>
         </ul>
     </nav>
 
