@@ -450,7 +450,6 @@ class AlchemyApp {
             panelSelector: '#chamber-panel',
             data: CHAMBERS,
             onRequestClose: () => {
-                // Return to idle state
                 if (window.location.hash) {
                     window.location.hash = '';
                 }
@@ -467,6 +466,9 @@ class AlchemyApp {
             }
         });
 
+        /* header element for logo state */
+        this.header = document.querySelector('.header-layer');
+
         window.addEventListener('hashchange', () => this.handleHash());
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && window.location.hash) {
@@ -475,6 +477,11 @@ class AlchemyApp {
         });
 
         this.handleHash(); // initial load
+    }
+
+    setHeaderCompact(isCompact) {
+        if (!this.header) return;
+        this.header.classList.toggle('header-layer--compact', isCompact);
     }
 
     handleHash() {
@@ -514,6 +521,8 @@ class AlchemyApp {
         this.nav.clearActive();
         if (this.chambers) this.chambers.close();
         if (this.depthView) this.depthView.close();
+
+        this.setHeaderCompact(false);   // big elegant logo
     }
 
     openChamber(key) {
@@ -526,6 +535,8 @@ class AlchemyApp {
         if (this.depthView) this.depthView.close();
         this.nav.setActiveByChamber(key);
         this.chambers.open(key);
+
+        this.setHeaderCompact(true);    // small caption logo
     }
 
     openDocument(id) {
@@ -538,6 +549,8 @@ class AlchemyApp {
         if (this.chambers) this.chambers.close();
         this.nav.clearActive();
         this.depthView.open(id);
+
+        this.setHeaderCompact(true);    // small caption logo
     }
 }
 
