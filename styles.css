@@ -1,10 +1,12 @@
 :root {
-    --bg-color: #F2EFE9; /* Warm Limestone */
-    --ink-primary: #111111;
-    --ink-secondary: rgba(17, 17, 17, 0.5);
+    /* The Palette of "Nothingness" */
+    --void-bg: #EAE8E3; /* Bone / Cold Limestone */
+    --void-fog: #EAE8E3; 
+    --ink: #0F0F0F;     /* Absolute Black */
+    --ink-sub: rgba(15, 15, 15, 0.4);
     
-    /* Spacing */
-    --ui-padding: 4vw;
+    /* Dimensions */
+    --nav-height: 120px;
 }
 
 *, *::before, *::after {
@@ -16,111 +18,127 @@
 html, body {
     width: 100%;
     height: 100%;
-    overflow: hidden; /* No scrollbars, immersive window */
-    background-color: var(--bg-color);
+    overflow: hidden;
+    background-color: var(--void-bg);
 }
 
-/* Typography - Bulletproof Stack */
 body {
-    /* If Bodoni fails, it falls back to Didot or Times. NEVER Comic Sans. */
-    font-family: 'Bodoni Moda', 'Didot', 'Bodoni MT', 'Times New Roman', serif;
-    color: var(--ink-primary);
-    -webkit-font-smoothing: antialiased;
+    font-family: 'Inter', sans-serif; /* Clean baseline */
+    color: var(--ink);
+    cursor: crosshair; /* Precision cursor */
 }
 
-/* Subtle Grain Texture (Atmosphere) */
-body::before {
-    content: "";
-    position: absolute;
+/* Texture: The "Grain" of Reality */
+.noise-overlay {
+    position: fixed;
     inset: 0;
+    z-index: 50;
+    opacity: 0.06;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- TOP HEADER (The Authority) --- */
+.header-layer {
+    position: fixed;
+    top: 5vh;
+    left: 0;
+    width: 100%;
+    text-align: center;
     z-index: 10;
     pointer-events: none;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    mix-blend-mode: difference; /* Reacts to the 3D behind it */
+    color: #fff; /* Inverted by difference mode */
 }
 
-/* UI Positioning - Floats over the world */
-.ui-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 3rem 0;
-    display: flex;
-    justify-content: center;
-    z-index: 20;
-    pointer-events: none; /* Let mouse pass through to canvas */
-}
-
-.brand-title {
+.brand-mark {
     font-family: 'Bodoni Moda', serif;
     font-style: italic;
-    font-weight: 500;
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    letter-spacing: -0.04em; /* Tight, academic tracking */
-    color: var(--ink-primary);
+    font-weight: 400;
+    font-size: clamp(2rem, 3vw, 3rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.2rem;
     opacity: 0;
-    transform: translateY(-20px);
-    animation: fadeReveal 2s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
 }
 
-.ui-nav {
+.brand-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    opacity: 0;
+    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.7s;
+}
+
+/* --- BOTTOM NAV (The Foundation) --- */
+.nav-layer {
     position: fixed;
-    bottom: 0;
+    bottom: 6vh;
     left: 0;
     width: 100%;
-    padding-bottom: 3rem;
-    z-index: 20;
-}
-
-.nav-list {
+    z-index: 10;
     display: flex;
     justify-content: center;
-    gap: 4vw;
+}
+
+.nav-links {
     list-style: none;
+    display: flex;
+    gap: 6vw;
 }
 
-.nav-link {
+.link {
     text-decoration: none;
-    font-family: 'Cinzel', serif; /* Contrast font for UI */
+    font-family: 'Inter', sans-serif;
     font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.25em;
+    font-weight: 500;
     text-transform: uppercase;
-    color: var(--ink-primary);
-    opacity: 0.5;
-    transition: opacity 0.3s ease, letter-spacing 0.3s ease;
+    letter-spacing: 0.2em;
+    color: var(--ink);
+    opacity: 0.4;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    padding: 10px 0;
 }
 
-.nav-link:hover {
+/* Hover Effect: The Glitch of Awareness */
+.link:hover {
     opacity: 1;
-    letter-spacing: 0.35em;
+    letter-spacing: 0.3em;
 }
 
-/* Canvas Viewport */
+.link::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: var(--ink);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateX(-50%);
+}
+
+.link:hover::after {
+    width: 100%;
+}
+
+/* --- THE ARTIFACT (Canvas) --- */
 .viewport {
     position: fixed;
     inset: 0;
     z-index: 1;
 }
 
-/* Loading Curtain */
-#loader {
-    position: fixed;
-    inset: 0;
-    background: var(--bg-color);
-    z-index: 50;
-    transition: opacity 1.2s ease;
-    pointer-events: none;
+#artifact-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    outline: none;
 }
 
-#loader.loaded {
-    opacity: 0;
-}
-
-@keyframes fadeReveal {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes fadeDescend {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
