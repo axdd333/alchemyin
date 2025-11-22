@@ -1,80 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>House of Wisdom</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="background-canvas" aria-hidden="true">
-      <canvas id="mesh"></canvas>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alchemyin: House of Wisdom</title>
+    <meta name="description" content="A neoclassical digital artifact. Systems, instruments, and code framed in light.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="loader" aria-hidden="true">
+        <div class="loader-track"></div>
     </div>
 
-    <header class="top-nav">
-      <div class="nav-inner">
-        <div class="logo-mark" aria-label="House of Wisdom mark">
-          <svg viewBox="0 0 80 80" aria-hidden="true">
-            <g stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round">
-              <path d="M20 42c0-12 8-22 20-22s20 10 20 22" />
-              <path d="M16 42h48" />
-              <path d="M30 42v18" />
-              <path d="M50 42v18" />
-            </g>
-          </svg>
-        </div>
-        <nav class="nav-links">
-          <a href="#about">About</a>
-          <a href="#projects">Projects</a>
-          <a href="#contact">Contact</a>
-          <a class="subtle" href="#signin">Sign In</a>
-        </nav>
-      </div>
+    <header class="site-header">
+        <h1 class="title">Alchemyin: House of Wisdom</h1>
     </header>
 
-    <main>
-      <section class="hero" id="about">
-        <div class="hero-inner">
-          <div class="arch-shell reveal">
-            <div class="arch-glow"></div>
-            <div class="arch-outline"></div>
-            <div class="logo-large" aria-hidden="true">
-              <svg viewBox="0 0 120 120">
-                <g stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round">
-                  <path d="M24 64c0-18 12-32 36-32s36 14 36 32" />
-                  <path d="M20 64h80" />
-                  <path d="M44 64v28" />
-                  <path d="M76 64v28" />
-                </g>
-              </svg>
-            </div>
-          </div>
-
-          <div class="hero-copy reveal">
-            <p class="kicker">A quiet studio for luminous ideas</p>
-            <h1>Stepping into a house of wisdom</h1>
-            <p class="subhead">
-              A minimal temple for systems, instruments, and code that endures. Crafted with intention,
-              framed in light.
-            </p>
-            <div class="cta-row">
-              <a class="button" href="#projects">Learn more</a>
-            </div>
-          </div>
-        </div>
-      </section>
+    <main class="viewport">
+        <canvas id="webgl-canvas" aria-label="A rotating 3D wireframe temple representing wisdom and structure"></canvas>
     </main>
 
-    <footer class="footer" id="contact">
-      <p>© 2024 House of Wisdom Studio. All rights reserved.</p>
-    </footer>
+    <nav class="site-nav">
+        <ul class="nav-list">
+            <li><a href="#philosophy" class="nav-link">Philosophy</a></li>
+            <li><a href="#systems" class="nav-link">Systems</a></li>
+            <li><a href="#artifacts" class="nav-link">Artifacts</a></li>
+            <li><a href="#oracle" class="nav-link">Oracle</a></li>
+        </ul>
+    </nav>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="scripts.js"></script>
-  </body>
+</body>
 </html>
