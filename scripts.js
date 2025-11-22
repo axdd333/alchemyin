@@ -53,6 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextBtn = document.getElementById("next-slide");
   const indexLabel = document.getElementById("carousel-index");
   const progressBar = document.getElementById("carousel-progress");
+  const dotsContainer = document.getElementById("carousel-dots");
+  const dots = [];
 
   let currentIndex = 0;
   const totalSlides = slides.length;
@@ -83,6 +85,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const fraction = totalSlides ? (currentIndex + 1) / totalSlides : 0;
       progressBar.style.transform = `scaleX(${fraction})`;
     }
+
+    dots.forEach((dot, idx) => {
+      const isActive = idx === currentIndex;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-pressed", String(isActive));
+    });
   };
 
   const goToNext = () => {
@@ -106,6 +114,23 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   if (slides.length > 0) {
+    if (dotsContainer) {
+      slides.forEach((slide, idx) => {
+        const dotBtn = document.createElement("button");
+        const titleNode = slide.querySelector(".carousel-title");
+        dotBtn.type = "button";
+        dotBtn.className = "dot-btn";
+        dotBtn.setAttribute("aria-label", `Go to ${titleNode?.textContent || `slide ${idx + 1}`}`);
+        dotBtn.addEventListener("click", () => {
+          currentIndex = idx;
+          updateCarousel();
+          startAuto();
+        });
+        dotsContainer.appendChild(dotBtn);
+        dots.push(dotBtn);
+      });
+    }
+
     updateCarousel();
     startAuto();
 
@@ -132,5 +157,16 @@ document.addEventListener("DOMContentLoaded", () => {
         carouselShell.addEventListener(evt, startAuto)
       );
     }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") {
+        goToNext();
+        startAuto();
+      }
+      if (event.key === "ArrowLeft") {
+        goToPrev();
+        startAuto();
+      }
+    });
   }
 });
