@@ -194,6 +194,63 @@ class VoidTemple {
         requestAnimationFrame(this.render.bind(this));
     }
 }
+// subtle wirefield in the hero
+(function () {
+  const canvas = document.getElementById("wisdom-field");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  let width, height, t;
+  const density = 26; // grid spacing
+
+  function resize() {
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
+  function draw(time) {
+    if (!t) t = time;
+    const dt = (time - t) / 1000;
+    t = time;
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.lineWidth = 0.6;
+    ctx.strokeStyle = "rgba(0,0,0,0.10)";
+
+    const cx = width / 2;
+    const cy = height / 2;
+
+    for (let x = -density * 2; x < width + density * 2; x += density) {
+      ctx.beginPath();
+      for (let y = -density * 2; y < height + density * 2; y += density) {
+        const dx = (x - cx) / width;
+        const dy = (y - cy) / height;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        const wave =
+          Math.sin(dist * 9 - time * 0.0009) * 10 * Math.exp(-dist * 2.4);
+
+        const px = x;
+        const py = y + wave;
+
+        if (y === -density * 2) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+  requestAnimationFrame(draw);
+})();
 
 // Enter The Void
 window.addEventListener('DOMContentLoaded', () => new VoidTemple());
