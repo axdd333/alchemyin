@@ -1,14 +1,24 @@
 :root {
+    /* Sacred unit / grid */
+    --unit: 24px;
+
     /* Palette */
     --void-bg: #EAE8E3; /* Bone / cold limestone */
-    --void-fog: #EAE8E3; 
+    --void-fog: #EAE8E3;
     --ink: #0F0F0F;
     --ink-sub: rgba(15, 15, 15, 0.45);
 
+    /* Surfaces */
+    --card-bg-inner: rgba(255, 255, 255, 0.94);
+    --card-bg-outer: #f5f1ea;
+
     /* Sizes */
-    --nav-height: 120px;
+    --nav-height: 5.5rem;
     --panel-max-width: 560px;
     --panel-radius: 18px;
+
+    /* Motion */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Reset */
@@ -35,6 +45,8 @@ body {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color: var(--ink);
     cursor: crosshair;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 /* Grain overlay */
@@ -48,18 +60,44 @@ body {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* Very subtle central axis */
+
+.axis-line {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    pointer-events: none;
+    z-index: 2;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(15, 15, 15, 0.06) 12%,
+        rgba(15, 15, 15, 0.04) 88%,
+        transparent 100%
+    );
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+}
+
 /* HEADER */
 
 .header-layer {
     position: fixed;
-    top: 5vh;
+    top: calc(3.5 * var(--unit));
     left: 0;
     width: 100%;
-    text-align: center;
     z-index: 10;
     pointer-events: none;
+    text-align: center;
     mix-blend-mode: difference;
-    color: #fff;
+    color: #ffffff;
+}
+
+.header-inner {
+    display: inline-block;
+    padding-inline: calc(var(--unit) * 0.75);
 }
 
 .brand-mark {
@@ -70,7 +108,7 @@ body {
     letter-spacing: -0.02em;
     margin-bottom: 0.2rem;
     opacity: 0;
-    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+    animation: fadeDescend 1.5s var(--ease-out) forwards 0.5s;
 }
 
 .brand-sub {
@@ -78,14 +116,14 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.3em;
     opacity: 0;
-    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.7s;
+    animation: fadeDescend 1.5s var(--ease-out) forwards 0.7s;
 }
 
 /* BOTTOM NAV */
 
 .nav-layer {
     position: fixed;
-    bottom: 6vh;
+    bottom: calc(2.5 * var(--unit));
     left: 0;
     width: 100%;
     z-index: 10;
@@ -109,7 +147,10 @@ body {
     opacity: 0.4;
     padding: 10px 0;
     position: relative;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+        opacity 0.35s var(--ease-out),
+        letter-spacing 0.4s var(--ease-out),
+        transform 0.3s var(--ease-out);
 }
 
 .link::after {
@@ -121,7 +162,7 @@ body {
     height: 1px;
     background: var(--ink);
     transform: translateX(-50%);
-    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: width 0.4s var(--ease-out);
 }
 
 .link:hover {
@@ -133,10 +174,24 @@ body {
     width: 100%;
 }
 
+/* Active nav (current chamber) */
+.link.active {
+    opacity: 1;
+}
+
+.link.active::after {
+    width: 100%;
+}
+
 /* Slight dim when chamber open */
+
 body.chamber-open .nav-layer,
 body.chamber-open .header-layer {
-    opacity: 0.7;
+    opacity: 0.78;
+}
+
+body.chamber-open .noise-overlay {
+    opacity: 0.075;
 }
 
 /* VIEWPORT / ARTIFACT */
@@ -152,6 +207,12 @@ body.chamber-open .header-layer {
     width: 100%;
     height: 100%;
     outline: none;
+    transition: opacity 0.4s ease;
+}
+
+body.chamber-open #artifact-canvas,
+body.depth-open #artifact-canvas {
+    opacity: 0.7;
 }
 
 /* CHAMBER PANEL */
@@ -165,7 +226,8 @@ body.chamber-open .header-layer {
     justify-content: center;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.45s ease;
+    background: radial-gradient(circle at top, rgba(234, 232, 227, 0.45), rgba(234, 232, 227, 0.75));
 }
 
 .chamber-panel--hidden {
@@ -182,14 +244,20 @@ body.chamber-open .header-layer {
     position: relative;
     max-width: var(--panel-max-width);
     width: 100%;
-    margin: 0 1.5rem;
-    padding: 1.6rem 1.7rem 1.8rem;
+    margin-inline: calc(var(--unit) * 0.75);
+    padding: calc(var(--unit) * 0.7) calc(var(--unit) * 0.75) calc(var(--unit) * 0.8);
     border-radius: var(--panel-radius);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    background: radial-gradient(circle at top, rgba(255,255,255,0.9), #f5f1ea);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: radial-gradient(circle at top, var(--card-bg-inner), var(--card-bg-outer));
     box-shadow:
       0 30px 60px rgba(0, 0, 0, 0.08),
-      0 0 0 1px rgba(255,255,255,0.6);
+      0 0 0 1px rgba(255, 255, 255, 0.65);
+    transform: translateY(10px);
+    transition: transform 0.5s var(--ease-out);
+}
+
+.chamber-panel--visible .chamber-surface {
+    transform: translateY(0);
 }
 
 /* Chamber close button */
@@ -205,6 +273,7 @@ body.chamber-open .header-layer {
     cursor: pointer;
     color: var(--ink-sub);
     padding: 0.1rem 0.3rem;
+    transition: color 0.2s ease;
 }
 
 .chamber-close:hover {
@@ -213,12 +282,16 @@ body.chamber-open .header-layer {
 
 /* Chamber typography */
 
+.chamber-header {
+    margin-bottom: 0.7rem;
+}
+
 .chamber-label {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.23em;
     color: var(--ink-sub);
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.4rem;
 }
 
 .chamber-title {
@@ -227,22 +300,127 @@ body.chamber-open .header-layer {
     font-weight: 400;
     font-size: 1.4rem;
     letter-spacing: -0.01em;
-    margin-bottom: 0.7rem;
 }
 
 .chamber-body {
     font-size: 0.9rem;
     line-height: 1.7;
     color: var(--ink);
+    margin-top: 0.7rem;
 }
 
 .chamber-body p + p {
     margin-top: 0.7rem;
 }
 
-/* BODY STATE TWEAKS WHEN PANEL OPEN */
+/* DEPTH VIEW (long-form docs, archive) */
 
-body.chamber-open #artifact-canvas {
+.depth-view {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    background: rgba(234, 232, 227, 0.9);
+}
+
+.depth-view--hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.depth-view--visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.depth-surface {
+    position: relative;
+    max-width: 720px;
+    width: 100%;
+    max-height: calc(100vh - 2.5 * var(--unit));
+    margin-inline: calc(var(--unit) * 0.75);
+    padding: calc(var(--unit) * 0.9) calc(var(--unit) * 0.9) calc(var(--unit));
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    background: #f7f3ec;
+    box-shadow:
+      0 32px 70px rgba(0, 0, 0, 0.09),
+      0 0 0 1px rgba(255, 255, 255, 0.7);
+    overflow-y: auto;
+}
+
+.depth-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    border: none;
+    background: transparent;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--ink-sub);
+    padding: 0.1rem 0.35rem;
+    transition: color 0.2s ease;
+}
+
+.depth-close:hover {
+    color: var(--ink);
+}
+
+.depth-header {
+    margin-bottom: 1.1rem;
+}
+
+.depth-kicker {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ink-sub);
+    margin-bottom: 0.4rem;
+}
+
+.depth-title {
+    font-family: 'Bodoni Moda', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.3rem;
+}
+
+.depth-subtitle {
+    font-size: 0.85rem;
+    color: var(--ink-sub);
+}
+
+.depth-body {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    margin-top: 1rem;
+}
+
+.depth-body h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0.08em;
+    margin-top: 1.3rem;
+    margin-bottom: 0.4rem;
+}
+
+.depth-body p + p {
+    margin-top: 0.7rem;
+}
+
+/* BODY STATE FLAG FOR DEPTH */
+
+body.depth-open .nav-layer,
+body.depth-open .header-layer {
     opacity: 0.7;
 }
 
@@ -265,10 +443,15 @@ body.chamber-open #artifact-canvas {
     }
 
     .chamber-surface {
-        padding: 1.4rem 1.4rem 1.6rem;
+        padding: calc(var(--unit) * 0.6);
     }
 
     .chamber-title {
         font-size: 1.25rem;
+    }
+
+    .depth-surface {
+        max-height: calc(100vh - 2 * var(--unit));
+        padding: calc(var(--unit) * 0.7);
     }
 }
