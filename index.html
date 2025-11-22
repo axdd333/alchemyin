@@ -1,40 +1,79 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alchemyin: House of Wisdom</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Alchemyin · House of Wisdom</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Alchemyin — a quiet studio for philosophy, systems, artifacts, and the oracle."
+  />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div id="loader"></div>
-    
-    <div class="noise-overlay"></div>
+  <!-- Fade overlay while the temple comes into view -->
+  <div id="loader"></div>
 
-    <header class="header-layer">
-        <h1 class="brand-mark">Alchemyin</h1>
-        <p class="brand-sub">House of Wisdom</p>
-    </header>
+  <!-- Top wordmark -->
+  <header class="site-header">
+    <div class="logo-lockup">
+      <div class="logo-script">Alchemyin</div>
+      <div class="logo-tagline">HOUSE OF WISDOM</div>
+    </div>
+  </header>
 
-    <main class="viewport">
-        <canvas id="artifact-canvas"></canvas>
-    </main>
+  <!-- Central sanctum -->
+  <main>
+    <section class="hero">
+      <!-- 3D temple scene -->
+      <canvas id="temple-canvas"></canvas>
 
-    <nav class="nav-layer">
-        <ul class="nav-links">
-            <li><a href="#philosophy" class="link" data-text="Philosophy">Philosophy</a></li>
-            <li><a href="#systems" class="link" data-text="Systems">Systems</a></li>
-            <li><a href="#artifacts" class="link" data-text="Artifacts">Artifacts</a></li>
-            <li><a href="#oracle" class="link" data-text="Oracle">Oracle</a></li>
-        </ul>
+      <!-- Subtle 2D mesh field -->
+      <canvas id="wisdom-field" aria-hidden="true"></canvas>
+
+      <!-- Overlay content -->
+      <div class="hero-inner">
+        <div class="temple-mark" aria-hidden="true">
+          <span class="arch"></span>
+          <span class="pillars"></span>
+        </div>
+
+        <h1 class="hero-title">Stepping into a house of wisdom</h1>
+        <p class="hero-subtitle">
+          A quiet studio for philosophy, systems, artifacts, and the oracle.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom navigation / four rooms of the house -->
+  <footer class="bottom-nav">
+    <nav>
+      <a href="#philosophy">PHILOSOPHY</a>
+      <a href="#systems">SYSTEMS</a>
+      <a href="#artifacts">ARTIFACTS</a>
+      <a href="#oracle">ORACLE</a>
     </nav>
+  </footer>
 
-    <script src="scripts.js"></script>
+  <!-- Placeholder sections so the links have somewhere to scroll later -->
+  <section id="philosophy" class="placeholder-section" aria-hidden="true"></section>
+  <section id="systems" class="placeholder-section" aria-hidden="true"></section>
+  <section id="artifacts" class="placeholder-section" aria-hidden="true"></section>
+  <section id="oracle" class="placeholder-section" aria-hidden="true"></section>
+
+  <!-- Three.js + your script -->
+  <script src="https://unpkg.com/three@0.161.0/build/three.min.js"></script>
+  <script src="scripts.js"></script>
 </body>
 </html>
