@@ -21,7 +21,7 @@
     --nav-height: 5.5rem;
     --panel-max-width: min(560px, 85vw);
     --panel-radius: 18px;
-    --header-compact-scale: 0.85;
+    --header-compact-scale: 0.86;
     
     /* Sophisticated motion system */
     --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
@@ -176,11 +176,13 @@ body {
     transition: all 0.5s var(--ease-out-expo);
     transform: scale(var(--header-scale));
     opacity: var(--header-opacity);
+    transform-origin: center top;
 }
 
 .header-layer--compact {
-    --header-scale: 0.85;
-    --header-opacity: 0.78;
+    --header-scale: 0.86;
+    --header-opacity: 0.82;
+    transform: translateY(-0.35rem) scale(var(--header-scale));
 }
 
 .header-inner {
@@ -265,13 +267,14 @@ body {
 .link::after {
     content: '';
     position: absolute;
-    top: 100%;
+    top: calc(100% + 0.35rem);
     left: 50%;
     width: var(--link-underline);
     height: 1px;
+    border-radius: 999px;
     background: currentColor;
     transform: translateX(-50%);
-    transition: width 0.4s var(--ease-out-expo);
+    transition: width 0.35s var(--ease-out-expo);
 }
 
 .link:hover,
@@ -297,6 +300,12 @@ body {
     position: fixed;
     inset: 0;
     z-index: var(--z-base);
+    transition: filter 0.45s var(--ease-out-expo), opacity 0.45s var(--ease-out-expo);
+}
+
+.viewport--dimmed {
+    filter: blur(1.5px) saturate(0.9);
+    opacity: 0.82;
 }
 
 #artifact-canvas {
@@ -309,24 +318,20 @@ body {
     transform: translateZ(0);
 }
 
-.viewport--dimmed #artifact-canvas {
-    opacity: 0.7;
-}
-
-/* ===== CHAMBER PANEL ===== */
+/* ===== CHAMBER PANEL - FIXED CLOSING BEHAVIOR ===== */
 .chamber-panel {
-    --panel-opacity: 0;
-    --panel-visibility: hidden;
-    
     position: absolute;
     inset: 0;
     z-index: var(--z-modal);
     display: flex;
     align-items: center;
     justify-content: center;
-    pointer-events: var(--panel-visibility);
-    opacity: var(--panel-opacity);
-    transition: opacity 0.45s var(--ease-out-expo);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition: opacity 0.45s var(--ease-out-expo), visibility 0s linear 0.45s;
     background: radial-gradient(
         circle at top center,
         rgba(234, 232, 227, 0.4) 0%,
@@ -336,14 +341,17 @@ body {
 }
 
 .chamber-panel[aria-hidden="false"] {
-    --panel-opacity: 1;
-    --panel-visibility: auto;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.45s var(--ease-out-expo), visibility 0s;
 }
 
 .chamber-panel__scrim {
     position: absolute;
     inset: 0;
     background: transparent;
+    pointer-events: auto;
 }
 
 .chamber-surface {
@@ -366,6 +374,7 @@ body {
     transform: translateY(12px) scale(0.995);
     transition: all 0.5s var(--ease-out-expo);
     opacity: 0;
+    pointer-events: auto;
 }
 
 .chamber-panel[aria-hidden="false"] .chamber-surface {
@@ -431,33 +440,36 @@ body {
     margin-top: 0.875rem;
 }
 
-/* ===== DEPTH VIEW ===== */
+/* ===== DEPTH VIEW - FIXED CLOSING BEHAVIOR ===== */
 .depth-view {
-    --depth-opacity: 0;
-    --depth-visibility: hidden;
-    
     position: absolute;
     inset: 0;
     z-index: var(--z-modal);
     display: flex;
     align-items: center;
     justify-content: center;
-    pointer-events: var(--depth-visibility);
-    opacity: var(--depth-opacity);
-    transition: opacity 0.45s var(--ease-out-expo);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition: opacity 0.45s var(--ease-out-expo), visibility 0s linear 0.45s;
     background: rgba(234, 232, 227, 0.92);
     backdrop-filter: blur(1px);
 }
 
 .depth-view[aria-hidden="false"] {
-    --depth-opacity: 1;
-    --depth-visibility: auto;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.45s var(--ease-out-expo), visibility 0s;
 }
 
 .depth-view__scrim {
     position: absolute;
     inset: 0;
     background: transparent;
+    pointer-events: auto;
 }
 
 .depth-surface {
@@ -478,6 +490,7 @@ body {
     transform: translateY(16px) scale(0.99);
     transition: all 0.5s var(--ease-out-expo);
     opacity: 0;
+    pointer-events: auto;
 }
 
 .depth-view[aria-hidden="false"] .depth-surface {
@@ -591,6 +604,10 @@ body {
         transform: none !important;
         transition: opacity 0.3s ease !important;
     }
+    
+    .viewport--dimmed {
+        filter: none !important;
+    }
 }
 
 /* ===== RESPONSIVE REFINEMENTS ===== */
@@ -650,9 +667,4 @@ body {
     .noise-overlay {
         opacity: 0.04;
     }
-}
-
-/* Dark mode consideration (optional future enhancement) */
-@media (prefers-color-scheme: dark) {
-    /* Base for future dark mode */
 }
