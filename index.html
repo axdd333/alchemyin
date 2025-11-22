@@ -2,9 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alchemy</title>
-    
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    >
+    <title>Alchemy · So the Model Holds</title>
+    <meta
+      name="description"
+      content="Alchemy – a systems institute for tools, infrastructure, and artifacts built so the model holds."
+    >
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -12,46 +19,125 @@
       rel="stylesheet"
     >
 
-    <!-- Three.js for the artifact -->
+    <!-- Core 3D engine -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
-    
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- Grain / noise -->
-    <div class="noise-overlay"></div>
+    <!-- Atmospheric grain -->
+    <div class="noise-overlay" aria-hidden="true"></div>
 
-    <!-- Top inscription -->
-    <header class="header-layer">
-        <h1 class="brand-mark">Alchemy</h1>
-        <p class="brand-sub">So the Model Holds</p>
+    <!-- Central vertical axis (structural, almost invisible) -->
+    <div class="axis-line" aria-hidden="true"></div>
+
+    <!-- Top inscription / institutional header -->
+    <header class="header-layer" role="banner">
+        <div class="header-inner">
+            <h1 class="brand-mark">Alchemy</h1>
+            <p class="brand-sub">So the Model Holds</p>
+        </div>
     </header>
 
-    <!-- Void + artifact -->
-    <main class="viewport">
-        <canvas id="artifact-canvas"></canvas>
+    <!-- Void and all interactive surfaces -->
+    <main class="viewport" id="core-environment" aria-label="Alchemy core environment">
+        <canvas
+          id="artifact-canvas"
+          aria-hidden="true"
+        ></canvas>
 
-        <!-- Chamber panel (hidden by default) -->
-        <section id="chamber-panel" class="chamber-panel chamber-panel--hidden" aria-hidden="true">
-            <div class="chamber-surface">
-                <button class="chamber-close" type="button" aria-label="Close">
+        <!-- Chamber panel (section-level briefing) -->
+        <section
+          id="chamber-panel"
+          class="chamber-panel chamber-panel--hidden"
+          aria-hidden="true"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chamber-title"
+        >
+            <article class="chamber-surface">
+                <button
+                  class="chamber-close"
+                  type="button"
+                  aria-label="Close chamber"
+                >
                     &times;
                 </button>
-                <p class="chamber-label"></p>
-                <h2 class="chamber-title"></h2>
+
+                <header class="chamber-header">
+                    <p class="chamber-label"></p>
+                    <h2 class="chamber-title" id="chamber-title"></h2>
+                </header>
+
                 <div class="chamber-body"></div>
-            </div>
+            </article>
+        </section>
+
+        <!-- Depth view / archive (long-form documents, initially unused) -->
+        <section
+          id="depth-view"
+          class="depth-view depth-view--hidden"
+          aria-hidden="true"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="depth-title"
+        >
+            <article class="depth-surface">
+                <button
+                  class="depth-close"
+                  type="button"
+                  aria-label="Close document"
+                >
+                    &times;
+                </button>
+
+                <header class="depth-header">
+                    <p class="depth-kicker"></p>
+                    <h2 class="depth-title" id="depth-title"></h2>
+                    <p class="depth-subtitle"></p>
+                </header>
+
+                <div class="depth-body"></div>
+            </article>
         </section>
     </main>
 
-    <!-- Bottom nav (four rooms) -->
-    <nav class="nav-layer">
+    <!-- Bottom navigation: four operations / divisions -->
+    <nav class="nav-layer" aria-label="Primary">
         <ul class="nav-links">
-            <li><a href="#philosophy" class="link" data-chamber="philosophy">Philosophy</a></li>
-            <li><a href="#systems" class="link" data-chamber="systems">Systems</a></li>
-            <li><a href="#artifacts" class="link" data-chamber="artifacts">Artifacts</a></li>
-            <li><a href="#oracle" class="link" data-chamber="oracle">Oracle</a></li>
+            <li>
+                <a
+                  href="#philosophy"
+                  class="link"
+                  data-chamber="philosophy"
+                  data-route="philosophy"
+                >Philosophy</a>
+            </li>
+            <li>
+                <a
+                  href="#systems"
+                  class="link"
+                  data-chamber="systems"
+                  data-route="systems"
+                >Systems</a>
+            </li>
+            <li>
+                <a
+                  href="#artifacts"
+                  class="link"
+                  data-chamber="artifacts"
+                  data-route="artifacts"
+                >Artifacts</a>
+            </li>
+            <li>
+                <a
+                  href="#oracle"
+                  class="link"
+                  data-chamber="oracle"
+                  data-route="oracle"
+                >Oracle</a>
+            </li>
         </ul>
     </nav>
 
