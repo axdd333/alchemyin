@@ -7,32 +7,34 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500;1,6..96,600&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <div id="loader"></div>
+    <div class="noise-overlay"></div>
 
-    <header class="ui-header">
-        <h1 class="brand-title">Alchemyin: House of Wisdom</h1>
+    <header class="header-layer">
+        <h1 class="brand-mark">Alchemyin</h1>
+        <p class="brand-sub">House of Wisdom</p>
     </header>
 
     <main class="viewport">
-        <canvas id="webgl-canvas"></canvas>
+        <canvas id="artifact-canvas"></canvas>
     </main>
 
-    <nav class="ui-nav">
-        <ul class="nav-list">
-            <li><a href="#philosophy" class="nav-link">Philosophy</a></li>
-            <li><a href="#systems" class="nav-link">Systems</a></li>
-            <li><a href="#artifacts" class="nav-link">Artifacts</a></li>
-            <li><a href="#oracle" class="nav-link">Oracle</a></li>
+    <nav class="nav-layer">
+        <ul class="nav-links">
+            <li><a href="#philosophy" class="link" data-text="Philosophy">Philosophy</a></li>
+            <li><a href="#systems" class="link" data-text="Systems">Systems</a></li>
+            <li><a href="#artifacts" class="link" data-text="Artifacts">Artifacts</a></li>
+            <li><a href="#oracle" class="link" data-text="Oracle">Oracle</a></li>
         </ul>
     </nav>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>
