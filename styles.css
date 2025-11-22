@@ -1,154 +1,237 @@
-:root {
-    /* The Palette of "Nothingness" */
-    --void-bg: #EAE8E3; 
-    --void-fog: #EAE8E3; 
-    --ink: #0F0F0F;    
-    --ink-sub: rgba(15, 15, 15, 0.4);
-    --nav-height: 120px;
+/* styles.css */
+/* ALCHEMYIN · HOUSE OF WISDOM
+ * Cream stone, quiet type, computational temple
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: var(--void-bg);
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    color: var(--ink);
-    cursor: crosshair;
+  min-height: 100vh;
+  background: #f7f3eb;
+  color: #111111;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", sans-serif;
 }
 
-/* LOADER: Essential for the "Reveal" */
+/* Subtle paper / stone texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.25;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.13'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+/* Loader veil */
+
 #loader {
-    position: fixed;
-    inset: 0;
-    background-color: var(--void-bg);
-    z-index: 100;
-    transition: opacity 1.5s ease-in-out, visibility 1.5s;
-    opacity: 1;
-    visibility: visible;
+  position: fixed;
+  inset: 0;
+  background: #f7f3eb;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 900ms ease;
 }
 
 #loader.loaded {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+  opacity: 0;
 }
 
-.noise-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    opacity: 0.06;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* Top lockup */
+
+.site-header {
+  position: relative;
+  z-index: 5;
+  padding: 2.4rem 1.5rem 1.2rem;
+  text-align: center;
 }
 
-.header-layer {
-    position: fixed;
-    top: 5vh;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    z-index: 10;
-    pointer-events: none;
-    mix-blend-mode: difference;
-    color: #fff;
+.logo-lockup {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.brand-mark {
-    font-family: 'Bodoni Moda', serif;
-    font-style: italic;
-    font-weight: 500;
-    font-size: clamp(2rem, 3vw, 3rem);
-    letter-spacing: -0.03em;
-    margin-bottom: 0.2rem;
-    opacity: 0;
-    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+.logo-script {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
 }
 
-.brand-sub {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    opacity: 0;
-    animation: fadeDescend 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.7s;
+.logo-tagline {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
-.nav-layer {
-    position: fixed;
-    bottom: 6vh;
-    left: 0;
-    width: 100%;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
+/* Hero / sanctum */
+
+.hero {
+  position: relative;
+  height: calc(100vh - 10rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 6vw;
+/* Canvases behind content */
+
+#temple-canvas,
+#wisdom-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-.link {
-    text-decoration: none;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--ink);
-    opacity: 0.4;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    padding: 10px 0;
+#temple-canvas {
+  z-index: 1;
 }
 
-.link:hover {
-    opacity: 1;
-    letter-spacing: 0.3em;
+#wisdom-field {
+  z-index: 2;
+  opacity: 0.35;
 }
 
-.link::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    width: 0;
-    height: 1px;
-    background: var(--ink);
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    transform: translateX(-50%);
+/* Hero content */
+
+.hero-inner {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  padding: 3rem 1.5rem;
 }
 
-.link:hover::after {
-    width: 100%;
+/* Temple glyph in 2D */
+
+.temple-mark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.8rem;
 }
 
-.viewport {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
+.temple-mark .arch {
+  display: block;
+  width: 5rem;
+  height: 2.7rem;
+  border: 1.3px solid #111111;
+  border-bottom: none;
+  border-radius: 999px 999px 0 0;
 }
 
-#artifact-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    outline: none;
+.temple-mark .pillars {
+  position: relative;
+  display: block;
+  width: 4rem;
+  height: 2.4rem;
+  margin-top: 0.22rem;
 }
 
-@keyframes fadeDescend {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+.temple-mark .pillars::before,
+.temple-mark .pillars::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.1px;
+  background: #111111;
+}
+
+.temple-mark .pillars::before {
+  left: 0;
+}
+
+.temple-mark .pillars::after {
+  right: 0;
+}
+
+/* Hero typography */
+
+.hero-title {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 2.2vw + 1rem, 2.4rem);
+  letter-spacing: 0.05em;
+  margin: 0 0 0.9rem;
+}
+
+.hero-subtitle {
+  max-width: 30rem;
+  margin: 0 auto;
+  font-size: 0.78rem;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Bottom nav */
+
+.bottom-nav {
+  position: relative;
+  z-index: 5;
+  padding: 1.75rem 1.5rem 2.4rem;
+}
+
+.bottom-nav nav {
+  display: flex;
+  justify-content: center;
+  gap: 3.75rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.bottom-nav a:hover {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* Placeholder sections (for now just space anchors) */
+
+.placeholder-section {
+  height: 0;
+}
+
+/* Responsive tweaks */
+
+@media (max-width: 768px) {
+  .site-header {
+    padding-top: 1.8rem;
+  }
+
+  .logo-script {
+    font-size: 1.7rem;
+  }
+
+  .hero {
+    height: calc(100vh - 9rem);
+  }
+
+  .bottom-nav nav {
+    gap: 1.8rem;
+    font-size: 0.7rem;
+  }
 }
