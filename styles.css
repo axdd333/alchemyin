@@ -1,27 +1,12 @@
 :root {
-    /* Sacred unit / grid */
-    --unit: 24px;
-
-    /* Palette */
-    --void-bg: #EAE8E3; /* Bone / cold limestone */
-    --void-fog: #EAE8E3;
-    --ink: #0F0F0F;
-    --ink-sub: rgba(15, 15, 15, 0.45);
-
-    /* Surfaces */
-    --card-bg-inner: rgba(255, 255, 255, 0.94);
-    --card-bg-outer: #f5f1ea;
-
-    /* Sizes */
-    --nav-height: 5.5rem;
-    --panel-max-width: 560px;
-    --panel-radius: 18px;
-
-    /* Motion */
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    /* Page + material palette */
+    --page-bg: #e3dfd7;   /* surrounding stone */
+    --card-bg: #f7f3eb;   /* cardstock */
+    --card-edge: rgba(15, 13, 10, 0.12);
+    --card-shadow: 0 26px 60px rgba(0, 0, 0, 0.10);
+    --ink: #15110d;
+    --ink-soft: rgba(21, 17, 13, 0.6);
 }
-
-/* Reset */
 
 *,
 *::before,
@@ -35,477 +20,197 @@ html,
 body {
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    background-color: var(--void-bg);
 }
-
-/* Base body */
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--page-bg);
     color: var(--ink);
-    cursor: crosshair;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
 }
 
-/* Grain overlay */
-
+/* Very subtle global grain */
 .noise-overlay {
     position: fixed;
     inset: 0;
-    z-index: 50;
-    opacity: 0.06;
     pointer-events: none;
+    z-index: 1;
+    opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Very subtle central axis */
+/* Header */
 
-.axis-line {
+.header {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 1px;
-    pointer-events: none;
-    z-index: 2;
-    background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(15, 15, 15, 0.06) 12%,
-        rgba(15, 15, 15, 0.04) 88%,
-        transparent 100%
-    );
-    opacity: 0.35;
-    mix-blend-mode: multiply;
-}
-
-/* ========================================
-   HEADER & LOGO STATES (THE OCD FIX)
-   ========================================
-*/
-
-.header-layer {
-    position: fixed;
-    top: calc(3.5 * var(--unit));
+    top: 5vh;
     left: 0;
     width: 100%;
-    z-index: 60; /* Higher than panels (20/25) */
+    display: flex;
+    justify-content: center;
+    z-index: 5;
     pointer-events: none;
-    text-align: center;
-    
-    /* Default Hero State: White, Blend Mode Difference */
-    color: #ffffff; 
-    mix-blend-mode: difference;
-    
-    transition:
-        transform 0.5s var(--ease-out),
-        color 0.3s ease,
-        opacity 0.3s ease;
 }
 
 .header-inner {
-    display: inline-block;
-    padding-inline: calc(var(--unit) * 0.75);
+    text-align: center;
 }
 
-.brand-mark {
-    font-family: 'Bodoni Moda', serif;
+.brand {
+    font-family: "Bodoni Moda", serif;
     font-style: italic;
     font-weight: 400;
-    font-size: clamp(2.2rem, 3vw, 3rem);
     letter-spacing: -0.02em;
-    margin-bottom: 0.2rem;
-    
-    /* Animation for initial load */
-    opacity: 0;
-    animation: fadeDescend 1.5s var(--ease-out) forwards 0.5s;
-
-    /* Transition for state change */
-    transition:
-        font-size 0.4s var(--ease-out),
-        letter-spacing 0.4s var(--ease-out),
-        margin 0.4s var(--ease-out);
+    font-size: clamp(2.1rem, 3vw, 3rem);
 }
 
 .brand-sub {
+    margin-top: 0.25rem;
     font-size: 0.75rem;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
-    letter-spacing: 0.3em;
-    
-    opacity: 0;
-    animation: fadeDescend 1.5s var(--ease-out) forwards 0.7s;
-
-    transition:
-        font-size 0.4s var(--ease-out),
-        letter-spacing 0.4s var(--ease-out),
-        opacity 0.4s var(--ease-out);
+    color: var(--ink-soft);
 }
 
-/* ----------------------------------------
-   COMPACT STATE (When Card is Open)
-   ----------------------------------------
-   Triggered by body classes: .chamber-open or .depth-open
-*/
-
-body.chamber-open .header-layer,
-body.depth-open .header-layer {
-    /* Slide up slightly */
-    transform: translateY(-20px);
-    
-    /* Turn OFF difference mode so it sits cleanly on the paper card */
-    mix-blend-mode: normal;
-    
-    /* Turn BLACK (Ink) to be visible on paper */
-    color: var(--ink);
-}
-
-body.chamber-open .brand-mark,
-body.depth-open .brand-mark {
-    /* Force the "Institutional" Look */
-    font-size: 1.5rem !important;
-    font-style: normal !important; /* Removes Italic */
-    letter-spacing: 0.05em !important; /* Tighter tracking */
-    margin-bottom: 0px !important;
-}
-
-body.chamber-open .brand-sub,
-body.depth-open .brand-sub {
-    font-size: 0.6rem !important;
-    letter-spacing: 0.15em !important;
-    opacity: 0.6 !important;
-}
-
-/* ======================================== */
-
-/* BOTTOM NAV */
-
-.nav-layer {
-    position: fixed;
-    bottom: calc(2.5 * var(--unit));
-    left: 0;
-    width: 100%;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 6vw;
-}
-
-.link {
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--ink);
-    opacity: 0.4;
-    padding: 10px 0;
-    position: relative;
-    transition:
-        opacity 0.35s var(--ease-out),
-        letter-spacing 0.4s var(--ease-out),
-        transform 0.3s var(--ease-out);
-}
-
-.link::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    width: 0;
-    height: 1px;
-    background: var(--ink);
-    transform: translateX(-50%);
-    transition: width 0.4s var(--ease-out);
-}
-
-.link:hover {
-    opacity: 1;
-    letter-spacing: 0.28em;
-}
-
-.link:hover::after {
-    width: 100%;
-}
-
-/* Active nav (current chamber) */
-.link.active {
-    opacity: 1;
-}
-
-.link.active::after {
-    width: 100%;
-}
-
-/* Slight dim when chamber open */
-
-body.chamber-open .nav-layer,
-body.chamber-open .header-layer {
-    /* We handle header opacity in the specific header block now, 
-       so only dim nav here if you want */
-}
-
-body.chamber-open .noise-overlay {
-    opacity: 0.075;
-}
-
-/* VIEWPORT / ARTIFACT */
+/* 3D viewport + card */
 
 .viewport {
     position: fixed;
     inset: 0;
-    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    overflow: hidden;
 }
 
 #artifact-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    outline: none;
-    transition: opacity 0.4s ease;
-}
-
-body.chamber-open #artifact-canvas,
-body.depth-open #artifact-canvas {
-    opacity: 0.4; /* Dim background more so card pops */
-}
-
-/* CHAMBER PANEL */
-
-.chamber-panel {
     position: absolute;
     inset: 0;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.45s ease;
-    background: radial-gradient(circle at top, rgba(234, 232, 227, 0.45), rgba(234, 232, 227, 0.75));
-}
-
-.chamber-panel--hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.chamber-panel--visible {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.chamber-surface {
-    position: relative;
-    max-width: var(--panel-max-width);
     width: 100%;
-    margin-inline: calc(var(--unit) * 0.75);
-    padding: calc(var(--unit) * 0.7) calc(var(--unit) * 0.75) calc(var(--unit) * 0.8);
-    border-radius: var(--panel-radius);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    background: radial-gradient(circle at top, var(--card-bg-inner), var(--card-bg-outer));
-    box-shadow:
-      0 30px 60px rgba(0, 0, 0, 0.08),
-      0 0 0 1px rgba(255, 255, 255, 0.65);
-    transform: translateY(10px);
-    transition: transform 0.5s var(--ease-out);
+    height: 100%;
+    display: block;
+    outline: none;
+    z-index: 0;
 }
 
-.chamber-panel--visible .chamber-surface {
-    transform: translateY(0);
+/* Card as physical object */
+
+.card {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    width: 100%;
+    margin: 0 1.5rem;
+    padding: 2.1rem 2.4rem 2.3rem;
+    background: radial-gradient(circle at top, #fbf7f0 0%, var(--card-bg) 52%, #f4efe6 100%);
+    border-radius: 18px;
+    border: 1px solid var(--card-edge);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(1px);
 }
 
-/* Chamber close button */
+/* Card typography */
 
-.chamber-close {
-    position: absolute;
-    top: 0.9rem;
-    right: 1.1rem;
-    border: none;
-    background: transparent;
-    font-size: 1.3rem;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--ink-sub);
-    padding: 0.1rem 0.3rem;
-    transition: color 0.2s ease;
-}
-
-.chamber-close:hover {
-    color: var(--ink);
-}
-
-/* Chamber typography */
-
-.chamber-header {
+.card-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ink-soft);
     margin-bottom: 0.7rem;
 }
 
-.chamber-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.23em;
-    color: var(--ink-sub);
-    margin-bottom: 0.4rem;
-}
-
-.chamber-title {
-    font-family: 'Bodoni Moda', serif;
+.card-title {
+    font-family: "Bodoni Moda", serif;
     font-style: italic;
     font-weight: 400;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     letter-spacing: -0.01em;
+    margin-bottom: 0.85rem;
 }
 
-.chamber-body {
-    font-size: 0.9rem;
-    line-height: 1.7;
+.card-body {
+    font-size: 0.92rem;
+    line-height: 1.75;
     color: var(--ink);
+}
+
+.card-body p + p {
     margin-top: 0.7rem;
 }
 
-.chamber-body p + p {
-    margin-top: 0.7rem;
-}
+/* Bottom navigation */
 
-/* DEPTH VIEW (long-form docs, archive) */
-
-.depth-view {
-    position: absolute;
-    inset: 0;
-    z-index: 25;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.45s ease;
-    background: rgba(234, 232, 227, 0.9);
-}
-
-.depth-view--hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.depth-view--visible {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.depth-surface {
-    position: relative;
-    max-width: 720px;
+.nav {
+    position: fixed;
+    bottom: 6vh;
+    left: 0;
     width: 100%;
-    max-height: calc(100vh - 2.5 * var(--unit));
-    margin-inline: calc(var(--unit) * 0.75);
-    padding: calc(var(--unit) * 0.9) calc(var(--unit) * 0.9) calc(var(--unit));
-    border-radius: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    background: #f7f3ec;
-    box-shadow:
-      0 32px 70px rgba(0, 0, 0, 0.09),
-      0 0 0 1px rgba(255, 255, 255, 0.7);
-    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    z-index: 5;
 }
 
-.depth-close {
-    position: absolute;
-    top: 1rem;
-    right: 1.2rem;
-    border: none;
-    background: transparent;
-    font-size: 1.4rem;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--ink-sub);
-    padding: 0.1rem 0.35rem;
-    transition: color 0.2s ease;
+.nav-list {
+    list-style: none;
+    display: flex;
+    gap: 5vw;
 }
 
-.depth-close:hover {
-    color: var(--ink);
-}
-
-.depth-header {
-    margin-bottom: 1.1rem;
-}
-
-.depth-kicker {
-    font-size: 0.7rem;
+.nav-link {
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--ink-sub);
-    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+    position: relative;
+    padding-bottom: 0.3rem;
+    transition: color 0.3s ease, letter-spacing 0.3s ease, opacity 0.3s ease;
 }
 
-.depth-title {
-    font-family: 'Bodoni Moda', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: 1.5rem;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.3rem;
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: var(--ink);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
 }
 
-.depth-subtitle {
-    font-size: 0.85rem;
-    color: var(--ink-sub);
+.nav-link:hover {
+    color: var(--ink);
+    letter-spacing: 0.3em;
 }
 
-.depth-body {
-    font-size: 0.9rem;
-    line-height: 1.8;
-    margin-top: 1rem;
+.nav-link:hover::after {
+    width: 100%;
 }
 
-.depth-body h3 {
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: 0.08em;
-    margin-top: 1.3rem;
-    margin-bottom: 0.4rem;
+.nav-link--active {
+    color: var(--ink);
+    opacity: 1;
 }
 
-.depth-body p + p {
-    margin-top: 0.7rem;
+.nav-link--active::after {
+    width: 100%;
 }
 
-/* Animations */
-
-@keyframes fadeDescend {
-    from { opacity: 0; transform: translateY(-20px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive */
+/* Responsive tweaks */
 
 @media (max-width: 768px) {
-    .nav-links {
+    .nav-list {
         gap: 3vw;
     }
 
-    .brand-mark {
-        font-size: 1.9rem;
+    .card {
+        padding: 1.8rem 1.7rem 2rem;
     }
 
-    .chamber-surface {
-        padding: calc(var(--unit) * 0.6);
-    }
-
-    .chamber-title {
-        font-size: 1.25rem;
-    }
-
-    .depth-surface {
-        max-height: calc(100vh - 2 * var(--unit));
-        padding: calc(var(--unit) * 0.7);
+    .card-title {
+        font-size: 1.42rem;
     }
 }
