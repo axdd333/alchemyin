@@ -1,138 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alchemyin: House of Wisdom</title>
-    
-    <meta name="description" content="Alchemyin is a small, quiet studio for philosophy, systems, artifacts, and the oracle layer of decision making.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alchemyin: House of Wisdom</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    >
+  <meta name="description"
+        content="Alchemyin is a small, quiet studio for philosophy, systems, artifacts, and the oracle layer of decision making.">
 
-    <!-- Three.js for the artifact -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
-    <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Three.js for the artifact -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
 </head>
 <body>
 
-    <!-- Subtle noise over everything -->
-    <div class="noise-overlay"></div>
+  <!-- Subtle grain -->
+  <div class="noise-overlay"></div>
 
-    <!-- Top inscription -->
-    <header class="header-layer">
-        <h1 class="brand-mark">Alchemyin</h1>
-        <p class="brand-sub">House of Wisdom</p>
-    </header>
+  <!-- Top inscription -->
+  <header class="header-layer">
+    <h1 class="brand-mark">Alchemyin</h1>
+    <p class="brand-sub">HOUSE OF WISDOM</p>
+  </header>
 
-    <!-- Main viewport containing 3D artifact and the four "rooms" -->
-    <main class="viewport">
-        <!-- 3D artifact background -->
-        <canvas id="artifact-canvas"></canvas>
+  <!-- Main viewport with artifact + scroll column -->
+  <main class="viewport">
+    <!-- 3D artifact (very subtle) -->
+    <canvas id="artifact-canvas"></canvas>
 
-        <!-- Central content column (the chambers) -->
-        <div class="content-column">
-            <!-- Intro / foyer -->
-            <section class="section section--intro">
-                <p class="section-label">Foyer</p>
-                <h2 class="section-title">A quiet room for serious work.</h2>
-                <p class="section-body">
-                    Alchemyin is a small, independent studio at the intersection of philosophy,
-                    systems design, and instrument building. The outer surface looks minimal.
-                    The inner surface is all detail: notation, structure, and long term thinking.
-                </p>
-            </section>
+    <!-- Central column = the four chambers -->
+    <div class="content-column">
+      <!-- FOYER -->
+      <section class="section section--intro">
+        <p class="section-label">Foyer</p>
+        <h2 class="section-title section-title--italic">
+          A quiet room for serious work.
+        </h2>
+        <p class="section-body">
+          Alchemyin is a small, independent studio at the intersection of philosophy,
+          systems design, and instrument building. The outer surface looks minimal.
+          The inner surface is all detail: notation, structure, and long-term thinking.
+        </p>
+      </section>
 
-            <!-- PHILOSOPHY -->
-            <section id="philosophy" class="section">
-                <p class="section-label">Chamber I</p>
-                <h2 class="section-title">Philosophy</h2>
-                <p class="section-body">
-                    Every system inherits a worldview, whether it admits it or not. This chamber
-                    is where we make that explicit. We work with questions of value, time,
-                    responsibility, and power: who is this tool for, what does it conserve,
-                    and what does it quietly destroy.
-                </p>
-                <p class="section-body">
-                    Instead of slogans, we prefer clear frames: tradeoff diagrams, failure
-                    modes, long horizon consequences. The output of this room is language,
-                    diagrams, and decision criteria that the rest of the project can lean on.
-                </p>
-            </section>
+      <!-- CHAMBER I – PHILOSOPHY -->
+      <section id="philosophy" class="section">
+        <p class="section-label">Chamber I</p>
+        <h2 class="section-title section-title--italic">Philosophy</h2>
+        <p class="section-body">
+          Every system inherits a worldview, whether it admits it or not. This chamber
+          is where we make that explicit. We work with questions of value, time,
+          responsibility, and power: who is this tool for, what does it conserve,
+          and what does it quietly destroy.
+        </p>
+        <p class="section-body">
+          The output here is not slogans but frames: trade-off diagrams, failure modes,
+          long-horizon consequences. The goal is language and structure that the rest
+          of the work can lean on without collapsing.
+        </p>
+      </section>
 
-            <!-- SYSTEMS -->
-            <section id="systems" class="section">
-                <p class="section-label">Chamber II</p>
-                <h2 class="section-title">Systems</h2>
-                <p class="section-body">
-                    Here we move from ideas to architecture. Interfaces, protocols, automation,
-                    feedback loops, observability, and the quiet glue between them. We design
-                    systems that can be explained, maintained, and extended without theatrics.
-                </p>
-                <p class="section-body">
-                    Sometimes this looks like shaping workflows for a small team. Sometimes it
-                    looks like mapping an entire product surface as a state machine. Sometimes
-                    it means saying no to an extra feature to keep the system legible.
-                </p>
-            </section>
+      <!-- CHAMBER II – SYSTEMS -->
+      <section id="systems" class="section">
+        <p class="section-label">Chamber II</p>
+        <h2 class="section-title section-title--italic">Systems</h2>
+        <p class="section-body">
+          Here, ideas turn into architecture. Interfaces, protocols, automation,
+          feedback loops, observability, and the quiet glue between them. We design
+          systems that can be explained, maintained, and extended without theatrics.
+        </p>
+        <p class="section-body">
+          Sometimes this looks like a small team workflow. Sometimes it is a full product
+          surface mapped as a state machine. Often it means protecting legibility instead
+          of chasing one more feature.
+        </p>
+      </section>
 
-            <!-- ARTIFACTS -->
-            <section id="artifacts" class="section">
-                <p class="section-label">Chamber III</p>
-                <h2 class="section-title">Artifacts</h2>
-                <p class="section-body">
-                    Every decision eventually condenses into an artifact: a device, a tool,
-                    a dashboard, a document, a protocol, a tiny script. This chamber is about
-                    executing those with disproportionate care.
-                </p>
-                <p class="section-body">
-                    We build small things first: reference UIs, internal tools, survival
-                    devices, instrumentation. The focus is on ergonomics and longevity.
-                    No decoration, no theatrics, just surfaces that age well and stay coherent.
-                </p>
-            </section>
+      <!-- CHAMBER III – ARTIFACTS -->
+      <section id="artifacts" class="section">
+        <p class="section-label">Chamber III</p>
+        <h2 class="section-title section-title--italic">Artifacts</h2>
+        <p class="section-body">
+          Every decision eventually condenses into an artifact: a device, a tool, a
+          dashboard, a document, a protocol, a small script. This chamber is about
+          executing those with disproportionate care.
+        </p>
+        <p class="section-body">
+          The focus is on ergonomics and longevity. Surfaces that age well, avoid noise,
+          and make it obvious what matters. No decoration for its own sake—only form
+          that earns its place.
+        </p>
+      </section>
 
-            <!-- ORACLE -->
-            <section id="oracle" class="section section--oracle">
-                <p class="section-label">Chamber IV</p>
-                <h2 class="section-title">Oracle</h2>
-                <p class="section-body">
-                    The oracle layer is where everything feeds back into decision making.
-                    Simulations, scenario maps, forecasting tools, and slow, deliberate
-                    counsel for people who actually carry responsibility.
-                </p>
-                <p class="section-body">
-                    This is not prediction theater. It is structured doubt, sensitivity
-                    analysis, and a place to ask better questions before committing to
-                    irreversible moves.
-                </p>
-            </section>
+      <!-- CHAMBER IV – ORACLE -->
+      <section id="oracle" class="section section--oracle">
+        <p class="section-label">Chamber IV</p>
+        <h2 class="section-title">Oracle</h2>
+        <p class="section-body">
+          The oracle layer is where everything feeds back into decision making:
+          simulations, scenario maps, forecasting tools, and slow, deliberate counsel
+          for people who actually carry responsibility.
+        </p>
+        <p class="section-body">
+          The work here is not prediction theater. It is structured doubt, sensitivity
+          analysis, and a place to ask better questions before committing to moves that
+          are expensive or irreversible.
+        </p>
+      </section>
 
-            <!-- Closing line -->
-            <section class="section section--outro">
-                <p class="section-body">
-                    If you are building something that must remain standing in strange weather,
-                    you are in the right house.
-                </p>
-            </section>
-        </div>
-    </main>
+      <!-- OUTRO -->
+      <section class="section section--outro">
+        <p class="section-body">
+          If you are building something that must remain standing in strange weather,
+          you are in the right house.
+        </p>
+      </section>
+    </div>
+  </main>
 
-    <!-- Bottom navigation - the four rooms -->
-    <nav class="nav-layer">
-        <ul class="nav-links">
-            <li><a href="#philosophy" class="link" data-text="Philosophy">Philosophy</a></li>
-            <li><a href="#systems" class="link" data-text="Systems">Systems</a></li>
-            <li><a href="#artifacts" class="link" data-text="Artifacts">Artifacts</a></li>
-            <li><a href="#oracle" class="link" data-text="Oracle">Oracle</a></li>
-        </ul>
-    </nav>
+  <!-- Bottom navigation: four rooms -->
+  <nav class="nav-layer">
+    <ul class="nav-links">
+      <li><a href="#philosophy" class="link">Philosophy</a></li>
+      <li><a href="#systems" class="link">Systems</a></li>
+      <li><a href="#artifacts" class="link">Artifacts</a></li>
+      <li><a href="#oracle" class="link">Oracle</a></li>
+    </ul>
+  </nav>
 
-    <script src="scripts.js"></script>
+  <script src="scripts.js"></script>
 </body>
 </html>
