@@ -1,16 +1,9 @@
 /**
- * ALCHEMYIN CORE OS v2.0
- * Precision-refined void environment with enhanced orchestration
+ * ALCHEMYIN CORE OS v2.1
+ * Precision-refined with fixed modal behavior and enhanced interactions
  */
 
-// Feature detection and progressive enhancement
-const SUPPORTS = {
-    cssVariables: typeof CSS !== 'undefined' && CSS.supports && CSS.supports('color', 'var(--test)'),
-    importMaps: 'importMap' in document.createElement('script'),
-    backdropFilter: typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')
-};
-
-// Enhanced configuration with precision timing
+// Enhanced configuration with refined motion
 const CONFIG = {
     colors: {
         bg: 0xEAE8E3,
@@ -25,14 +18,14 @@ const CONFIG = {
         z: 14
     },
     motion: {
-        parallax: 0.3,
-        lerp: 0.08,
-        artifactSpin: 0.04,
-        coreSpinX: 0.4,
-        coreSpinZ: 0.2,
-        coreBobAmp: 0.08,
-        coreBobFreq: 1.8,
-        particleDrift: 0.02
+        parallax: 0.22,        // Calmer, more refined
+        lerp: 0.09,            // Smoother tracking
+        artifactSpin: 0.035,   // Slower, more intentional
+        coreSpinX: 0.35,
+        coreSpinZ: 0.18,
+        coreBobAmp: 0.07,      // Subtler breathing
+        coreBobFreq: 1.7,      // Slower rhythm
+        particleDrift: 0.018   // More atmospheric
     },
     timing: {
         panelEnter: 500,
@@ -51,7 +44,7 @@ const APP_STATES = {
 };
 
 /**
- * Enhanced VoidExperience with delta timing and performance optimization
+ * Enhanced VoidExperience with refined motion and performance
  */
 class VoidExperience {
     constructor(selector = '#artifact-canvas') {
@@ -76,9 +69,6 @@ class VoidExperience {
         // Enhanced timing with delta
         this.clock = new THREE.Clock();
         this.frameCount = 0;
-        
-        // Performance monitoring
-        this.fps = 60;
         this.lastFrameTime = performance.now();
 
         this.init();
@@ -122,7 +112,6 @@ class VoidExperience {
 
         const directional = new THREE.DirectionalLight(CONFIG.colors.light, 0.5);
         directional.position.set(5, 8, 5);
-        directional.castShadow = false;
         this.scene.add(directional);
 
         // Subtle fill light
@@ -138,15 +127,13 @@ class VoidExperience {
         const lineMat = new THREE.LineBasicMaterial({
             color: CONFIG.colors.object,
             transparent: true,
-            opacity: 0.14,
-            linewidth: 1
+            opacity: 0.14
         });
 
         const heavyMat = new THREE.LineBasicMaterial({
             color: CONFIG.colors.object,
             transparent: true,
-            opacity: 0.78,
-            linewidth: 1.5
+            opacity: 0.78
         });
 
         // ARC - Refined geometry
@@ -183,20 +170,15 @@ class VoidExperience {
         // Enhanced particle system with depth variation
         const count = 180;
         const positions = new Float32Array(count * 3);
-        const sizes = new Float32Array(count);
         
         for (let i = 0; i < count * 3; i += 3) {
             positions[i] = (Math.random() - 0.5) * 25;
             positions[i + 1] = (Math.random() - 0.5) * 25;
             positions[i + 2] = (Math.random() - 0.5) * 25;
-            
-            // Size variation based on depth
-            sizes[i / 3] = Math.random() * 0.03 + 0.01;
         }
 
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
         const mat = new THREE.PointsMaterial({
             color: CONFIG.colors.object,
@@ -312,13 +294,6 @@ class VoidExperience {
         if (this.rafId) {
             cancelAnimationFrame(this.rafId);
         }
-        
-        // Clean up Three.js resources
-        [this.scene, this.renderer].forEach(item => {
-            if (item && typeof item.dispose === 'function') {
-                item.dispose();
-            }
-        });
     }
 }
 
@@ -346,11 +321,6 @@ class AppStateMachine {
                 console.warn(`State listener error (${key}):`, error);
             }
         });
-
-        // Dispatch global event
-        window.dispatchEvent(new CustomEvent('appStateChange', {
-            detail: { state: this.state, previous: this.previousState, data }
-        }));
     }
 
     addListener(key, callback) {
@@ -363,7 +333,7 @@ class AppStateMachine {
 }
 
 /**
- * Enhanced navigation controller with focus management
+ * Enhanced navigation controller
  */
 class NavController {
     constructor({ linkSelector }) {
@@ -374,41 +344,17 @@ class NavController {
 
     bind() {
         this.links.forEach(link => {
-            // Enhanced click handling with debouncing
-            let clickTimeout;
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                
-                if (clickTimeout) return;
-                
-                clickTimeout = setTimeout(() => {
-                    const route = link.dataset.route || link.getAttribute('href').replace('#', '');
-                    if (route) {
-                        this.navigateTo(route);
-                    }
-                    clickTimeout = null;
-                }, 150);
-            });
-
-            // Keyboard navigation support
-            link.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    link.click();
+                const route = link.dataset.route || link.getAttribute('href').replace('#', '');
+                if (route) {
+                    this.navigateTo(route);
                 }
             });
-        });
-
-        // Keyboard navigation between links
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab' && this.activeLink) {
-                this.handleTabNavigation(e);
-            }
         });
     }
 
     navigateTo(route) {
-        // Use History API for cleaner URLs
         if (window.location.hash !== `#${route}`) {
             window.history.pushState({ route }, '', `#${route}`);
             window.dispatchEvent(new HashChangeEvent('hashchange'));
@@ -432,24 +378,10 @@ class NavController {
         this.links.forEach(link => link.classList.remove('link--active'));
         this.activeLink = null;
     }
-
-    handleTabNavigation(e) {
-        const currentIndex = this.links.indexOf(this.activeLink);
-        let nextIndex;
-
-        if (e.shiftKey) {
-            nextIndex = currentIndex > 0 ? currentIndex - 1 : this.links.length - 1;
-        } else {
-            nextIndex = currentIndex < this.links.length - 1 ? currentIndex + 1 : 0;
-        }
-
-        this.links[nextIndex].focus();
-        e.preventDefault();
-    }
 }
 
 /**
- * Enhanced ChamberPanel with improved accessibility
+ * Enhanced ChamberPanel with fixed closing behavior
  */
 class ChamberPanel {
     constructor({ panelSelector, data, onRequestClose }) {
@@ -502,31 +434,7 @@ class ChamberPanel {
             if (e.key === 'Escape') {
                 this.requestClose();
             }
-            
-            if (e.key === 'Tab') {
-                this.trapFocus(e);
-            }
         });
-    }
-
-    trapFocus(e) {
-        const focusableElements = this.getFocusableElements();
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (e.shiftKey && document.activeElement === firstElement) {
-            lastElement.focus();
-            e.preventDefault();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-            firstElement.focus();
-            e.preventDefault();
-        }
-    }
-
-    getFocusableElements() {
-        return Array.from(this.root.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )).filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
     }
 
     requestClose() {
@@ -585,7 +493,7 @@ class ChamberPanel {
 }
 
 /**
- * Enhanced DepthView for document presentation
+ * Enhanced DepthView with fixed closing behavior
  */
 class DepthView {
     constructor({ panelSelector, data, onRequestClose }) {
@@ -636,31 +544,7 @@ class DepthView {
             if (e.key === 'Escape') {
                 this.requestClose();
             }
-            
-            if (e.key === 'Tab') {
-                this.trapFocus(e);
-            }
         });
-    }
-
-    trapFocus(e) {
-        const focusableElements = this.getFocusableElements();
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (e.shiftKey && document.activeElement === firstElement) {
-            lastElement.focus();
-            e.preventDefault();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-            firstElement.focus();
-            e.preventDefault();
-        }
-    }
-
-    getFocusableElements() {
-        return Array.from(this.root.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )).filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
     }
 
     requestClose() {
@@ -805,19 +689,6 @@ class AlchemyApp {
                 this.navigateTo('');
             }
         });
-
-        // Performance monitoring
-        this.setupPerformanceMonitoring();
-    }
-
-    setupPerformanceMonitoring() {
-        if ('connection' in navigator) {
-            const connection = navigator.connection;
-            if (connection.saveData) {
-                // Adjust experience for data-saving mode
-                console.info('Data saving mode enabled - optimizing experience');
-            }
-        }
     }
 
     handleStateChange(newState, oldState) {
@@ -843,22 +714,11 @@ class AlchemyApp {
         if (!this.dom.header) return;
         
         this.dom.header.classList.toggle('header-layer--compact', isCompact);
-        
-        // Update CSS custom property for smooth interpolation
-        this.dom.header.style.setProperty('--header-scale', isCompact ? '0.85' : '1');
-        this.dom.header.style.setProperty('--header-opacity', isCompact ? '0.78' : '1');
     }
 
     hideLoadingState() {
         if (this.dom.loading) {
             this.dom.loading.setAttribute('aria-hidden', 'true');
-            
-            // Remove from DOM after transition
-            setTimeout(() => {
-                if (this.dom.loading.parentNode) {
-                    this.dom.loading.parentNode.removeChild(this.dom.loading);
-                }
-            }, 600);
         }
     }
 
@@ -932,18 +792,9 @@ class AlchemyApp {
         await this.components.depthView.open(id);
         this.setHeaderCompact(true);
     }
-
-    // Cleanup method for SPA navigation
-    destroy() {
-        if (this.components.void) {
-            this.components.void.dispose();
-        }
-        
-        this.stateMachine.removeListener('ui');
-    }
 }
 
-// Enhanced chamber data with refined content
+// Chamber data
 const CHAMBERS = {
     philosophy: {
         label: 'Chamber I · Philosophy',
@@ -979,7 +830,7 @@ const CHAMBERS = {
     }
 };
 
-// Enhanced document structure
+// Document structure
 const DOCUMENTS = {
     'american-favela': {
         kicker: 'Field Note · AF-01',
@@ -1003,22 +854,7 @@ const DOCUMENTS = {
     }
 };
 
-// Enhanced boot sequence with error handling
+// Boot sequence
 window.addEventListener('DOMContentLoaded', () => {
-    // Set up error handling
-    window.addEventListener('error', (e) => {
-        console.error('Global error:', e.error);
-    });
-
-    window.addEventListener('unhandledrejection', (e) => {
-        console.error('Unhandled promise rejection:', e.reason);
-    });
-
-    // Initialize app
     window.ALCHEMY_APP = new AlchemyApp();
 });
-
-// Export for module usage if needed
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { AlchemyApp, VoidExperience, CHAMBERS, DOCUMENTS };
-}
