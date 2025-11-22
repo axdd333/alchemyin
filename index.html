@@ -11,16 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Three.js with import maps for future module migration -->
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-            "three/": "https://cdn.jsdelivr.net/npm/three@0.161.0/"
-        }
-    }
-    </script>
-
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -174,6 +164,7 @@
         <div class="loading-state__spinner" aria-hidden="true"></div>
     </div>
 
-    <script src="scripts.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
