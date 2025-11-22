@@ -4,167 +4,204 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alchemy · So the Model Holds</title>
-    <meta name="description" content="Alchemy – a systems institute for tools, infrastructure, and artifacts built so the model holds.">
+    <meta name="description" content="Alchemy – a systems institute for models that survive contact with reality. A quiet operating surface for tools, infrastructure, and artifacts built so the model holds.">
 
     <!-- Preload critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Progressive enhancement: no-js fallback -->
-    <noscript>
-        <div class="no-js-message">
-            <h1>Alchemy</h1>
-            <p>So the Model Holds</p>
-            <p>JavaScript is required for the full experience.</p>
+    <div class="app-root" data-state="idle">
+        <!-- Void viewport -->
+        <div class="viewport">
+            <canvas id="artifact-canvas" aria-hidden="true"></canvas>
+            <div class="noise-overlay" aria-hidden="true"></div>
         </div>
-    </noscript>
 
-    <!-- Atmospheric grain with reduced motion preference -->
-    <div class="noise-overlay" aria-hidden="true"></div>
+        <!-- Radial field hint -->
+        <div class="field-halo" aria-hidden="true"></div>
 
-    <!-- Central vertical axis with variable opacity -->
-    <div class="axis-line" aria-hidden="true"></div>
+        <!-- Header / Brand lockup -->
+        <header class="header-layer" data-layer="header">
+            <div class="header-inner">
+                <div class="brand-mark">
+                    <span class="brand-wordmark">Alchemy</span>
+                    <span class="brand-subtitle">SO THE MODEL HOLDS</span>
+                </div>
+            </div>
+        </header>
 
-    <!-- Top inscription with enhanced semantic structure -->
-    <header class="header-layer" role="banner">
-        <div class="header-inner">
-            <h1 class="brand-mark">
-                <span class="brand-mark__word">Alchemy</span>
-            </h1>
-            <p class="brand-sub">So the Model Holds</p>
-        </div>
-    </header>
-
-    <!-- Main environment with enhanced accessibility -->
-    <main class="viewport" id="core-environment" aria-label="Alchemy core environment">
-        <canvas
-            id="artifact-canvas"
-            aria-label="Computational artifact visualization"
-            role="img"
-        ></canvas>
-
-        <!-- Chamber panel with enhanced focus management -->
-        <section
-            id="chamber-panel"
-            class="chamber-panel"
-            aria-hidden="true"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="chamber-title"
-            tabindex="-1"
-        >
-            <div class="chamber-panel__scrim" data-close></div>
-            <article class="chamber-surface">
+        <!-- Grid + card plane -->
+        <main class="grid-plane" data-layer="content">
+            <!-- Chamber rail -->
+            <section class="chamber-rail" aria-label="Chambers">
                 <button
-                    class="chamber-close"
-                    type="button"
-                    aria-label="Close chamber panel"
-                    data-close
-                >
-                    <span aria-hidden="true">&times;</span>
-                </button>
-
-                <header class="chamber-header">
-                    <p class="chamber-label" id="chamber-label"></p>
-                    <h2 class="chamber-title" id="chamber-title"></h2>
-                </header>
-
-                <div class="chamber-body" id="chamber-body"></div>
-            </article>
-        </section>
-
-        <!-- Depth view with enhanced document structure -->
-        <section
-            id="depth-view"
-            class="depth-view"
-            aria-hidden="true"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="depth-title"
-            tabindex="-1"
-        >
-            <div class="depth-view__scrim" data-close></div>
-            <article class="depth-surface">
-                <button
-                    class="depth-close"
-                    type="button"
-                    aria-label="Close document view"
-                    data-close
-                >
-                    <span aria-hidden="true">&times;</span>
-                </button>
-
-                <header class="depth-header">
-                    <p class="depth-kicker" id="depth-kicker"></p>
-                    <h2 class="depth-title" id="depth-title"></h2>
-                    <p class="depth-subtitle" id="depth-subtitle"></p>
-                </header>
-
-                <div class="depth-body" id="depth-body"></div>
-            </article>
-        </section>
-    </main>
-
-    <!-- Enhanced navigation with better semantics -->
-    <nav class="nav-layer" aria-label="Primary navigation">
-        <ul class="nav-links" role="list">
-            <li>
-                <a
-                    href="#philosophy"
-                    class="link"
+                    class="chamber-chip"
                     data-chamber="philosophy"
-                    data-route="philosophy"
-                    role="link"
+                    aria-pressed="false"
+                    type="button"
                 >
-                    <span class="link__text">Philosophy</span>
-                </a>
-            </li>
-            <li>
-                <a
-                    href="#systems"
-                    class="link"
-                    data-chamber="systems"
-                    data-route="systems"
-                    role="link"
-                >
-                    <span class="link__text">Systems</span>
-                </a>
-            </li>
-            <li>
-                <a
-                    href="#artifacts"
-                    class="link"
-                    data-chamber="artifacts"
-                    data-route="artifacts"
-                    role="link"
-                >
-                    <span class="link__text">Artifacts</span>
-                </a>
-            </li>
-            <li>
-                <a
-                    href="#oracle"
-                    class="link"
-                    data-chamber="oracle"
-                    data-route="oracle"
-                    role="link"
-                >
-                    <span class="link__text">Oracle</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+                    <span class="chamber-chip__label">Chamber I</span>
+                    <span class="chamber-chip__title">Philosophy</span>
+                </button>
 
-    <!-- Loading state for Three.js -->
-    <div class="loading-state" aria-live="polite" aria-atomic="true">
-        <div class="loading-state__spinner" aria-hidden="true"></div>
+                <button
+                    class="chamber-chip"
+                    data-chamber="systems"
+                    aria-pressed="false"
+                    type="button"
+                >
+                    <span class="chamber-chip__label">Chamber II</span>
+                    <span class="chamber-chip__title">Systems</span>
+                </button>
+
+                <button
+                    class="chamber-chip"
+                    data-chamber="artifacts"
+                    aria-pressed="false"
+                    type="button"
+                >
+                    <span class="chamber-chip__label">Chamber III</span>
+                    <span class="chamber-chip__title">Artifacts</span>
+                </button>
+
+                <button
+                    class="chamber-chip"
+                    data-chamber="oracle"
+                    aria-pressed="false"
+                    type="button"
+                >
+                    <span class="chamber-chip__label">Chamber IV</span>
+                    <span class="chamber-chip__title">Oracle</span>
+                </button>
+            </section>
+
+            <!-- Chamber content panel -->
+            <section
+                class="chamber-panel"
+                data-layer="chamber-panel"
+                aria-hidden="true"
+                aria-live="polite"
+            >
+                <button class="chamber-panel__scrim" type="button" data-action="close-chamber" aria-label="Close chamber"></button>
+                <article class="chamber-surface" role="dialog" aria-modal="true">
+                    <header class="chamber-header">
+                        <div class="chamber-kicker">
+                            <span class="chamber-kicker__label" data-chamber-label></span>
+                            <span class="chamber-kicker__dot">·</span>
+                            <span class="chamber-kicker__name" data-chamber-name></span>
+                        </div>
+                        <button
+                            class="chamber-close"
+                            type="button"
+                            data-action="close-chamber"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h1 class="chamber-title" data-chamber-title></h1>
+                    </header>
+
+                    <div class="chamber-body" data-chamber-body>
+                        <!-- Injected copy -->
+                    </div>
+
+                    <footer class="chamber-footer">
+                        <button
+                            class="depth-link"
+                            type="button"
+                            data-action="open-depth"
+                        >
+                            <span class="depth-link__label">Descend into details</span>
+                        </button>
+                    </footer>
+                </article>
+            </section>
+
+            <!-- Depth document view -->
+            <section
+                class="depth-view"
+                data-layer="depth"
+                aria-hidden="true"
+                aria-live="polite"
+            >
+                <button class="depth-view__scrim" type="button" data-action="close-depth" aria-label="Close document"></button>
+                <article class="depth-surface" role="dialog" aria-modal="true">
+                    <header class="depth-header">
+                        <div class="depth-kicker">
+                            <span class="depth-kicker__label">Document</span>
+                            <span class="depth-kicker__dot">·</span>
+                            <span class="depth-kicker__chamber" data-depth-chamber></span>
+                        </div>
+                        <button
+                            class="depth-close"
+                            type="button"
+                            data-action="close-depth"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h1 class="depth-title" data-depth-title></h1>
+                    </header>
+
+                    <div class="depth-body" data-depth-body>
+                        <!-- Injected document content -->
+                    </div>
+                </article>
+            </section>
+        </main>
+
+        <!-- Lower navigation -->
+        <nav class="primary-nav" aria-label="Primary">
+            <ul class="nav-links" role="list">
+                <li>
+                    <a href="#philosophy"
+                       class="link"
+                       data-nav-target="philosophy"
+                       data-chamber="philosophy"
+                    >
+                        <span class="link__text">Philosophy</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#systems"
+                       class="link link--active"
+                       data-nav-target="systems"
+                       data-chamber="systems"
+                    >
+                        <span class="link__text">Systems</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#artifacts"
+                       class="link"
+                       data-nav-target="artifacts"
+                       data-chamber="artifacts"
+                    >
+                        <span class="link__text">Artifacts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#oracle"
+                       class="link"
+                       data-nav-target="oracle"
+                       data-chamber="oracle"
+                    >
+                        <span class="link__text">Oracle</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Loading state for Three.js -->
+        <div class="loading-state" aria-live="polite" aria-atomic="true">
+            <div class="loading-state__spinner" aria-hidden="true"></div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
-    <script src="scripts.js"></script>
+    <script src="scripts.js" type="module"></script>
 </body>
 </html>
