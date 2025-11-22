@@ -1,6 +1,10 @@
 /**
  * ALCHEMY · THE VOID STATE
- * 3D Context + Information Architecture
+ * Architecture-focused refactor:
+ * - VoidExperience: 3D environment only
+ * - ChamberPanel: chamber UI and content
+ * - NavController: wiring nav + URL hash to chambers
+ * - AlchemyApp: orchestrator
  */
 
 const CONFIG = {
@@ -11,32 +15,33 @@ const CONFIG = {
     },
     camera: {
         fov: 35,
-        z: 14 // Pulled back slightly for scale
+        z: 14
     },
     motion: {
-        lerp: 0.03, // Heavier, more cinematic movement
+        lerp: 0.03,
         rotationSpeed: 0.0008
     }
 };
 
+/* ---------------------------------------
+   LAYER 1 - THE VOID (3D ENVIRONMENT ONLY)
+---------------------------------------- */
+
 class VoidExperience {
-    constructor() {
-        this.canvas = document.querySelector('#artifact-canvas');
+    constructor(canvasSelector) {
+        this.canvas = document.querySelector(canvasSelector);
         if (!this.canvas) return;
 
         this.width = window.innerWidth;
         this.height = window.innerHeight;
+
         this.mouseX = 0;
         this.mouseY = 0;
-        
-        // Target rotation values for smooth interpolation
-        this.targetRotX = 0;
-        this.targetRotY = 0;
 
         this.init();
         this.createArtifact();
         this.addAtmosphere();
-        this.events();
+        this.bindEvents();
         this.render();
     }
 
@@ -61,7 +66,6 @@ class VoidExperience {
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Soft lighting setup
         const ambient = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambient);
 
@@ -73,7 +77,6 @@ class VoidExperience {
     createArtifact() {
         this.artifactGroup = new THREE.Group();
 
-        // Materials
         const wireMat = new THREE.LineBasicMaterial({
             color: CONFIG.colors.lines,
             transparent: true,
@@ -86,24 +89,23 @@ class VoidExperience {
             opacity: 0.7
         });
 
-        // 1. The Monolith (Outer structure)
+        // Monolith
         const boxGeo = new THREE.BoxGeometry(2.2, 4.5, 2.2);
         this.monolith = new THREE.LineSegments(new THREE.EdgesGeometry(boxGeo), wireMat);
         this.artifactGroup.add(this.monolith);
 
-        // 2. The Arc (Celestial context)
+        // Arc
         const arcGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100, Math.PI * 1.5);
         this.arc = new THREE.LineSegments(new THREE.EdgesGeometry(arcGeo), structureMat);
         this.arc.rotation.z = Math.PI / 4;
         this.artifactGroup.add(this.arc);
 
-        // 3. The Core (Wisdom/Center)
-        // Using an Icosahedron for more complexity than Octahedron
+        // Core
         const coreGeo = new THREE.IcosahedronGeometry(0.6, 0);
         this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), structureMat);
         this.artifactGroup.add(this.core);
 
-        // 4. The Grid (Grounding)
+        // Grid
         const gridGeo = new THREE.PlaneGeometry(25, 25, 20, 20);
         const grid = new THREE.LineSegments(new THREE.EdgesGeometry(gridGeo), wireMat);
         grid.rotation.x = Math.PI / 2;
@@ -115,16 +117,15 @@ class VoidExperience {
 
     addAtmosphere() {
         const count = 300;
-        const pos = new Float32Array(count * 3);
-        
-        // Create a cloud of points
+        const positions = new Float32Array(count * 3);
+
         for (let i = 0; i < count * 3; i++) {
-            pos[i] = (Math.random() - 0.5) * 20;
+            positions[i] = (Math.random() - 0.5) * 20;
         }
 
         const geo = new THREE.BufferGeometry();
-        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
         const mat = new THREE.PointsMaterial({
             color: CONFIG.colors.lines,
             size: 0.03,
@@ -136,7 +137,7 @@ class VoidExperience {
         this.scene.add(this.particles);
     }
 
-    events() {
+    bindEvents() {
         window.addEventListener('resize', () => {
             this.width = window.innerWidth;
             this.height = window.innerHeight;
@@ -145,7 +146,6 @@ class VoidExperience {
             this.renderer.setSize(this.width, this.height);
         });
 
-        // Normalize mouse coordinates to -1 to 1
         document.addEventListener('mousemove', (e) => {
             this.mouseX = (e.clientX / this.width) * 2 - 1;
             this.mouseY = -(e.clientY / this.height) * 2 + 1;
@@ -155,36 +155,35 @@ class VoidExperience {
     render() {
         const time = Date.now() * CONFIG.motion.rotationSpeed;
 
-        // Artifact Rotation
+        // Group rotation
         if (this.artifactGroup) {
-            this.artifactGroup.rotation.y = Math.sin(time * 0.5) * 0.2; // Gentle sway
+            this.artifactGroup.rotation.y = Math.sin(time * 0.5) * 0.2;
         }
 
-        // Core "Breathing" & Independent Rotation
+        // Core breathing
         if (this.core) {
             this.core.rotation.x = time * 2;
             this.core.rotation.y = time;
-            // Bobbing effect
+
             this.core.position.y = Math.sin(Date.now() * 0.002) * 0.15;
-            // Breathing scale effect
             const scale = 1 + Math.sin(Date.now() * 0.0015) * 0.05;
             this.core.scale.set(scale, scale, scale);
         }
 
-        // Arc Rotation
+        // Arc rotation
         if (this.arc) {
             this.arc.rotation.z += 0.001;
         }
 
-        // Camera Inertia (Smooth mouse look)
+        // Camera inertia
         const targetX = this.mouseX * 0.8;
         const targetY = this.mouseY * 0.8;
-        
+
         this.camera.position.x += (targetX - this.camera.position.x) * CONFIG.motion.lerp;
         this.camera.position.y += (targetY - this.camera.position.y) * CONFIG.motion.lerp;
         this.camera.lookAt(0, 0, 0);
 
-        // Subtle particle rotation
+        // Particles drift
         if (this.particles) {
             this.particles.rotation.y = time * 0.1;
         }
@@ -194,7 +193,9 @@ class VoidExperience {
     }
 }
 
-/* --------- CHAMBER DATA & UI SYSTEM --------- */
+/* ---------------------------------------
+   LAYER 2 - CHAMBER MODEL + PANEL
+---------------------------------------- */
 
 const CHAMBERS = {
     philosophy: {
@@ -231,60 +232,163 @@ const CHAMBERS = {
     }
 };
 
-function initChambers() {
-    const panel = document.getElementById('chamber-panel');
-    const labelEl = panel.querySelector('.chamber-label');
-    const titleEl = panel.querySelector('.chamber-title');
-    const bodyEl = panel.querySelector('.chamber-content');
-    const closeBtn = panel.querySelector('.chamber-close');
-    const links = document.querySelectorAll('.nav-link');
+class ChamberPanel {
+    constructor(options) {
+        this.panel = document.querySelector(options.panelSelector);
+        if (!this.panel) return;
 
-    function openChamber(key) {
-        const data = CHAMBERS[key];
+        this.labelEl = this.panel.querySelector('.chamber-label');
+        this.titleEl = this.panel.querySelector('.chamber-title');
+        this.bodyEl = this.panel.querySelector('.chamber-content');
+        this.closeBtn = this.panel.querySelector('.chamber-close');
+
+        this.data = options.data || {};
+        this.currentKey = null;
+
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.close());
+        }
+
+        this.panel.addEventListener('click', (e) => {
+            if (e.target === this.panel) this.close();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this.close();
+        });
+    }
+
+    open(key) {
+        const data = this.data[key];
         if (!data) return;
 
-        labelEl.textContent = data.label;
-        titleEl.textContent = data.title;
+        this.currentKey = key;
 
-        bodyEl.innerHTML = '';
+        this.labelEl.textContent = data.label;
+        this.titleEl.textContent = data.title;
+
+        this.bodyEl.innerHTML = '';
         data.paragraphs.forEach(text => {
             const p = document.createElement('p');
             p.textContent = text;
-            bodyEl.appendChild(p);
+            this.bodyEl.appendChild(p);
         });
 
-        panel.classList.remove('chamber-panel--hidden');
-        panel.classList.add('chamber-panel--visible');
-        panel.setAttribute('aria-hidden', 'false');
+        this.panel.classList.remove('chamber-panel--hidden');
+        this.panel.classList.add('chamber-panel--visible');
+        this.panel.setAttribute('aria-hidden', 'false');
     }
 
-    function closeChamber() {
-        panel.classList.remove('chamber-panel--visible');
-        panel.classList.add('chamber-panel--hidden');
-        panel.setAttribute('aria-hidden', 'true');
+    close() {
+        this.currentKey = null;
+        this.panel.classList.remove('chamber-panel--visible');
+        this.panel.classList.add('chamber-panel--hidden');
+        this.panel.setAttribute('aria-hidden', 'true');
+    }
+}
+
+/* ---------------------------------------
+   LAYER 3 - NAV + ROUTING + ORCHESTRATOR
+---------------------------------------- */
+
+class NavController {
+    constructor(options) {
+        this.links = Array.from(document.querySelectorAll(options.linkSelector));
+        this.onSelect = options.onSelect;
+        this.currentKey = null;
+
+        this.bindEvents();
     }
 
-    // Link Event Listeners
-    links.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const key = link.getAttribute('data-chamber');
-            openChamber(key);
+    bindEvents() {
+        this.links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const key = link.getAttribute('data-chamber');
+                if (!key) return;
+                this.setActive(key);
+                if (this.onSelect) this.onSelect(key);
+                const route = link.getAttribute('data-route');
+                if (route) {
+                    window.location.hash = route;
+                }
+            });
         });
-    });
 
-    // Closing Logic
-    closeBtn.addEventListener('click', closeChamber);
-    panel.addEventListener('click', (e) => {
-        if (e.target === panel) closeChamber();
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeChamber();
-    });
+        window.addEventListener('hashchange', () => {
+            this.syncWithHash();
+        });
+    }
+
+    setActive(key) {
+        this.currentKey = key;
+        this.links.forEach(link => {
+            const linkKey = link.getAttribute('data-chamber');
+            link.classList.toggle('active', linkKey === key);
+        });
+    }
+
+    syncWithHash() {
+        const hash = window.location.hash.replace('#', '');
+        if (!hash) return;
+
+        const match = this.links.find(
+            link => link.getAttribute('data-route') === hash
+        );
+
+        if (!match) return;
+
+        const key = match.getAttribute('data-chamber');
+        if (!key) return;
+
+        this.setActive(key);
+        if (this.onSelect) this.onSelect(key);
+    }
+}
+
+class AlchemyApp {
+    constructor() {
+        this.void = new VoidExperience('#artifact-canvas');
+
+        this.chambers = new ChamberPanel({
+            panelSelector: '#chamber-panel',
+            data: CHAMBERS
+        });
+
+        this.nav = new NavController({
+            linkSelector: '.nav-link',
+            onSelect: (key) => {
+                if (!this.chambers) return;
+                this.chambers.open(key);
+            }
+        });
+
+        // On initial load, if hash is present, sync to that
+        this.bootFromHash();
+    }
+
+    bootFromHash() {
+        const hash = window.location.hash.replace('#', '');
+        if (!hash) return;
+
+        const link = document.querySelector(
+            `.nav-link[data-route="${hash}"]`
+        );
+        if (!link) return;
+
+        const key = link.getAttribute('data-chamber');
+        if (!key) return;
+
+        this.nav.setActive(key);
+        this.chambers.open(key);
+    }
 }
 
 /* Boot */
 window.addEventListener('DOMContentLoaded', () => {
-    new VoidExperience();
-    initChambers();
+    new AlchemyApp();
 });
