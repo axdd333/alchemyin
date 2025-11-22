@@ -93,6 +93,9 @@ body {
     text-align: center;
     mix-blend-mode: difference;
     color: #ffffff;
+    transition:
+        transform 0.4s var(--ease-out),
+        opacity 0.3s ease;
 }
 
 .header-inner {
@@ -104,7 +107,7 @@ body {
     font-family: 'Bodoni Moda', serif;
     font-style: italic;
     font-weight: 400;
-    font-size: clamp(2rem, 3vw, 3rem);
+    font-size: clamp(2rem, 3vw, 3rem);  /* LARGE, “monument” state */
     letter-spacing: -0.02em;
     margin-bottom: 0.2rem;
     opacity: 0;
@@ -118,20 +121,36 @@ body {
     opacity: 0;
     animation: fadeDescend 1.5s var(--ease-out) forwards 0.7s;
 }
-/* Header compacts when a chamber is open */
+
+/* Smooth transition when we change state */
+.brand-mark,
+.brand-sub {
+    transition:
+        font-size 0.35s var(--ease-out),
+        letter-spacing 0.35s var(--ease-out),
+        font-style 0.35s var(--ease-out),
+        opacity 0.3s ease;
+}
+
+/* ───── CONDENSED HEADER: card or depth open ───── */
+
+body.chamber-open .header-layer,
+body.depth-open .header-layer {
+    transform: translateY(calc(-0.9 * var(--unit)));  /* nudge upward slightly */
+}
+
 body.chamber-open .brand-mark,
 body.depth-open .brand-mark {
-    font-size: 1.4rem;          /* smaller */
-    font-style: normal;         /* lose the italic drama */
-    letter-spacing: 0.12em;     /* more “caption” feel */
-    text-transform: uppercase;
+    font-size: 1.35rem;        /* smaller */
+    font-style: normal;        /* no italic drama */
+    letter-spacing: 0.06em;    /* tighter, more “caption” */
 }
 
 body.chamber-open .brand-sub,
 body.depth-open .brand-sub {
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    opacity: 0.8;               /* still visible, but subordinate */
+    font-size: 0.65rem;
+    letter-spacing: 0.26em;
+    opacity: 0.85;
 }
 
 /* BOTTOM NAV */
