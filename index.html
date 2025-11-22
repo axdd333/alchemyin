@@ -2,73 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Alchemyin · House of Wisdom</title>
-    <meta name="description" content="Research institute for systems thinking and consequence-aware design.">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alchemy</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    >
 
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
+    <!-- Three.js for the artifact -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <div class="noise-layer"></div>
+    <!-- Grain / noise -->
+    <div class="noise-overlay"></div>
 
-    <header class="header-ui">
-        <div class="header-content">
-            <h1 class="brand-mark">Alchemyin</h1>
-            <p class="brand-sub">House of Wisdom</p>
-            <p class="brand-epigraph">Where the model must hold.</p>
-        </div>
+    <!-- Top inscription -->
+    <header class="header-layer">
+        <h1 class="brand-mark">Alchemy</h1>
+        <p class="brand-sub">So the Model Holds</p>
     </header>
 
+    <!-- Void + artifact -->
     <main class="viewport">
         <canvas id="artifact-canvas"></canvas>
 
-        <section id="chamber-panel" class="overlay-panel chamber-panel--hidden" aria-hidden="true">
-            <article class="chamber-card">
-                <button class="close-btn" type="button" aria-label="Close View">&times;</button>
-                <header class="chamber-header">
-                    <span class="chamber-label"></span>
-                    <h2 class="chamber-title"></h2>
-                </header>
-                <div class="chamber-content"></div>
-                <div class="chamber-footer">
-                    </div>
-            </article>
-        </section>
-
-        <section id="depth-view" class="overlay-panel depth-view--hidden" aria-hidden="true">
-            <div class="depth-scroll-container">
-                <article class="depth-card">
-                    <button class="close-btn" type="button" aria-label="Close Document">&times;</button>
-                    <header class="depth-header">
-                        <p class="depth-kicker"></p>
-                        <h1 class="depth-title"></h1>
-                        <p class="depth-subtitle"></p>
-                    </header>
-                    <div class="depth-body">
-                        </div>
-                    <footer class="depth-footer">
-                        <span class="end-mark">§</span>
-                    </footer>
-                </article>
+        <!-- Chamber panel (hidden by default) -->
+        <section id="chamber-panel" class="chamber-panel chamber-panel--hidden" aria-hidden="true">
+            <div class="chamber-surface">
+                <button class="chamber-close" type="button" aria-label="Close">
+                    &times;
+                </button>
+                <p class="chamber-label"></p>
+                <h2 class="chamber-title"></h2>
+                <div class="chamber-body"></div>
             </div>
         </section>
     </main>
 
-    <nav class="nav-ui">
-        <ul class="nav-list">
-            <li><a href="#philosophy" class="nav-link" data-target="philosophy" data-type="chamber">Philosophy</a></li>
-            <li><a href="#systems" class="nav-link" data-target="systems" data-type="chamber">Systems</a></li>
-            <li><a href="#artifacts" class="nav-link" data-target="artifacts" data-type="chamber">Artifacts</a></li>
-            <li><a href="#oracle" class="nav-link" data-target="oracle" data-type="chamber">Oracle</a></li>
+    <!-- Bottom nav (four rooms) -->
+    <nav class="nav-layer">
+        <ul class="nav-links">
+            <li><a href="#philosophy" class="link" data-chamber="philosophy">Philosophy</a></li>
+            <li><a href="#systems" class="link" data-chamber="systems">Systems</a></li>
+            <li><a href="#artifacts" class="link" data-chamber="artifacts">Artifacts</a></li>
+            <li><a href="#oracle" class="link" data-chamber="oracle">Oracle</a></li>
         </ul>
-        </nav>
+    </nav>
 
     <script src="scripts.js"></script>
 </body>
