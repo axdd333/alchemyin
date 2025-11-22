@@ -80,7 +80,6 @@ body {
     opacity: 0.35;
     mix-blend-mode: multiply;
 }
-
 /* HEADER */
 
 .header-layer {
@@ -98,13 +97,13 @@ body {
         opacity 0.3s ease;
 }
 
-/* wrapper is optional; if you don't have it, this does nothing */
+/* if you don't have this wrapper, it's fine */
 .header-inner {
     display: inline-block;
     padding-inline: calc(var(--unit) * 0.75);
 }
 
-/* HERO STATE (cards collapsed) */
+/* HERO STATE (no overlays – what you have in screenshot 1) */
 
 .brand-mark {
     font-family: 'Bodoni Moda', serif;
@@ -125,7 +124,8 @@ body {
     animation: fadeDescend 1.5s var(--ease-out) forwards 0.7s;
 }
 
-/* smooth transitions when we change state */
+/* smooth interpolation between states */
+
 .brand-mark,
 .brand-sub {
     transition:
@@ -135,23 +135,26 @@ body {
         opacity 0.3s ease;
 }
 
-/* ───── COMPACT STATE (card or depth OPEN) ───── */
+/* ───── COMPACT STATE: anytime a card or depth view is open ───── */
 
-.header-layer--compact {
-    transform: translateY(-0.8rem);  /* nudges up a bit when panel is open */
+body.chamber-open .header-layer,
+body.depth-open .header-layer {
+    transform: translateY(-0.8rem);  /* just a slight lift */
 }
 
-.header-layer--compact .brand-mark {
-    font-size: 1.4rem;      /* smaller */
-    font-style: normal;     /* NOT italic */
-    letter-spacing: 0.06em; /* caption-like */
-    /* note: NO text-transform here → stays "Alchemy" (Titlecase) */
+body.chamber-open .brand-mark,
+body.depth-open .brand-mark {
+    font-size: 1.4rem !important;    /* smaller */
+    font-style: normal !important;   /* NOT italic */
+    letter-spacing: 0.06em !important;
+    /* no text-transform → stays “Alchemy” in Title Case */
 }
 
-.header-layer--compact .brand-sub {
-    font-size: 0.65rem;
-    letter-spacing: 0.24em;
-    opacity: 0.9;
+body.chamber-open .brand-sub,
+body.depth-open .brand-sub {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.24em !important;
+    opacity: 0.9 !important;
 }
 
 /* BOTTOM NAV */
