@@ -33,9 +33,6 @@
         </div>
     </noscript>
 
-    <!-- Illustrated background layer -->
-    <div class="illustration-layer" aria-hidden="true"></div>
-
     <!-- Atmospheric grain with reduced motion preference -->
     <div class="noise-overlay" aria-hidden="true"></div>
 
@@ -124,65 +121,53 @@
 
     <!-- Enhanced navigation with better semantics -->
     <nav class="nav-layer" aria-label="Primary navigation">
-        <div class="nav-shell">
-            <p class="nav-eyebrow">Navigate the stack</p>
-            <ul class="nav-links" role="list">
-                <li>
-                    <a
-                        href="#philosophy"
-                        class="link"
-                        data-chamber="philosophy"
-                        data-route="philosophy"
-                        role="link"
-                    >
-                        <span class="link__text">Philosophy</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#systems"
-                        class="link"
-                        data-chamber="systems"
-                        data-route="systems"
-                        role="link"
-                    >
-                        <span class="link__text">Systems</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#artifacts"
-                        class="link"
-                        data-chamber="artifacts"
-                        data-route="artifacts"
-                        role="link"
-                    >
-                        <span class="link__text">Artifacts</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#oracle"
-                        class="link"
-                        data-chamber="oracle"
-                        data-route="oracle"
-                        role="link"
-                    >
-                        <span class="link__text">Oracle</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <ul class="nav-links" role="list">
+            <li>
+                <a
+                    href="#philosophy"
+                    class="link"
+                    data-chamber="philosophy"
+                    data-route="philosophy"
+                    role="link"
+                >
+                    <span class="link__text">Philosophy</span>
+                </a>
+            </li>
+            <li>
+                <a
+                    href="#systems"
+                    class="link"
+                    data-chamber="systems"
+                    data-route="systems"
+                    role="link"
+                >
+                    <span class="link__text">Systems</span>
+                </a>
+            </li>
+            <li>
+                <a
+                    href="#artifacts"
+                    class="link"
+                    data-chamber="artifacts"
+                    data-route="artifacts"
+                    role="link"
+                >
+                    <span class="link__text">Artifacts</span>
+                </a>
+            </li>
+            <li>
+                <a
+                    href="#oracle"
+                    class="link"
+                    data-chamber="oracle"
+                    data-route="oracle"
+                    role="link"
+                >
+                    <span class="link__text">Oracle</span>
+                </a>
+            </li>
+        </ul>
     </nav>
-
-    <aside class="meta-panel" aria-label="Alchemy positioning cues">
-        <p class="meta-panel__eyebrow">Composed for clarity</p>
-        <div class="meta-panel__chips" role="list">
-            <span class="chip" role="listitem">Precision systems</span>
-            <span class="chip" role="listitem">Disciplined tooling</span>
-            <span class="chip" role="listitem">Living artifacts</span>
-        </div>
-    </aside>
 
     <!-- Loading state for Three.js -->
     <div class="loading-state" aria-live="polite" aria-atomic="true">
