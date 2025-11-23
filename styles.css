@@ -65,7 +65,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: var(--void-bg);
+    background-color: hsl(var(--void-bg-hsl));
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color: hsl(var(--ink-hsl));
     cursor: default;
@@ -128,23 +128,6 @@ body {
 }
 
 /* ===== GRAIN OVERLAY ===== */
-.illustration-layer {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    background-image:
-        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 40%),
-        linear-gradient(180deg, rgba(240, 231, 219, 0.08) 0%, rgba(240, 231, 219, 0.62) 100%),
-        url('background.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.92;
-    filter: saturate(0.95) contrast(1.04);
-    transform: translateZ(0);
-    pointer-events: none;
-}
-
 .noise-overlay {
     position: fixed;
     inset: 0;
