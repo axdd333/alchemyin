@@ -1,86 +1,40 @@
-/* ═══════════════════════════════════════════════════════════════════════
-   ALCHEMY · PRECISION INSTRUMENT
-   Material logic: Void → Card → Inscription
-   ═══════════════════════════════════════════════════════════════════════ */
-
-:root {
-    /* Material palette - optically balanced */
-    --void: hsl(40, 18%, 87%);           /* Surrounding stone */
-    --card: hsl(42, 28%, 95%);           /* Heavy stock */
-    --card-edge: hsla(30, 12%, 8%, 0.09);
-    --card-inner: hsla(45, 60%, 98%, 0.7);
-    
-    /* Ink system */
-    --ink: hsl(28, 18%, 7%);             /* Deep espresso */
-    --ink-mid: hsla(28, 18%, 7%, 0.62);
-    --ink-soft: hsla(28, 18%, 7%, 0.38);
-    
-    /* Spatial system - 8px base grid */
-    --unit: 0.5rem;
-    --card-max: 42rem;                    /* 672px - golden ratio relative to viewport */
-    --card-padding-block: calc(var(--unit) * 5.5);
-    --card-padding-inline: calc(var(--unit) * 6);
-    
-    /* Typographic scale */
-    --text-xs: 0.6875rem;                 /* 11px - labels */
-    --text-sm: 0.8125rem;                 /* 13px - nav */
-    --text-base: 0.9375rem;               /* 15px - body */
-    --text-lg: 1.625rem;                  /* 26px - titles */
-    --text-xl: 2.375rem;                  /* 38px - inscription */
-    
-    /* Motion */
-    --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   RESET & BASE
-   ═══════════════════════════════════════════════════════════════════════ */
-
-*, *::before, *::after {
-    box-sizing: border-box;
+/* Reset */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-html {
-    font-size: 100%;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-}
-
-body {
-    min-height: 100vh;
-    background-color: var(--void);
-    color: var(--ink);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: var(--text-base);
-    line-height: 1.65;
+html, body {
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GRAIN LAYER
-   ═══════════════════════════════════════════════════════════════════════ */
+body {
+    background: #ddd7cb;
+    color: #1f1810;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
 
+/* Grain */
 .grain {
     position: fixed;
     inset: 0;
     z-index: 100;
     pointer-events: none;
-    opacity: 0.022;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     mix-blend-mode: multiply;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   INSCRIPTION (Header)
-   ═══════════════════════════════════════════════════════════════════════ */
-
+/* Inscription (top) */
 .inscription {
     position: fixed;
-    top: calc(var(--unit) * 9);
+    top: 72px;
     left: 0;
     right: 0;
     z-index: 20;
@@ -88,45 +42,38 @@ body {
     pointer-events: none;
 }
 
-.inscription__mark {
-    font-family: 'Bodoni Moda', 'Baskerville', serif;
+.inscription-mark {
+    font-family: 'Bodoni Moda', serif;
     font-style: italic;
     font-weight: 400;
-    font-size: var(--text-xl);
+    font-size: 38px;
     letter-spacing: -0.015em;
-    color: var(--ink);
-    margin-bottom: calc(var(--unit) * 0.75);
+    color: #1f1810;
+    margin-bottom: 6px;
 }
 
-.inscription__sub {
-    font-size: var(--text-xs);
+.inscription-sub {
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: var(--ink-soft);
+    color: rgba(31, 24, 16, 0.38);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   VOID & ARTIFACT
-   ═══════════════════════════════════════════════════════════════════════ */
-
+/* Void & artifact canvas */
 .void {
     position: fixed;
     inset: 0;
     z-index: 0;
 }
 
-.void__canvas {
+#artifact {
     display: block;
     width: 100%;
     height: 100%;
-    outline: none;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   SANCTUM (Card Container)
-   ═══════════════════════════════════════════════════════════════════════ */
-
+/* Card container */
 .sanctum {
     position: fixed;
     inset: 0;
@@ -134,71 +81,156 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: calc(var(--unit) * 20) calc(var(--unit) * 4) calc(var(--unit) * 16);
+    padding: 160px 32px 128px;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   THE CARD
-   ═══════════════════════════════════════════════════════════════════════ */
-
+/* The card itself */
 .card {
-    position: relative;
     width: 100%;
-    max-width: var(--card-max);
-    padding: var(--card-padding-block) var(--card-padding-inline);
-    
-    /* Material */
+    max-width: 672px;
+    padding: 44px 48px 46px;
     background: 
-        radial-gradient(
-            ellipse 120% 100% at 50% 0%,
-            var(--card-inner),
-            transparent 80%
-        ),
-        var(--card);
-    border: 1px solid var(--card-edge);
-    border-radius: calc(var(--unit) * 3.5);
-    
-    /* Shadow - soft, architectural */
+        radial-gradient(ellipse 120% 100% at 50% 0%, rgba(251, 247, 240, 0.7), transparent 80%),
+        #f7f3eb;
+    border: 1px solid rgba(31, 24, 16, 0.09);
+    border-radius: 28px;
     box-shadow: 
-        0 1px 2px hsla(28, 18%, 7%, 0.03),
-        0 4px 8px hsla(28, 18%, 7%, 0.04),
-        0 12px 24px hsla(28, 18%, 7%, 0.05),
-        0 24px 48px hsla(28, 18%, 7%, 0.06);
-    
-    /* Inner light edge */
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        padding: 1px;
-        background: linear-gradient(
-            165deg,
-            hsla(42, 50%, 98%, 0.6) 0%,
-            transparent 40%
-        );
-        -webkit-mask: 
-            linear-gradient(#fff 0 0) content-box, 
-            linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-    }
+        0 1px 2px rgba(31, 24, 16, 0.03),
+        0 4px 8px rgba(31, 24, 16, 0.04),
+        0 12px 24px rgba(31, 24, 16, 0.05),
+        0 24px 48px rgba(31, 24, 16, 0.06);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   CARD TYPOGRAPHY
-   ═══════════════════════════════════════════════════════════════════════ */
-
-.card__label {
-    font-size: var(--text-xs);
+/* Card typography */
+.card-label {
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: calc(var(--unit) * 1.75);
+    color: rgba(31, 24, 16, 0.38);
+    margin-bottom: 14px;
 }
 
-.card__title {
-    font-family: 'Bodoni Moda', 'Baskerville', serif;
-    font-styl
+.card-title {
+    font-family: 'Bodoni Moda', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    letter-spacing: -0.012em;
+    line-height: 1.25;
+    color: #1f1810;
+    margin-bottom: 20px;
+}
+
+.card-body {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1f1810;
+    max-width: 576px;
+}
+
+.card-body p + p {
+    margin-top: 18px;
+}
+
+/* Navigation */
+.navigation {
+    position: fixed;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+}
+
+.nav-link {
+    position: relative;
+    display: block;
+    padding-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgba(31, 24, 16, 0.38);
+    transition: color 360ms cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: #1f1810;
+    transform: translateX(-50%);
+    transition: width 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-link:hover {
+    color: rgba(31, 24, 16, 0.62);
+    letter-spacing: 0.26em;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-link.active {
+    color: #1f1810;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 896px) {
+    .sanctum {
+        padding: 128px 24px 112px;
+    }
+    
+    .card {
+        padding: 36px 36px 38px;
+    }
+    
+    .navigation {
+        gap: 48px;
+    }
+}
+
+@media (max-width: 640px) {
+    .inscription {
+        top: 56px;
+    }
+    
+    .inscription-mark {
+        font-size: 32px;
+    }
+    
+    .card-title {
+        font-size: 22px;
+    }
+    
+    .sanctum {
+        padding-top: 96px;
+        padding-bottom: 96px;
+    }
+    
+    .card {
+        padding: 32px 28px 34px;
+    }
+    
+    .navigation {
+        bottom: 56px;
+        gap: 32px;
+    }
+    
+    .nav-link {
+        font-size: 12px;
+        letter-spacing: 0.2em;
+    }
+}
