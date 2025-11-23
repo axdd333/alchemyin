@@ -1,56 +1,45 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alchemy · So the Model Holds</title>
-    <meta name="description" content="Alchemy — a systems institute for tools, infrastructure, and artifacts built so the model holds.">
-
-    <!-- Fonts: Precise weights only -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-
-    <!-- Three.js -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Void atmosphere -->
-    <div class="grain" aria-hidden="true"></div>
+    <div class="grain"></div>
     
-    <!-- Inscription -->
-    <header class="inscription" role="banner">
-        <h1 class="inscription__mark">Alchemy</h1>
-        <p class="inscription__sub">So the Model Holds</p>
+    <header class="inscription">
+        <h1 class="inscription-mark">Alchemy</h1>
+        <p class="inscription-sub">So the Model Holds</p>
     </header>
 
-    <!-- Artifact void -->
-    <div class="void" aria-hidden="true">
-        <canvas id="artifact" class="void__canvas"></canvas>
+    <div class="void">
+        <canvas id="artifact"></canvas>
     </div>
 
-    <!-- The Card -->
     <main class="sanctum">
-        <article class="card" role="main">
-            <p class="card__label" id="card-label">Chamber I · Philosophy</p>
-            <h2 class="card__title" id="card-title">What a system assumes about the world.</h2>
-            <div class="card__body" id="card-body">
+        <article class="card">
+            <p class="card-label" id="label">Chamber I · Philosophy</p>
+            <h2 class="card-title" id="title">What a system assumes about the world.</h2>
+            <div class="card-body" id="body">
                 <p>Every tool encodes a set of assumptions. This chamber is where those assumptions are made explicit instead of living quietly in the background.</p>
                 <p>We ask: under what conditions does this model still hold, and who carries the cost when it stops?</p>
             </div>
         </article>
     </main>
 
-    <!-- Navigation -->
-    <nav class="nav" role="navigation" aria-label="Primary chambers">
-        <ul class="nav__list" role="list">
-            <li><a href="#philosophy" class="nav__link nav__link--active" data-chamber="philosophy">Philosophy</a></li>
-            <li><a href="#systems" class="nav__link" data-chamber="systems">Systems</a></li>
-            <li><a href="#artifacts" class="nav__link" data-chamber="artifacts">Artifacts</a></li>
-            <li><a href="#oracle" class="nav__link" data-chamber="oracle">Oracle</a></li>
-        </ul>
+    <nav class="navigation">
+        <a href="#philosophy" class="nav-link active" data-chamber="philosophy">Philosophy</a>
+        <a href="#systems" class="nav-link" data-chamber="systems">Systems</a>
+        <a href="#artifacts" class="nav-link" data-chamber="artifacts">Artifacts</a>
+        <a href="#oracle" class="nav-link" data-chamber="oracle">Oracle</a>
     </nav>
 
     <script src="scripts.js"></script>
