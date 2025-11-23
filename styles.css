@@ -66,11 +66,12 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: hsl(var(--void-bg-hsl));
+    background-color: var(--void-bg);
     background-image: url('background.svg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: hsl(var(--void-bg-hsl));
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color: hsl(var(--ink-hsl));
     cursor: default;
@@ -138,10 +139,14 @@ body {
     inset: 0;
     z-index: 0;
     background-image:
-        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 36%),
-        linear-gradient(180deg, rgba(245, 238, 229, 0.14) 0%, rgba(240, 231, 219, 0.52) 100%);
-    backdrop-filter: saturate(1.05) contrast(1.02);
-    opacity: 0.92;
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0) 38%),
+        linear-gradient(180deg, rgba(245, 238, 229, 0.04) 0%, rgba(240, 231, 219, 0.58) 100%),
+        url('background.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.98;
+    filter: saturate(1.02) contrast(1.03);
     transform: translateZ(0);
     pointer-events: none;
 }
@@ -207,13 +212,13 @@ body {
 
 .header-inner {
     display: inline-block;
-    padding: calc(var(--unit) * 0.3) calc(var(--unit) * 0.6);
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 18px;
-    border: 0.5px solid rgba(15, 15, 15, 0.08);
+    padding: calc(var(--unit) * 0.4) calc(var(--unit) * 0.8);
+    background: rgba(255, 255, 255, 0.64);
+    border-radius: 999px;
+    border: 1px solid rgba(15, 15, 15, 0.06);
     box-shadow:
-        0 12px 26px rgba(15, 15, 15, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.86);
+        0 10px 22px rgba(15, 15, 15, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.82);
     backdrop-filter: blur(calc(var(--blur-veil) * 0.85));
 }
 
@@ -249,7 +254,7 @@ body {
 /* ===== NAVIGATION SYSTEM ===== */
 .nav-layer {
     position: fixed;
-    bottom: calc(var(--frame) * 1.4);
+    bottom: calc(2 * var(--unit));
     left: 0;
     width: 100%;
     z-index: var(--z-content);
@@ -268,15 +273,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(1.6rem, 5vw, 2.6rem);
-    width: min(760px, calc(100% - (var(--frame) * 2)));
-    padding: 0.25rem 0.5rem;
+    gap: clamp(2rem, 6vw, 3.5rem);
+    min-width: min(680px, 92vw);
+    padding: 0.35rem 0.5rem;
 }
 
 .nav-links {
     list-style: none;
     display: flex;
-    gap: clamp(1.6rem, 4vw, 2.4rem);
+    gap: clamp(1.8rem, 5vw, 3.5rem);
     padding: 0;
     margin: 0;
     align-items: center;
@@ -291,14 +296,14 @@ body {
 .nav-shell::before {
     content: '';
     position: absolute;
-    inset: 0.15rem 0;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.72);
-    border: 0.5px solid rgba(15, 15, 15, 0.1);
+    inset: 0.2rem 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(15, 15, 15, 0.08);
     box-shadow:
-        0 16px 28px rgba(15, 15, 15, 0.06),
+        0 18px 34px rgba(15, 15, 15, 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.85);
-    filter: blur(0.1px);
+    filter: blur(0.3px);
     pointer-events: none;
     mix-blend-mode: lighten;
     z-index: -1;
@@ -309,11 +314,11 @@ body {
     --link-underline: 0%;
 
     text-decoration: none;
-    font-size: 0.82rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: rgba(56, 54, 50, 0.72);
+    letter-spacing: 0.28em;
+    color: rgba(56, 54, 50, 0.68);
     opacity: var(--link-opacity);
     padding: 0.65rem 0.15rem;
     position: relative;
@@ -355,8 +360,8 @@ body {
 
 .meta-panel {
     position: fixed;
-    left: var(--frame);
-    bottom: calc(5.5 * var(--unit));
+    left: calc(var(--unit));
+    bottom: calc(6 * var(--unit));
     display: grid;
     gap: 0.6rem;
     padding: 0.8rem 1rem;
@@ -723,7 +728,7 @@ body {
         align-items: flex-start;
         border-radius: 14px;
         gap: 0.35rem;
-        width: min(92vw, 520px);
+        min-width: min(92vw, 520px);
         padding: 0.5rem 0.75rem;
     }
 
