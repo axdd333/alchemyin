@@ -7,11 +7,10 @@
 const SUPPORTS = {
     cssVariables: typeof CSS !== 'undefined' && CSS.supports && CSS.supports('color', 'var(--test)'),
     importMaps: 'importMap' in document.createElement('script'),
-    backdropFilter: typeof CSS !== 'undefined' && CSS.supports('backdrop-filter: blur(1px)'),
-    pointerEvents: typeof window !== 'undefined' && 'PointerEvent' in window
+    backdropFilter: typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')
 };
 
-// Global configuration
+// Enhanced configuration with precision timing
 const CONFIG = {
     colors: {
         bg: 0xEAE8E3,
@@ -26,104 +25,19 @@ const CONFIG = {
         z: 14
     },
     motion: {
-        parallax: 0.22,
-        lerp: 0.09,
-        artifactSpin: 0.035,
-        coreSpinX: 0.35,
-        coreSpinZ: 0.18,
-        coreBobAmp: 0.07,
-        coreBobFreq: 1.7,
-        particleDrift: 0.018
+        parallax: 0.3,
+        lerp: 0.08,
+        artifactSpin: 0.04,
+        coreSpinX: 0.4,
+        coreSpinZ: 0.2,
+        coreBobAmp: 0.08,
+        coreBobFreq: 1.8,
+        particleDrift: 0.02
     },
-    artifact: {
-        radius: 3.4,
-        tube: 0.72,
-        segments: 96,
-        tubeSegments: 20
-    },
-    particles: {
-        count: 240,
-        spread: 8
-    }
-};
-
-// Chamber definitions
-const CHAMBERS = {
-    philosophy: {
-        label: 'Chamber I',
-        name: 'Philosophy',
-        title: 'The questions that survive contact with reality.',
-        body: [
-            'We begin with models, not slogans. Questions that refuse to die after contact with experiments, founders, markets, and history.',
-            'Alchemy is the study of how an idea maintains coherence while the world pushes back. How a hypothesis behaves when it is no longer alone in a notebook.'
-        ]
-    },
-    systems: {
-        label: 'Chamber II',
-        name: 'Systems',
-        title: 'The architecture that carries the weight.',
-        body: [
-            'Interfaces, protocols, automation, and observability. The invisible structure that determines whether an idea survives contact with real environments.',
-            'We prefer systems that can be explained on a single sheet of paper and maintained by ordinary people, not heroes.'
-        ]
-    },
-    artifacts: {
-        label: 'Chamber III',
-        name: 'Artifacts',
-        title: 'Tools that make the model unavoidable.',
-        body: [
-            'Instruments, dashboards, and devices that surface the true state of the system. The quiet hardware and software that make it difficult to lie to yourself.',
-            'Each artifact is designed to be legible in a crisis: “what is happening, what can fail next, and what can we do about it now?”'
-        ]
-    },
-    oracle: {
-        label: 'Chamber IV',
-        name: 'Oracle',
-        title: 'Signals that update the model.',
-        body: [
-            'Every system drifts. Data, anomalies, and field reports are how the model learns to track the world it claims to describe.',
-            'We care less about prediction and more about calibration: how quickly a map can admit it is wrong and redraw itself.'
-        ]
-    }
-};
-
-// Document-level depth content
-const DOCUMENTS = {
-    systems: {
-        chamber: 'Chamber II · Systems',
-        title: 'Systems that survive ordinary failure modes.',
-        paragraphs: [
-            'We design for the kind of failure that happens on Tuesday afternoons when no one is watching. Not the cinematic outage with a war room and a press release, but the quiet misconfigurations, missing alerts, and unowned corners that slowly rot the model.',
-            'The baseline expectation: every critical system can be understood by a new operator in under an hour, debugged in the dark with a single terminal, and restored from a single sheet of paper.',
-            'Interfaces are treated as contracts, not suggestions. Every boundary has an explicit vocabulary, versioning strategy, and failure story. When two systems disagree, the responsibility for reconciliation belongs somewhere concrete.'
-        ]
-    },
-    philosophy: {
-        chamber: 'Chamber I · Philosophy',
-        title: 'Thinking in models, not moods.',
-        paragraphs: [
-            'We treat beliefs as objects that can be versioned, tested, and retired. A model is only interesting to the extent that it changes what you would do on Monday morning.',
-            'Most philosophy in the wild optimizes for elegance; we optimize for survivability. A clean theory that cannot survive contact with the cash flow statement, the latency graph, or the factory floor is just decoration.',
-            'The question we keep asking: if this model were fully true, where would it break first?'
-        ]
-    },
-    artifacts: {
-        chamber: 'Chamber III · Artifacts',
-        title: 'Interfaces as field instruments.',
-        paragraphs: [
-            'A good artifact does not explain itself; it makes the state of the world obvious. The operator should feel less like they are “using software” and more like they are placing their hand on the live circuit of the system.',
-            'We bias toward instruments that compress time: showing leading indicators instead of lagging stories, deltas instead of snapshots, and gradients instead of absolutes.',
-            'We care about the specific affordances: what is one single action that becomes dramatically easier when the artifact exists?'
-        ]
-    },
-    oracle: {
-        chamber: 'Chamber IV · Oracle',
-        title: 'Feedback as operating discipline.',
-        paragraphs: [
-            'Prediction is entertainment; calibration is discipline. The oracle exists to keep the model embarrassingly honest about where it fails.',
-            'We catalogue breaks between the map and the territory: mispredictions, weird outliers, and events we did not know how to parse. The point is not to avoid error but to metabolize it faster than the environment changes.',
-            'Every time reality surprises us, something in the stack must update: the dashboard, the alerting, the narrative, or the underlying model. Nothing is allowed to stay stale and authoritative at the same time.'
-        ]
+    timing: {
+        panelEnter: 500,
+        panelExit: 400,
+        stateTransition: 300
     }
 };
 
@@ -142,493 +56,956 @@ const APP_STATES = {
 class VoidExperience {
     constructor(selector = '#artifact-canvas') {
         this.canvas = document.querySelector(selector);
-        if (!this.canvas) return;
+        if (!this.canvas) {
+            console.warn('Canvas element not found');
+            return;
+        }
 
-        this.scene = null;
-        this.camera = null;
-        this.renderer = null;
-        this.clock = null;
+        if (typeof THREE === 'undefined') {
+            console.error('THREE.js is required but not loaded');
+            return;
+        }
 
-        this.artifact = null;
-        this.particles = null;
-        this.lightGroup = null;
-
-        this.pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
-        this.resizeObserver = null;
-        this.isInitialized = false;
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.targetX = 0;
+        this.targetY = 0;
+        
+        // Enhanced timing with delta
+        this.clock = new THREE.Clock();
+        this.frameCount = 0;
+        
+        // Performance monitoring
+        this.fps = 60;
+        this.lastFrameTime = performance.now();
 
         this.init();
+        this.createArtifact();
+        this.addAtmosphere();
+        this.bindEvents();
+        this.startRendering();
     }
 
     init() {
-        try {
-            this.initScene();
-            this.initCamera();
-            this.initRenderer();
-            this.initLights();
-            this.initArtifact();
-            this.initParticles();
-            this.initEvents();
-
-            this.clock = new THREE.Clock();
-            this.isInitialized = true;
-            this.animate();
-        } catch (error) {
-            console.error('VoidExperience initialization failed:', error);
-        }
-    }
-
-    initScene() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(CONFIG.colors.bg);
-    }
+        
+        // Enhanced fog with distance-based falloff
+        this.scene.fog = new THREE.FogExp2(CONFIG.colors.bg, 0.06);
 
-    initCamera() {
-        const { fov, near, far, z } = CONFIG.camera;
         this.camera = new THREE.PerspectiveCamera(
-            fov,
-            this.canvas.clientWidth / this.canvas.clientHeight,
-            near,
-            far
+            CONFIG.camera.fov,
+            this.width / this.height,
+            CONFIG.camera.near,
+            CONFIG.camera.far
         );
-        this.camera.position.set(0, 0.5, z);
-    }
+        this.camera.position.set(0, 0, CONFIG.camera.z);
 
-    initRenderer() {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
             antialias: true,
-            alpha: false
+            alpha: false,
+            powerPreference: "high-performance"
         });
-
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        this.renderer.setSize(window.innerWidth, window.innerHeight, false);
+        
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.outputEncoding = THREE.sRGBEncoding;
-    }
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.0;
 
-    initLights() {
-        this.lightGroup = new THREE.Group();
+        // Enhanced lighting system
+        const ambient = new THREE.AmbientLight(CONFIG.colors.light, 0.65);
+        this.scene.add(ambient);
 
-        // Main key light
-        const keyLight = new THREE.DirectionalLight(CONFIG.colors.light, 1.0);
-        keyLight.position.set(3, 6, 4);
-        this.lightGroup.add(keyLight);
+        const directional = new THREE.DirectionalLight(CONFIG.colors.light, 0.5);
+        directional.position.set(5, 8, 5);
+        directional.castShadow = false;
+        this.scene.add(directional);
 
         // Subtle fill light
-        const fillLight = new THREE.DirectionalLight(CONFIG.colors.light, 0.4);
-        fillLight.position.set(-4, -1, -4);
-        this.lightGroup.add(fillLight);
-
-        // Rim light
-        const rimLight = new THREE.PointLight(CONFIG.colors.light, 0.35, 40);
-        rimLight.position.set(0, 5, -6);
-        this.lightGroup.add(rimLight);
-
-        this.scene.add(this.lightGroup);
+        const fill = new THREE.DirectionalLight(CONFIG.colors.light, 0.25);
+        fill.position.set(-3, 2, -3);
+        this.scene.add(fill);
     }
 
-    createTorusFrame(radius, tube, radialSegments, tubularSegments, material) {
-        const geom = new THREE.TorusGeometry(radius, tube, radialSegments, tubularSegments);
-        const mesh = new THREE.Mesh(geom, material);
-        return mesh;
-    }
-
-    createOrbSphere(radius, material) {
-        const geom = new THREE.SphereGeometry(radius, 36, 24);
-        const mesh = new THREE.Mesh(geom, material);
-        return mesh;
-    }
-
-    initArtifact() {
+    createArtifact() {
         this.artifact = new THREE.Group();
 
         // Enhanced material system
         const lineMat = new THREE.LineBasicMaterial({
             color: CONFIG.colors.object,
             transparent: true,
-            opacity: 0.3
+            opacity: 0.14,
+            linewidth: 1
         });
 
-        const shellMat = new THREE.MeshPhysicalMaterial({
+        const heavyMat = new THREE.LineBasicMaterial({
             color: CONFIG.colors.object,
-            metalness: 0.85,
-            roughness: 0.18,
-            transmission: 0.0,
-            clearcoat: 1.0,
-            clearcoatRoughness: 0.12,
-            sheen: 0.4,
-            sheenRoughness: 0.6
+            transparent: true,
+            opacity: 0.78,
+            linewidth: 1.5
         });
 
-        const coreMat = new THREE.MeshStandardMaterial({
-            color: 0x111111,
-            roughness: 0.25,
-            metalness: 0.85,
-            emissive: 0x000000
-        });
+        // ARC - Refined geometry
+        const arcGeo = new THREE.TorusGeometry(3.2, 0.008, 4, 120, Math.PI * 1.48);
+        this.arc = new THREE.LineSegments(new THREE.EdgesGeometry(arcGeo), heavyMat);
+        this.arc.rotation.z = Math.PI / 3.8;
+        this.artifact.add(this.arc);
 
-        // Outer frame
-        const outerFrame = this.createTorusFrame(
-            CONFIG.artifact.radius,
-            CONFIG.artifact.tube,
-            CONFIG.artifact.segments,
-            CONFIG.artifact.tubeSegments,
-            shellMat
-        );
+        // MONOLITH - Enhanced proportions
+        const boxGeo = new THREE.BoxGeometry(1.8, 4.2, 1.8);
+        const boxEdges = new THREE.EdgesGeometry(boxGeo);
+        this.monolith = new THREE.LineSegments(boxEdges, lineMat);
+        this.monolith.rotation.y = Math.PI / 8;
+        this.artifact.add(this.monolith);
 
-        // Inner wireframe cage
-        const cageGeom = new THREE.IcosahedronGeometry(2.2, 1);
-        const cageWire = new THREE.LineSegments(
-            new THREE.WireframeGeometry(cageGeom),
-            lineMat
-        );
-        cageWire.position.y = 0.1;
+        // CORE - Refined breathing motion
+        const coreGeo = new THREE.OctahedronGeometry(0.42, 1);
+        this.core = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeo), heavyMat);
+        this.core.scale.setScalar(1.1);
+        this.artifact.add(this.core);
 
-        // Core sphere
-        const coreSphere = this.createOrbSphere(1.1, coreMat);
-
-        // Axes frames
-        const secondaryFrame = this.createTorusFrame(2.8, 0.06, 64, 120, lineMat);
-        secondaryFrame.rotation.x = Math.PI / 2;
-
-        const tertiaryFrame = this.createTorusFrame(2.8, 0.06, 64, 120, lineMat);
-        tertiaryFrame.rotation.y = Math.PI / 2;
-
-        this.artifact.add(outerFrame, cageWire, coreSphere, secondaryFrame, tertiaryFrame);
-        this.artifact.position.set(0, 0.4, 0);
-
-        this.coreSphere = coreSphere;
-        this.cageWire = cageWire;
+        // HORIZON - Subtle grid reference
+        const gridGeo = new THREE.PlaneGeometry(22, 22, 18, 18);
+        const gridEdges = new THREE.EdgesGeometry(gridGeo);
+        this.grid = new THREE.LineSegments(gridEdges, lineMat);
+        this.grid.rotation.x = -Math.PI / 2;
+        this.grid.position.y = -2.8;
+        this.artifact.add(this.grid);
 
         this.scene.add(this.artifact);
     }
 
-    initParticles() {
-        const particleGeom = new THREE.SphereGeometry(0.035, 8, 8);
-        const particleMat = new THREE.MeshBasicMaterial({
-            color: 0x1a1a1a,
-            transparent: true,
-            opacity: 0.38
-        });
-
-        this.particles = new THREE.Group();
-
-        const spread = CONFIG.particles.spread;
-        for (let i = 0; i < CONFIG.particles.count; i++) {
-            const mesh = new THREE.Mesh(particleGeom, particleMat);
-            mesh.position.set(
-                (Math.random() - 0.5) * spread,
-                (Math.random() - 0.5) * spread * 0.65,
-                (Math.random() - 0.5) * spread
-            );
-            mesh.userData.offset = Math.random() * Math.PI * 2;
-            mesh.userData.speed = 0.12 + Math.random() * 0.18;
-            this.particles.add(mesh);
+    addAtmosphere() {
+        // Enhanced particle system with depth variation
+        const count = 180;
+        const positions = new Float32Array(count * 3);
+        const sizes = new Float32Array(count);
+        
+        for (let i = 0; i < count * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 25;
+            positions[i + 1] = (Math.random() - 0.5) * 25;
+            positions[i + 2] = (Math.random() - 0.5) * 25;
+            
+            // Size variation based on depth
+            sizes[i / 3] = Math.random() * 0.03 + 0.01;
         }
 
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const mat = new THREE.PointsMaterial({
+            color: CONFIG.colors.object,
+            size: 0.02,
+            transparent: true,
+            opacity: 0.18,
+            sizeAttenuation: true
+        });
+
+        this.particles = new THREE.Points(geo, mat);
         this.scene.add(this.particles);
     }
 
-    initEvents() {
-        window.addEventListener('resize', () => this.handleResize(), { passive: true });
-        window.addEventListener('pointermove', (event) => this.handlePointerMove(event), {
-            passive: true
-        });
+    bindEvents() {
+        let resizeTimeout;
+        const handleResize = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                this.width = window.innerWidth;
+                this.height = window.innerHeight;
+                this.camera.aspect = this.width / this.height;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(this.width, this.height);
+            }, 100);
+        };
 
-        // Fallback mousemove for older browsers
-        if (!SUPPORTS.pointerEvents) {
-            window.addEventListener('mousemove', (event) => this.handlePointerMove(event), {
-                passive: true
+        window.addEventListener('resize', handleResize, { passive: true });
+
+        // Enhanced mouse tracking with smoothing
+        let rafId;
+        const handleMouseMove = (e) => {
+            if (rafId) return;
+            
+            rafId = requestAnimationFrame(() => {
+                this.targetX = (e.clientX / this.width) * 2 - 1;
+                this.targetY = -(e.clientY / this.height) * 2 + 1;
+                rafId = null;
             });
-        }
+        };
+
+        document.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+        // Touch support for mobile
+        const handleTouchMove = (e) => {
+            if (e.touches.length > 0) {
+                this.targetX = (e.touches[0].clientX / this.width) * 2 - 1;
+                this.targetY = -(e.touches[0].clientY / this.height) * 2 + 1;
+            }
+        };
+
+        document.addEventListener('touchmove', handleTouchMove, { passive: true });
     }
 
-    handleResize() {
-        if (!this.camera || !this.renderer) return;
-
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
-
-        this.renderer.setSize(width, height, false);
+    startRendering() {
+        const animate = (currentTime) => {
+            this.rafId = requestAnimationFrame(animate);
+            this.render(currentTime);
+        };
+        
+        this.rafId = requestAnimationFrame(animate);
     }
 
-    handlePointerMove(event) {
-        const x = event.clientX / window.innerWidth;
-        const y = event.clientY / window.innerHeight;
-
-        this.pointer.targetX = (x - 0.5) * 2;
-        this.pointer.targetY = (y - 0.5) * 2;
-    }
-
-    animate() {
-        if (!this.isInitialized) return;
-
-        requestAnimationFrame(() => this.animate());
-
+    render(currentTime) {
         const delta = this.clock.getDelta();
-        const elapsed = this.clock.getElapsedTime();
+        const time = this.clock.getElapsedTime();
+        
+        // Update FPS calculation
+        this.frameCount++;
+        if (currentTime - this.lastFrameTime >= 1000) {
+            this.fps = this.frameCount;
+            this.frameCount = 0;
+            this.lastFrameTime = currentTime;
+        }
 
-        // Lerp pointer for smooth parallax
-        this.pointer.x += (this.pointer.targetX - this.pointer.x) * CONFIG.motion.lerp;
-        this.pointer.y += (this.pointer.targetY - this.pointer.y) * CONFIG.motion.lerp;
+        // Artifact rotation with delta timing
+        if (this.artifact) {
+            this.artifact.rotation.y += delta * CONFIG.motion.artifactSpin;
+        }
 
-        this.updateArtifact(elapsed, delta);
-        this.updateParticles(elapsed, delta);
+        // Core breathing animation
+        if (this.core) {
+            this.core.rotation.x += delta * CONFIG.motion.coreSpinX;
+            this.core.rotation.z += delta * CONFIG.motion.coreSpinZ;
+            
+            // Smoother bobbing motion
+            const bobOffset = Math.sin(time * CONFIG.motion.coreBobFreq) * 
+                            Math.sin(time * CONFIG.motion.coreBobFreq * 0.5) * 
+                            CONFIG.motion.coreBobAmp;
+            this.core.position.y = bobOffset;
+            
+            // Subtle scale breathing
+            const scale = 1 + Math.sin(time * CONFIG.motion.coreBobFreq * 1.2) * 0.02;
+            this.core.scale.setScalar(scale);
+        }
+
+        // Particle drift
+        if (this.particles) {
+            this.particles.rotation.y += delta * CONFIG.motion.particleDrift;
+        }
+
+        // Smoother camera parallax
+        this.mouseX += (this.targetX * CONFIG.motion.parallax - this.mouseX) * CONFIG.motion.lerp;
+        this.mouseY += (this.targetY * CONFIG.motion.parallax - this.mouseY) * CONFIG.motion.lerp;
+
+        this.camera.position.x = this.mouseX;
+        this.camera.position.y = this.mouseY;
+        this.camera.lookAt(0, 0, 0);
 
         this.renderer.render(this.scene, this.camera);
     }
 
-    updateArtifact(time, delta) {
-        if (!this.artifact) return;
-
-        const parallaxX = this.pointer.x * CONFIG.motion.parallax;
-        const parallaxY = this.pointer.y * CONFIG.motion.parallax;
-
-        this.artifact.rotation.y += CONFIG.motion.artifactSpin * delta;
-        this.artifact.rotation.x += CONFIG.motion.artifactSpin * 0.35 * delta;
-
-        this.artifact.rotation.y += parallaxX * 0.12;
-        this.artifact.rotation.x += -parallaxY * 0.08;
-
-        if (this.coreSphere) {
-            this.coreSphere.rotation.x += CONFIG.motion.coreSpinX * delta;
-            this.coreSphere.rotation.z += CONFIG.motion.coreSpinZ * delta;
-            this.coreSphere.position.y = 0.2 + Math.sin(time * CONFIG.motion.coreBobFreq) * CONFIG.motion.coreBobAmp;
+    dispose() {
+        if (this.rafId) {
+            cancelAnimationFrame(this.rafId);
         }
-
-        if (this.cageWire) {
-            this.cageWire.rotation.y -= CONFIG.motion.coreSpinZ * 0.6 * delta;
-        }
-    }
-
-    updateParticles(time, delta) {
-        if (!this.particles) return;
-
-        this.particles.children.forEach((p) => {
-            const offset = p.userData.offset;
-            const speed = p.userData.speed;
-
-            p.position.x += Math.sin(time * speed + offset) * CONFIG.motion.particleDrift * delta * 60;
-            p.position.z += Math.cos(time * speed + offset * 0.7) * CONFIG.motion.particleDrift * delta * 60;
+        
+        // Clean up Three.js resources
+        [this.scene, this.renderer].forEach(item => {
+            if (item && typeof item.dispose === 'function') {
+                item.dispose();
+            }
         });
     }
 }
 
 /**
- * ALCHEMY OS ORCHESTRATOR
+ * Enhanced state machine for application orchestration
  */
-class AlchemyApp {
+class AppStateMachine {
     constructor() {
-        this.root = document.querySelector('.app-root');
-        this.viewport = document.querySelector('.viewport');
-        this.header = document.querySelector('.header-layer');
-
-        this.navLinks = Array.from(document.querySelectorAll('.link[data-chamber]'));
-        this.chamberChips = Array.from(document.querySelectorAll('.chamber-chip[data-chamber]'));
-
-        this.chamberPanel = document.querySelector('.chamber-panel');
-        this.chamberSurface = this.chamberPanel?.querySelector('.chamber-surface');
-        this.chamberLabelEl = this.chamberPanel?.querySelector('[data-chamber-label]');
-        this.chamberNameEl = this.chamberPanel?.querySelector('[data-chamber-name]');
-        this.chamberTitleEl = this.chamberPanel?.querySelector('[data-chamber-title]');
-        this.chamberBodyEl = this.chamberPanel?.querySelector('[data-chamber-body]');
-
-        this.depthView = document.querySelector('.depth-view');
-        this.depthSurface = this.depthView?.querySelector('.depth-surface');
-        this.depthChamberEl = this.depthView?.querySelector('[data-depth-chamber]');
-        this.depthTitleEl = this.depthView?.querySelector('[data-depth-title]');
-        this.depthBodyEl = this.depthView?.querySelector('[data-depth-body]');
-
-        this.state = APP_STATES.IDLE;
-        this.activeChamberKey = 'systems';
-        this.activeDocumentKey = null;
-
-        this.voidExperience = null;
-
-        this.bootstrap();
+        this.state = APP_STATES.LOADING;
+        this.previousState = null;
+        this.listeners = new Map();
     }
 
-    bootstrap() {
-        this.root?.setAttribute('data-state', APP_STATES.LOADING);
-        document.documentElement.classList.remove('no-js');
+    transitionTo(newState, data = {}) {
+        if (this.state === newState) return;
 
-        this.voidExperience = new VoidExperience('#artifact-canvas');
+        this.previousState = this.state;
+        this.state = newState;
 
-        this.syncNavToActive();
-        this.bindEvents();
+        // Notify listeners
+        this.listeners.forEach((callback, key) => {
+            try {
+                callback(this.state, this.previousState, data);
+            } catch (error) {
+                console.warn(`State listener error (${key}):`, error);
+            }
+        });
 
-        setTimeout(() => {
-            this.root?.setAttribute('data-state', APP_STATES.IDLE);
-        }, 600);
+        // Dispatch global event
+        window.dispatchEvent(new CustomEvent('appStateChange', {
+            detail: { state: this.state, previous: this.previousState, data }
+        }));
     }
 
-    bindEvents() {
-        this.navLinks.forEach((link) => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                const chamberKey = link.dataset.chamber;
-                if (!chamberKey) return;
-                this.handleChamberSelection(chamberKey);
+    addListener(key, callback) {
+        this.listeners.set(key, callback);
+    }
+
+    removeListener(key) {
+        this.listeners.delete(key);
+    }
+}
+
+/**
+ * Enhanced navigation controller with focus management
+ */
+class NavController {
+    constructor({ linkSelector }) {
+        this.links = Array.from(document.querySelectorAll(linkSelector));
+        this.activeLink = null;
+        this.bind();
+    }
+
+    bind() {
+        this.links.forEach(link => {
+            // Enhanced click handling with debouncing
+            let clickTimeout;
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if (clickTimeout) return;
+                
+                clickTimeout = setTimeout(() => {
+                    const route = link.dataset.route || link.getAttribute('href').replace('#', '');
+                    if (route) {
+                        this.navigateTo(route);
+                    }
+                    clickTimeout = null;
+                }, 150);
             });
-        });
 
-        this.chamberChips.forEach((chip) => {
-            chip.addEventListener('click', () => {
-                const chamberKey = chip.dataset.chamber;
-                if (!chamberKey) return;
-                this.handleChamberSelection(chamberKey, { openPanel: true });
-            });
-        });
-
-        document.querySelectorAll('[data-action="close-chamber"]').forEach((btn) => {
-            btn.addEventListener('click', () => this.closeChamberPanel());
-        });
-
-        document.querySelector('[data-action="open-depth"]')?.addEventListener('click', () => {
-            if (!this.activeChamberKey) return;
-            this.openDepthDocument(this.activeChamberKey);
-        });
-
-        document.querySelectorAll('[data-action="close-depth"]').forEach((btn) => {
-            btn.addEventListener('click', () => this.closeDepthView());
-        });
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                if (this.state === APP_STATES.DEPTH_OPEN) {
-                    this.closeDepthView();
-                    event.stopPropagation();
-                } else if (this.state === APP_STATES.CHAMBER_OPEN) {
-                    this.closeChamberPanel();
-                    event.stopPropagation();
+            // Keyboard navigation support
+            link.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    link.click();
                 }
+            });
+        });
+
+        // Keyboard navigation between links
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab' && this.activeLink) {
+                this.handleTabNavigation(e);
             }
         });
     }
 
-    handleChamberSelection(chamberKey, options = {}) {
-        if (!CHAMBERS[chamberKey]) return;
-
-        this.activeChamberKey = chamberKey;
-        this.syncNavToActive();
-        this.populateChamberPanel(chamberKey);
-
-        if (options.openPanel) {
-            this.openChamberPanel();
+    navigateTo(route) {
+        // Use History API for cleaner URLs
+        if (window.location.hash !== `#${route}`) {
+            window.history.pushState({ route }, '', `#${route}`);
+            window.dispatchEvent(new HashChangeEvent('hashchange'));
         }
     }
 
-    syncNavToActive() {
-        this.navLinks.forEach((link) => {
-            const isActive = link.dataset.chamber === this.activeChamberKey;
-            link.classList.toggle('link--active', isActive);
-            link.setAttribute('aria-current', isActive ? 'page' : 'false');
-        });
-
-        this.chamberChips.forEach((chip) => {
-            const isActive = chip.dataset.chamber === this.activeChamberKey;
-            chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-        });
+    setActiveByChamber(key) {
+        this.clearActive();
+        
+        const activeLink = this.links.find(link => 
+            link.getAttribute('data-chamber') === key
+        );
+        
+        if (activeLink) {
+            activeLink.classList.add('link--active');
+            this.activeLink = activeLink;
+        }
     }
 
-    populateChamberPanel(chamberKey) {
-        const data = CHAMBERS[chamberKey];
-        if (!data || !this.chamberPanel) return;
-
-        this.chamberLabelEl.textContent = data.label;
-        this.chamberNameEl.textContent = data.name;
-        this.chamberTitleEl.textContent = data.title;
-
-        this.chamberBodyEl.innerHTML = '';
-        data.body.forEach((paragraph) => {
-            const p = document.createElement('p');
-            p.textContent = paragraph;
-            this.chamberBodyEl.appendChild(p);
-        });
+    clearActive() {
+        this.links.forEach(link => link.classList.remove('link--active'));
+        this.activeLink = null;
     }
 
-    openChamberPanel() {
-        if (!this.chamberPanel) return;
+    handleTabNavigation(e) {
+        const currentIndex = this.links.indexOf(this.activeLink);
+        let nextIndex;
 
-        this.state = APP_STATES.CHAMBER_OPEN;
-        this.root?.setAttribute('data-state', APP_STATES.CHAMBER_OPEN);
-
-        this.chamberPanel.setAttribute('aria-hidden', 'false');
-        this.chamberSurface?.focus?.();
-
-        this.updateOverlayState();
-    }
-
-    closeChamberPanel() {
-        if (!this.chamberPanel) return;
-
-        this.chamberPanel.setAttribute('aria-hidden', 'true');
-
-        if (this.state === APP_STATES.CHAMBER_OPEN) {
-            this.state = APP_STATES.IDLE;
-            this.root?.setAttribute('data-state', APP_STATES.IDLE);
+        if (e.shiftKey) {
+            nextIndex = currentIndex > 0 ? currentIndex - 1 : this.links.length - 1;
+        } else {
+            nextIndex = currentIndex < this.links.length - 1 ? currentIndex + 1 : 0;
         }
 
-        this.updateOverlayState();
-    }
-
-    openDepthDocument(chamberKey) {
-        const doc = DOCUMENTS[chamberKey];
-        if (!doc || !this.depthView) return;
-
-        this.state = APP_STATES.DEPTH_OPEN;
-        this.root?.setAttribute('data-state', APP_STATES.DEPTH_OPEN);
-        this.activeDocumentKey = chamberKey;
-
-        this.depthChamberEl.textContent = doc.chamber;
-        this.depthTitleEl.textContent = doc.title;
-
-        this.depthBodyEl.innerHTML = '';
-        doc.paragraphs.forEach((paragraph) => {
-            const p = document.createElement('p');
-            p.textContent = paragraph;
-            this.depthBodyEl.appendChild(p);
-        });
-
-        this.depthView.setAttribute('aria-hidden', 'false');
-        this.depthSurface?.focus?.();
-
-        this.updateOverlayState();
-    }
-
-    closeDepthView() {
-        if (!this.depthView) return;
-
-        this.depthView.setAttribute('aria-hidden', 'true');
-        this.activeDocumentKey = null;
-
-        if (this.state === APP_STATES.DEPTH_OPEN) {
-            this.state = APP_STATES.CHAMBER_OPEN;
-            this.root?.setAttribute('data-state', APP_STATES.CHAMBER_OPEN);
-        }
-
-        this.updateOverlayState();
-    }
-
-    updateOverlayState() {
-        const isChamberOpen = this.chamberPanel?.getAttribute('aria-hidden') === 'false';
-        const isDepthOpen = this.depthView?.getAttribute('aria-hidden') === 'false';
-        const isOverlayOpen = isChamberOpen || isDepthOpen;
-
-        if (this.header) {
-            this.header.classList.toggle('header-layer--compact', isOverlayOpen);
-        }
-
-        if (this.viewport) {
-            this.viewport.classList.toggle('viewport--dimmed', isOverlayOpen);
-        }
+        this.links[nextIndex].focus();
+        e.preventDefault();
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+/**
+ * Enhanced ChamberPanel with improved accessibility
+ */
+class ChamberPanel {
+    constructor({ panelSelector, data, onRequestClose }) {
+        this.root = document.querySelector(panelSelector);
+        if (!this.root) {
+            console.warn(`Chamber panel not found: ${panelSelector}`);
+            return;
+        }
+
+        this.data = data || {};
+        this.onRequestClose = onRequestClose;
+        this.currentKey = null;
+        this.isVisible = false;
+
+        // Cache elements
+        this.elements = {
+            label: this.root.querySelector('.chamber-label'),
+            title: this.root.querySelector('.chamber-title'),
+            body: this.root.querySelector('.chamber-body'),
+            close: this.root.querySelector('.chamber-close'),
+            scrim: this.root.querySelector('.chamber-panel__scrim')
+        };
+
+        this.bind();
+        this.initAccessibility();
+    }
+
+    initAccessibility() {
+        this.root.setAttribute('aria-hidden', 'true');
+        this.root.setAttribute('aria-labelledby', 'chamber-title');
+        this.root.setAttribute('aria-describedby', 'chamber-body');
+    }
+
+    bind() {
+        // Enhanced close handlers
+        const closeHandlers = [
+            this.elements.close,
+            this.elements.scrim
+        ].filter(Boolean);
+
+        closeHandlers.forEach(element => {
+            element.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.requestClose();
+            });
+        });
+
+        // Keyboard navigation
+        this.root.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.requestClose();
+            }
+            
+            if (e.key === 'Tab') {
+                this.trapFocus(e);
+            }
+        });
+    }
+
+    trapFocus(e) {
+        const focusableElements = this.getFocusableElements();
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+        }
+    }
+
+    getFocusableElements() {
+        return Array.from(this.root.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )).filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
+    }
+
+    requestClose() {
+        if (typeof this.onRequestClose === 'function') {
+            this.onRequestClose();
+        }
+    }
+
+    async open(key) {
+        const data = this.data[key];
+        if (!data) {
+            console.warn(`No chamber data found for key: ${key}`);
+            return;
+        }
+
+        this.currentKey = key;
+        this.isVisible = true;
+
+        // Update content
+        if (this.elements.label) this.elements.label.textContent = data.label || '';
+        if (this.elements.title) this.elements.title.textContent = data.title || '';
+
+        if (this.elements.body) {
+            this.elements.body.innerHTML = '';
+            (data.paragraphs || []).forEach(text => {
+                const p = document.createElement('p');
+                p.textContent = text;
+                this.elements.body.appendChild(p);
+            });
+        }
+
+        // Show panel
+        this.root.setAttribute('aria-hidden', 'false');
+        
+        // Set focus for accessibility
+        await this.waitForTransition();
+        this.elements.close?.focus();
+    }
+
+    async close() {
+        this.isVisible = false;
+        this.currentKey = null;
+        
+        this.root.setAttribute('aria-hidden', 'true');
+        
+        // Wait for transition before moving focus
+        await this.waitForTransition();
+    }
+
+    waitForTransition() {
+        return new Promise(resolve => {
+            const duration = this.isVisible ? CONFIG.timing.panelEnter : CONFIG.timing.panelExit;
+            setTimeout(resolve, duration);
+        });
+    }
+}
+
+/**
+ * Enhanced DepthView for document presentation
+ */
+class DepthView {
+    constructor({ panelSelector, data, onRequestClose }) {
+        this.root = document.querySelector(panelSelector);
+        if (!this.root) {
+            console.warn(`Depth view not found: ${panelSelector}`);
+            return;
+        }
+
+        this.data = data || {};
+        this.onRequestClose = onRequestClose;
+        this.currentId = null;
+        this.isVisible = false;
+
+        this.elements = {
+            kicker: this.root.querySelector('.depth-kicker'),
+            title: this.root.querySelector('.depth-title'),
+            subtitle: this.root.querySelector('.depth-subtitle'),
+            body: this.root.querySelector('.depth-body'),
+            close: this.root.querySelector('.depth-close'),
+            scrim: this.root.querySelector('.depth-view__scrim')
+        };
+
+        this.bind();
+        this.initAccessibility();
+    }
+
+    initAccessibility() {
+        this.root.setAttribute('aria-hidden', 'true');
+        this.root.setAttribute('aria-labelledby', 'depth-title');
+        this.root.setAttribute('aria-describedby', 'depth-body');
+    }
+
+    bind() {
+        const closeHandlers = [
+            this.elements.close,
+            this.elements.scrim
+        ].filter(Boolean);
+
+        closeHandlers.forEach(element => {
+            element.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.requestClose();
+            });
+        });
+
+        this.root.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.requestClose();
+            }
+            
+            if (e.key === 'Tab') {
+                this.trapFocus(e);
+            }
+        });
+    }
+
+    trapFocus(e) {
+        const focusableElements = this.getFocusableElements();
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+        }
+    }
+
+    getFocusableElements() {
+        return Array.from(this.root.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )).filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
+    }
+
+    requestClose() {
+        if (typeof this.onRequestClose === 'function') {
+            this.onRequestClose();
+        }
+    }
+
+    async open(id) {
+        const doc = this.data[id];
+        if (!doc) {
+            console.warn(`No document found for id: ${id}`);
+            return;
+        }
+
+        this.currentId = id;
+        this.isVisible = true;
+
+        // Update content
+        if (this.elements.kicker) this.elements.kicker.textContent = doc.kicker || '';
+        if (this.elements.title) this.elements.title.textContent = doc.title || '';
+        if (this.elements.subtitle) this.elements.subtitle.textContent = doc.subtitle || '';
+
+        if (this.elements.body) {
+            this.elements.body.innerHTML = '';
+            (doc.sections || []).forEach(section => {
+                if (section.heading) {
+                    const h = document.createElement('h3');
+                    h.textContent = section.heading;
+                    this.elements.body.appendChild(h);
+                }
+                (section.paragraphs || []).forEach(text => {
+                    const p = document.createElement('p');
+                    p.textContent = text;
+                    this.elements.body.appendChild(p);
+                });
+            });
+        }
+
+        this.root.setAttribute('aria-hidden', 'false');
+        
+        await this.waitForTransition();
+        this.elements.close?.focus();
+    }
+
+    async close() {
+        this.isVisible = false;
+        this.currentId = null;
+        
+        this.root.setAttribute('aria-hidden', 'true');
+        await this.waitForTransition();
+    }
+
+    waitForTransition() {
+        return new Promise(resolve => {
+            const duration = this.isVisible ? CONFIG.timing.panelEnter : CONFIG.timing.panelExit;
+            setTimeout(resolve, duration);
+        });
+    }
+}
+
+/**
+ * Master application orchestrator
+ */
+class AlchemyApp {
+    constructor() {
+        this.stateMachine = new AppStateMachine();
+        this.components = {};
+        
+        this.init()
+            .then(() => {
+                this.stateMachine.transitionTo(APP_STATES.IDLE);
+            })
+            .catch(error => {
+                console.error('Failed to initialize AlchemyApp:', error);
+                this.stateMachine.transitionTo(APP_STATES.ERROR, { error });
+            });
+    }
+
+    async init() {
+        // Remove no-js class
+        document.documentElement.classList.remove('no-js');
+        document.documentElement.classList.add('js');
+
+        // Initialize components
+        await this.initComponents();
+        this.bindGlobalEvents();
+        this.handleHash(); // Initial route
+
+        // Hide loading state
+        this.hideLoadingState();
+    }
+
+    async initComponents() {
+        // Initialize Three.js experience
+        this.components.void = new VoidExperience('#artifact-canvas');
+
+        // Initialize navigation
+        this.components.nav = new NavController({
+            linkSelector: '.nav-links .link'
+        });
+
+        // Initialize panels
+        this.components.chambers = new ChamberPanel({
+            panelSelector: '#chamber-panel',
+            data: CHAMBERS,
+            onRequestClose: () => this.navigateTo('')
+        });
+
+        this.components.depthView = new DepthView({
+            panelSelector: '#depth-view',
+            data: DOCUMENTS,
+            onRequestClose: () => this.navigateTo('')
+        });
+
+        // Cache DOM elements
+        this.dom = {
+            header: document.querySelector('.header-layer'),
+            viewport: document.querySelector('.viewport'),
+            navLayer: document.querySelector('.nav-layer'),
+            loading: document.querySelector('.loading-state')
+        };
+
+        // Set up state listeners
+        this.stateMachine.addListener('ui', this.handleStateChange.bind(this));
+    }
+
+    bindGlobalEvents() {
+        // Enhanced hash change handling
+        window.addEventListener('hashchange', () => this.handleHash());
+        
+        // History API support
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.route) {
+                this.handleHash();
+            }
+        });
+
+        // Global keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && window.location.hash) {
+                this.navigateTo('');
+            }
+        });
+
+        // Performance monitoring
+        this.setupPerformanceMonitoring();
+    }
+
+    setupPerformanceMonitoring() {
+        if ('connection' in navigator) {
+            const connection = navigator.connection;
+            if (connection.saveData) {
+                // Adjust experience for data-saving mode
+                console.info('Data saving mode enabled - optimizing experience');
+            }
+        }
+    }
+
+    handleStateChange(newState, oldState) {
+        // Update UI based on state
+        const isOverlayOpen = newState === APP_STATES.CHAMBER_OPEN || 
+                             newState === APP_STATES.DEPTH_OPEN;
+
+        // Update viewport
+        if (this.dom.viewport) {
+            this.dom.viewport.classList.toggle('viewport--dimmed', isOverlayOpen);
+        }
+
+        // Update navigation
+        if (this.dom.navLayer) {
+            this.dom.navLayer.classList.toggle('nav-layer--dimmed', isOverlayOpen);
+        }
+
+        // Update header
+        this.setHeaderCompact(isOverlayOpen);
+    }
+
+    setHeaderCompact(isCompact) {
+        if (!this.dom.header) return;
+        
+        this.dom.header.classList.toggle('header-layer--compact', isCompact);
+        
+        // Update CSS custom property for smooth interpolation
+        this.dom.header.style.setProperty('--header-scale', isCompact ? '0.85' : '1');
+        this.dom.header.style.setProperty('--header-opacity', isCompact ? '0.78' : '1');
+    }
+
+    hideLoadingState() {
+        if (this.dom.loading) {
+            this.dom.loading.setAttribute('aria-hidden', 'true');
+            
+            // Remove from DOM after transition
+            setTimeout(() => {
+                if (this.dom.loading.parentNode) {
+                    this.dom.loading.parentNode.removeChild(this.dom.loading);
+                }
+            }, 600);
+        }
+    }
+
+    handleHash() {
+        const raw = window.location.hash.replace(/^#/, '').trim();
+
+        if (!raw) {
+            this.goIdle();
+            return;
+        }
+
+        // Document route: #doc/<id>
+        if (raw.startsWith('doc/')) {
+            const id = raw.slice(4);
+            if (DOCUMENTS[id]) {
+                this.openDocument(id);
+            } else {
+                this.goIdle();
+            }
+            return;
+        }
+
+        // Chamber route
+        if (CHAMBERS[raw]) {
+            this.openChamber(raw);
+            return;
+        }
+
+        // Unknown route
+        this.goIdle();
+    }
+
+    navigateTo(route) {
+        if (window.location.hash !== `#${route}`) {
+            window.history.pushState({ route }, '', route ? `#${route}` : ' ');
+        } else {
+            this.handleHash();
+        }
+    }
+
+    async goIdle() {
+        this.stateMachine.transitionTo(APP_STATES.IDLE);
+        
+        if (this.components.nav) this.components.nav.clearActive();
+        if (this.components.chambers) await this.components.chambers.close();
+        if (this.components.depthView) await this.components.depthView.close();
+        
+        this.setHeaderCompact(false);
+    }
+
+    async openChamber(key) {
+        if (!this.components.chambers) return;
+
+        this.stateMachine.transitionTo(APP_STATES.CHAMBER_OPEN, { chamber: key });
+        
+        if (this.components.depthView) await this.components.depthView.close();
+        if (this.components.nav) this.components.nav.setActiveByChamber(key);
+        
+        await this.components.chambers.open(key);
+        this.setHeaderCompact(true);
+    }
+
+    async openDocument(id) {
+        if (!this.components.depthView) return;
+
+        this.stateMachine.transitionTo(APP_STATES.DEPTH_OPEN, { document: id });
+        
+        if (this.components.chambers) await this.components.chambers.close();
+        if (this.components.nav) this.components.nav.clearActive();
+        
+        await this.components.depthView.open(id);
+        this.setHeaderCompact(true);
+    }
+
+    // Cleanup method for SPA navigation
+    destroy() {
+        if (this.components.void) {
+            this.components.void.dispose();
+        }
+        
+        this.stateMachine.removeListener('ui');
+    }
+}
+
+// Enhanced chamber data with refined content
+const CHAMBERS = {
+    philosophy: {
+        label: 'Chamber I · Philosophy',
+        title: 'What a system assumes about the world.',
+        paragraphs: [
+            'Every tool encodes a set of assumptions. This chamber is where those assumptions are made explicit instead of living quietly in the background.',
+            'We ask: under what conditions does this model still hold, and who carries the cost when it stops?'
+        ]
+    },
+    systems: {
+        label: 'Chamber II · Systems',
+        title: 'The architecture that carries the weight.',
+        paragraphs: [
+            'Interfaces, protocols, automation, and observability. The invisible structure that determines whether an idea survives contact with real environments.',
+            'We prefer systems that can be explained on a single sheet of paper and maintained by ordinary people, not heroes.'
+        ]
+    },
+    artifacts: {
+        label: 'Chamber III · Artifacts',
+        title: 'Surfaces built to survive strange weather.',
+        paragraphs: [
+            'Eventually abstraction becomes matter: devices, dashboards, scripts, field tools. This is the layer where ideas accept the constraints of hardware, time, and exhaustion.',
+            'The emphasis is on ergonomics, legibility, and removing everything that does not directly serve use in the field.'
+        ]
+    },
+    oracle: {
+        label: 'Chamber IV · Oracle',
+        title: 'Structured doubt for irreversible moves.',
+        paragraphs: [
+            'We treat forecasting as disciplined doubt rather than performance. Scenarios, sensitivities, and envelopes of failure, instead of single-line predictions.',
+            'The goal is to map the terrain before walking it, so that when we do commit, we know what we are trading for what.'
+        ]
+    }
+};
+
+// Enhanced document structure
+const DOCUMENTS = {
+    'american-favela': {
+        kicker: 'Field Note · AF-01',
+        title: 'The American Favela Thesis',
+        subtitle: 'Notes on infrastructure, precarity, and tools that do not assume stability.',
+        sections: [
+            {
+                heading: '1. Scope',
+                paragraphs: [
+                    'This document sketches the constraints of operating in environments where formal infrastructure is intermittent, informal, or adversarial.',
+                    'It exists to inform how devices, drones, and software should behave when continuity cannot be assumed.'
+                ]
+            },
+            {
+                heading: '2. Design Pressure',
+                paragraphs: [
+                    'Tools built for unstable contexts must prioritise recoverability, offline usefulness, and graceful degradation over marginal gains in ideal conditions.'
+                ]
+            }
+        ]
+    }
+};
+
+// Enhanced boot sequence with error handling
+window.addEventListener('DOMContentLoaded', () => {
+    // Set up error handling
     window.addEventListener('error', (e) => {
         console.error('Global error:', e.error);
     });
