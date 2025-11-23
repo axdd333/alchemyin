@@ -64,7 +64,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: hsl(var(--void-bg-hsl));
+    background-color: #f0e7db;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color: hsl(var(--ink-hsl));
     cursor: crosshair;
@@ -127,6 +127,22 @@ body {
 }
 
 /* ===== GRAIN OVERLAY ===== */
+.illustration-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+        linear-gradient(180deg, rgba(240, 231, 219, 0.08) 0%, rgba(240, 231, 219, 0.6) 100%),
+        url('assets/alchemy-background.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.9;
+    filter: saturate(0.92) contrast(1.02);
+    transform: translateZ(0);
+    pointer-events: none;
+}
+
 .noise-overlay {
     position: fixed;
     inset: 0;
