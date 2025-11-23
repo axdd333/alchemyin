@@ -31,7 +31,7 @@
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     
     /* Typography scales */
-    --text-hero: clamp(2.4rem, 4vw, 3.2rem);
+    --text-hero: clamp(2.2rem, 3.5vw, 2.9rem);
     --text-compact: 1.4rem;
     --text-body: 0.9rem;
     --text-meta: 0.75rem;
@@ -198,7 +198,7 @@ body {
     mix-blend-mode: normal;
     color: var(--ink);
     transition: all 0.5s var(--ease-out-expo);
-    transform: scale(var(--header-scale));
+    transform: translateY(-2px) scale(var(--header-scale));
     opacity: var(--header-opacity);
     text-shadow:
         0 10px 30px rgba(255, 255, 255, 0.7),
@@ -229,16 +229,16 @@ body {
     font-weight: 400;
     font-size: var(--text-hero);
     letter-spacing: -0.02em;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.16rem;
     opacity: 0;
     animation: fadeDescend 1.5s var(--ease-out-expo) forwards 0.5s;
-    line-height: 1.1;
+    line-height: 1.06;
     font-variant-numeric: oldstyle-nums;
 }
 
 .brand-mark__word {
     display: inline-block;
-    transform: translateX(0.5px); /* Optical adjustment */
+    transform: translateX(0.5px) translateY(-0.5px); /* Optical adjustment */
 }
 
 .brand-sub {
@@ -248,7 +248,8 @@ body {
     font-weight: 400;
     opacity: 0;
     animation: fadeDescend 1.5s var(--ease-out-expo) forwards 0.7s;
-    margin-inline-start: 0.1em; /* Optical alignment */
+    margin-inline-start: 0.08em; /* Optical alignment */
+    margin-top: 0.14rem;
 }
 
 /* ===== NAVIGATION SYSTEM ===== */
@@ -341,10 +342,10 @@ body {
 .link::after {
     content: '';
     position: absolute;
-    top: 100%;
+    top: calc(100% + 3px);
     left: 50%;
     width: var(--link-underline);
-    height: 1px;
+    height: 1.5px;
     background: currentColor;
     transform: translateX(-50%);
     transition: width 0.35s var(--ease-out-expo);
