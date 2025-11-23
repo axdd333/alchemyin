@@ -70,6 +70,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: hsl(var(--void-bg-hsl));
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color: hsl(var(--ink-hsl));
     cursor: default;
