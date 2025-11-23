@@ -66,8 +66,7 @@ class VoidExperience {
             return;
         }
 
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+        this.updateDimensions();
         this.mouseX = 0;
         this.mouseY = 0;
         this.targetX = 0;
@@ -86,6 +85,24 @@ class VoidExperience {
         this.addAtmosphere();
         this.bindEvents();
         this.startRendering();
+    }
+
+    updateDimensions() {
+        if (!this.canvas) return;
+
+        const { width, height } = this.canvas.getBoundingClientRect();
+        this.width = width || window.innerWidth;
+        this.height = height || window.innerHeight;
+
+        if (this.renderer) {
+            this.renderer.setSize(this.width, this.height);
+            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        }
+
+        if (this.camera) {
+            this.camera.aspect = this.width / this.height;
+            this.camera.updateProjectionMatrix();
+        }
     }
 
     init() {
@@ -110,11 +127,12 @@ class VoidExperience {
             powerPreference: "high-performance"
         });
         
-        this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.0;
+
+        this.updateDimensions();
 
         // Enhanced lighting system
         const ambient = new THREE.AmbientLight(CONFIG.colors.light, 0.65);
@@ -215,11 +233,7 @@ class VoidExperience {
         const handleResize = () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                this.width = window.innerWidth;
-                this.height = window.innerHeight;
-                this.camera.aspect = this.width / this.height;
-                this.camera.updateProjectionMatrix();
-                this.renderer.setSize(this.width, this.height);
+                this.updateDimensions();
             }, 100);
         };
 
@@ -892,11 +906,13 @@ class AlchemyApp {
     }
 
     navigateTo(route) {
-        if (window.location.hash !== `#${route}`) {
-            window.history.pushState({ route }, '', route ? `#${route}` : ' ');
-        } else {
-            this.handleHash();
+        const targetHash = route ? `#${route}` : '#';
+
+        if (window.location.hash !== targetHash) {
+            window.history.pushState({ route }, '', targetHash);
         }
+
+        this.handleHash();
     }
 
     async goIdle() {
