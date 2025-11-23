@@ -2,6 +2,7 @@
 :root {
     /* Sacred grid system */
     --unit: 24px;
+    --frame: clamp(18px, 3vw, 32px);
     --golden-ratio: 1.618;
     
     /* Precision color palette */
@@ -18,7 +19,7 @@
     --card-border-subtle: rgba(255, 255, 255, 0.65);
     
     /* Precision sizing */
-    --nav-height: 5.5rem;
+    --nav-height: 4.4rem;
     --panel-max-width: min(560px, 85vw);
     --panel-radius: 18px;
     --header-compact-scale: 0.85;
@@ -188,7 +189,7 @@ body {
     --header-opacity: 1;
 
     position: fixed;
-    top: calc(3.5 * var(--unit));
+    top: calc(var(--frame) * 2);
     left: 0;
     width: 100%;
     z-index: var(--z-content);
@@ -406,8 +407,11 @@ body {
 /* ===== VIEWPORT & CANVAS ===== */
 .viewport {
     position: fixed;
-    inset: 0;
+    inset: calc(var(--frame) * 0.9);
     z-index: var(--z-base);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.09);
 }
 
 #artifact-canvas {
