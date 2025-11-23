@@ -795,6 +795,7 @@ class AlchemyApp {
             header: document.querySelector('.header-layer'),
             viewport: document.querySelector('.viewport'),
             navLayer: document.querySelector('.nav-layer'),
+            metaPanel: document.querySelector('.meta-panel'),
             loading: document.querySelector('.loading-state')
         };
 
@@ -849,18 +850,23 @@ class AlchemyApp {
             this.dom.navLayer.classList.toggle('nav-layer--dimmed', isOverlayOpen);
         }
 
+        // Dim the positioning tools
+        if (this.dom.metaPanel) {
+            this.dom.metaPanel.classList.toggle('meta-panel--dimmed', isOverlayOpen);
+        }
+
         // Update header
         this.setHeaderCompact(isOverlayOpen);
     }
 
     setHeaderCompact(isCompact) {
         if (!this.dom.header) return;
-        
+
         this.dom.header.classList.toggle('header-layer--compact', isCompact);
-        
+
         // Update CSS custom property for smooth interpolation
-        this.dom.header.style.setProperty('--header-scale', isCompact ? '0.85' : '1');
-        this.dom.header.style.setProperty('--header-opacity', isCompact ? '0.78' : '1');
+        this.dom.header.style.setProperty('--header-scale', isCompact ? '0.82' : '1');
+        this.dom.header.style.setProperty('--header-opacity', isCompact ? '0.74' : '1');
     }
 
     hideLoadingState() {
