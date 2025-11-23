@@ -795,7 +795,6 @@ class AlchemyApp {
             header: document.querySelector('.header-layer'),
             viewport: document.querySelector('.viewport'),
             navLayer: document.querySelector('.nav-layer'),
-            metaPanel: document.querySelector('.meta-panel'),
             loading: document.querySelector('.loading-state')
         };
 
@@ -823,6 +822,9 @@ class AlchemyApp {
 
         // Performance monitoring
         this.setupPerformanceMonitoring();
+
+        // Ambient parallax for background illustration
+        this.setupBackgroundParallax();
     }
 
     setupPerformanceMonitoring() {
@@ -850,13 +852,42 @@ class AlchemyApp {
             this.dom.navLayer.classList.toggle('nav-layer--dimmed', isOverlayOpen);
         }
 
-        // Dim the positioning tools
-        if (this.dom.metaPanel) {
-            this.dom.metaPanel.classList.toggle('meta-panel--dimmed', isOverlayOpen);
-        }
-
         // Update header
         this.setHeaderCompact(isOverlayOpen);
+    }
+
+    setupBackgroundParallax() {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (prefersReducedMotion.matches) return;
+
+        const root = document.documentElement;
+        const maxShift = 2.6;
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
+        const applyShift = () => {
+            currentX += (targetX - currentX) * 0.12;
+            currentY += (targetY - currentY) * 0.12;
+
+            root.style.setProperty('--bg-shift-x', `${currentX.toFixed(3)}px`);
+            root.style.setProperty('--bg-shift-y', `${currentY.toFixed(3)}px`);
+
+            requestAnimationFrame(applyShift);
+        };
+
+        applyShift();
+
+        const handlePointerMove = (e) => {
+            const normalizedX = (e.clientX / window.innerWidth - 0.5) * 2;
+            const normalizedY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+            targetX = -normalizedX * maxShift;
+            targetY = -normalizedY * maxShift * 0.8;
+        };
+
+        document.addEventListener('pointermove', handlePointerMove, { passive: true });
     }
 
     setHeaderCompact(isCompact) {
