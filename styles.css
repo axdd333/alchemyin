@@ -64,7 +64,9 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: hsl(var(--void-bg-hsl));
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.45), transparent 38%),
+        radial-gradient(circle at 78% 12%, rgba(255, 255, 255, 0.36), transparent 34%),
+        linear-gradient(180deg, #f6f3ed 0%, hsl(var(--void-bg-hsl)) 28%, #e6e3dc 100%);
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color: hsl(var(--ink-hsl));
     cursor: crosshair;
@@ -131,7 +133,7 @@ body {
     position: fixed;
     inset: 0;
     z-index: var(--z-content);
-    opacity: 0.06;
+    opacity: 0.045;
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     transition: opacity 0.4s var(--ease-out-quart);
@@ -149,8 +151,8 @@ body {
     background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(15, 15, 15, 0.08) 15%,
-        rgba(15, 15, 15, 0.04) 85%,
+        rgba(15, 15, 15, 0.07) 18%,
+        rgba(15, 15, 15, 0.05) 82%,
         transparent 100%
     );
     opacity: 0.4;
@@ -236,9 +238,17 @@ body {
 .nav-links {
     list-style: none;
     display: flex;
-    gap: clamp(2rem, 6vw, 4rem);
-    padding: 0;
+    gap: clamp(1.75rem, 5vw, 3.5rem);
+    padding: 0.35rem 0.45rem;
     margin: 0;
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 999px;
+    border: 1px solid rgba(15, 15, 15, 0.06);
+    box-shadow:
+        0 14px 38px rgba(0, 0, 0, 0.08),
+        0 1px 0 rgba(255, 255, 255, 0.8) inset,
+        0 0 0 1px rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px) saturate(120%);
 }
 
 .nav-links[role="list"] {
@@ -246,17 +256,18 @@ body {
 }
 
 .link {
-    --link-opacity: 0.4;
+    --link-opacity: 0.55;
     --link-underline: 0%;
-    
+    --link-highlight: 0;
+
     text-decoration: none;
     font-size: var(--text-micro);
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     color: inherit;
     opacity: var(--link-opacity);
-    padding: 0.75rem 0;
+    padding: 0.65rem 0.9rem;
     position: relative;
     transition: all 0.35s var(--ease-out-quart);
     pointer-events: auto;
@@ -274,17 +285,33 @@ body {
     transition: width 0.4s var(--ease-out-expo);
 }
 
+.link::before {
+    content: '';
+    position: absolute;
+    inset: 0.35rem 0.5rem;
+    border-radius: 999px;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.95), rgba(245, 241, 234, 0.65));
+    opacity: var(--link-highlight);
+    transform: translateZ(0) scale(0.96);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    transition: opacity 0.35s var(--ease-out-quart), transform 0.35s var(--ease-out-quart);
+    z-index: -1;
+}
+
 .link:hover,
 .link:focus-visible {
     --link-opacity: 1;
     --link-underline: 100%;
+    --link-highlight: 1;
     outline: none;
     letter-spacing: 0.25em;
+    transform: translateY(-1px);
 }
 
 .link--active {
     --link-opacity: 1;
-    --link-underline: 100%;
+    --link-underline: 70%;
+    --link-highlight: 1;
 }
 
 .link__text {
@@ -329,10 +356,10 @@ body {
     transition: opacity 0.45s var(--ease-out-expo);
     background: radial-gradient(
         circle at top center,
-        rgba(234, 232, 227, 0.4) 0%,
-        rgba(234, 232, 227, 0.8) 100%
+        rgba(234, 232, 227, 0.38) 0%,
+        rgba(234, 232, 227, 0.82) 100%
     );
-    backdrop-filter: blur(0.5px);
+    backdrop-filter: blur(1.5px) saturate(115%);
 }
 
 .chamber-panel[aria-hidden="false"] {
@@ -353,19 +380,26 @@ body {
     margin-inline: calc(var(--unit) * 0.75);
     padding: calc(var(--unit) * 0.8) calc(var(--unit) * 0.85) calc(var(--unit) * 0.9);
     border-radius: var(--panel-radius);
-    border: 1px solid var(--card-border);
-    background: radial-gradient(
-        circle at top,
-        var(--card-bg-inner),
-        var(--card-bg-outer)
-    );
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.98) 0%, rgba(249, 244, 237, 0.94) 40%, rgba(243, 238, 230, 0.9) 100%);
     box-shadow:
-        0 30px 60px rgba(0, 0, 0, 0.08),
+        0 36px 82px rgba(0, 0, 0, 0.12),
+        0 12px 32px rgba(0, 0, 0, 0.04),
         0 0 0 1px var(--card-border-subtle),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        inset 0 1px 0 rgba(255, 255, 255, 0.92);
     transform: translateY(12px) scale(0.995);
     transition: all 0.5s var(--ease-out-expo);
     opacity: 0;
+}
+
+.chamber-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 6px;
+    border-radius: var(--panel-radius) var(--panel-radius) 0 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.4) 35%, rgba(0, 0, 0, 0.04) 100%);
+    opacity: 0.85;
 }
 
 .chamber-panel[aria-hidden="false"] .chamber-surface {
@@ -468,12 +502,13 @@ body {
     margin-inline: calc(var(--unit) * 0.75);
     padding: calc(var(--unit) * 1) calc(var(--unit) * 1) calc(var(--unit) * 1.1);
     border-radius: 16px;
-    border: 1px solid var(--card-border);
-    background: #f7f3ec;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: linear-gradient(165deg, rgba(252, 248, 242, 0.95) 0%, rgba(245, 240, 232, 0.94) 42%, rgba(239, 235, 228, 0.9) 100%);
     box-shadow:
-        0 32px 70px rgba(0, 0, 0, 0.09),
+        0 36px 82px rgba(0, 0, 0, 0.12),
+        0 10px 28px rgba(0, 0, 0, 0.04),
         0 0 0 1px var(--card-border-subtle),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
     overflow-y: auto;
     transform: translateY(16px) scale(0.99);
     transition: all 0.5s var(--ease-out-expo);
