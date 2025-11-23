@@ -65,6 +65,11 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    background-color: var(--void-bg);
+    background-image: url('background.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     background-color: hsl(var(--void-bg-hsl));
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color: hsl(var(--ink-hsl));
