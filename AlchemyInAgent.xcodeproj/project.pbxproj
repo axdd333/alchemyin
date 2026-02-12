@@ -1,0 +1,500 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000101 /* AlchemyInAgentApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000201 /* AlchemyInAgentApp.swift */; };
+		A10000000000000000000102 /* AgentStatusHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000202 /* AgentStatusHeader.swift */; };
+		A10000000000000000000103 /* AnimatedStatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000203 /* AnimatedStatusBadge.swift */; };
+		A10000000000000000000104 /* CommandInputBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000204 /* CommandInputBar.swift */; };
+		A10000000000000000000105 /* MessageBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000205 /* MessageBubbleView.swift */; };
+		A10000000000000000000106 /* ToolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000206 /* ToolButton.swift */; };
+		A10000000000000000000107 /* AgentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000207 /* AgentState.swift */; };
+		A10000000000000000000108 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000208 /* ChatMessage.swift */; };
+		A10000000000000000000109 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000209 /* AppViewModel.swift */; };
+		A1000000000000000000010A /* MainAgentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000020A /* MainAgentView.swift */; };
+		A1000000000000000000010B /* AppViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000210 /* AppViewModelTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A10000000000000000000301 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000002;
+			remoteInfo = AlchemyInAgent;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A10000000000000000000201 /* AlchemyInAgentApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlchemyInAgentApp.swift; sourceTree = "<group>"; };
+		A10000000000000000000202 /* AgentStatusHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentStatusHeader.swift; sourceTree = "<group>"; };
+		A10000000000000000000203 /* AnimatedStatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedStatusBadge.swift; sourceTree = "<group>"; };
+		A10000000000000000000204 /* CommandInputBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandInputBar.swift; sourceTree = "<group>"; };
+		A10000000000000000000205 /* MessageBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubbleView.swift; sourceTree = "<group>"; };
+		A10000000000000000000206 /* ToolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolButton.swift; sourceTree = "<group>"; };
+		A10000000000000000000207 /* AgentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentState.swift; sourceTree = "<group>"; };
+		A10000000000000000000208 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		A10000000000000000000209 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		A1000000000000000000020A /* MainAgentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAgentView.swift; sourceTree = "<group>"; };
+		A1000000000000000000020B /* AlchemyInAgent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlchemyInAgent.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000000000000000000020C /* AlchemyInAgentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AlchemyInAgentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000210 /* AppViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModelTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A10000000000000000000401 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A10000000000000000000402 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A10000000000000000000500 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000501 /* AlchemyInAgent */,
+				A10000000000000000000506 /* AlchemyInAgentTests */,
+				A10000000000000000000507 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A10000000000000000000501 /* AlchemyInAgent */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000201 /* AlchemyInAgentApp.swift */,
+				A10000000000000000000502 /* Models */,
+				A10000000000000000000503 /* ViewModels */,
+				A10000000000000000000504 /* Views */,
+				A10000000000000000000505 /* Components */,
+			);
+			path = AlchemyInAgent;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000502 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000207 /* AgentState.swift */,
+				A10000000000000000000208 /* ChatMessage.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000503 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000209 /* AppViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000504 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000020A /* MainAgentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000505 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000202 /* AgentStatusHeader.swift */,
+				A10000000000000000000203 /* AnimatedStatusBadge.swift */,
+				A10000000000000000000204 /* CommandInputBar.swift */,
+				A10000000000000000000205 /* MessageBubbleView.swift */,
+				A10000000000000000000206 /* ToolButton.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000506 /* AlchemyInAgentTests */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000210 /* AppViewModelTests.swift */,
+			);
+			path = AlchemyInAgentTests;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000507 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000020B /* AlchemyInAgent.app */,
+				A1000000000000000000020C /* AlchemyInAgentTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A10000000000000000000002 /* AlchemyInAgent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000000000000000000601 /* Build configuration list for PBXNativeTarget "AlchemyInAgent" */;
+			buildPhases = (
+				A10000000000000000000403 /* Sources */,
+				A10000000000000000000401 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AlchemyInAgent;
+			productName = AlchemyInAgent;
+			productReference = A1000000000000000000020B /* AlchemyInAgent.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A10000000000000000000003 /* AlchemyInAgentTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000000000000000000602 /* Build configuration list for PBXNativeTarget "AlchemyInAgentTests" */;
+			buildPhases = (
+				A10000000000000000000404 /* Sources */,
+				A10000000000000000000402 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A10000000000000000000302 /* PBXTargetDependency */,
+			);
+			name = AlchemyInAgentTests;
+			productName = AlchemyInAgentTests;
+			productReference = A1000000000000000000020C /* AlchemyInAgentTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A10000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					A10000000000000000000002 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					A10000000000000000000003 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = A10000000000000000000002;
+					};
+				};
+			};
+			buildConfigurationList = A10000000000000000000600 /* Build configuration list for PBXProject "AlchemyInAgent" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A10000000000000000000500;
+			productRefGroup = A10000000000000000000507 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A10000000000000000000002 /* AlchemyInAgent */,
+				A10000000000000000000003 /* AlchemyInAgentTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A10000000000000000000403 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000101 /* AlchemyInAgentApp.swift in Sources */,
+				A10000000000000000000102 /* AgentStatusHeader.swift in Sources */,
+				A10000000000000000000103 /* AnimatedStatusBadge.swift in Sources */,
+				A10000000000000000000104 /* CommandInputBar.swift in Sources */,
+				A10000000000000000000105 /* MessageBubbleView.swift in Sources */,
+				A10000000000000000000106 /* ToolButton.swift in Sources */,
+				A10000000000000000000107 /* AgentState.swift in Sources */,
+				A10000000000000000000108 /* ChatMessage.swift in Sources */,
+				A10000000000000000000109 /* AppViewModel.swift in Sources */,
+				A1000000000000000000010A /* MainAgentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A10000000000000000000404 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000010B /* AppViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A10000000000000000000302 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A10000000000000000000002 /* AlchemyInAgent */;
+			targetProxy = A10000000000000000000301 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A10000000000000000000700 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A10000000000000000000701 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A10000000000000000000702 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alchemyin.agent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A10000000000000000000703 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alchemyin.agent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A10000000000000000000704 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alchemyin.agent.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AlchemyInAgent.app/AlchemyInAgent";
+			};
+			name = Debug;
+		};
+		A10000000000000000000705 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alchemyin.agent.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AlchemyInAgent.app/AlchemyInAgent";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A10000000000000000000600 /* Build configuration list for PBXProject "AlchemyInAgent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000700 /* Debug */,
+				A10000000000000000000701 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000000000000000000601 /* Build configuration list for PBXNativeTarget "AlchemyInAgent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000702 /* Debug */,
+				A10000000000000000000703 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000000000000000000602 /* Build configuration list for PBXNativeTarget "AlchemyInAgentTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000704 /* Debug */,
+				A10000000000000000000705 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = A10000000000000000000001 /* Project object */;
+}
