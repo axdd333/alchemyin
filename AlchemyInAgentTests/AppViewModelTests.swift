@@ -30,4 +30,24 @@ final class AppViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.messages.last?.role, .agent)
         XCTAssertEqual(viewModel.messages.last?.content, "[Tool Stub] Browse Web is not connected yet.")
     }
+
+    func testQuickActionImmediatelyAppendsUserMessage() {
+        let viewModel = AppViewModel()
+
+        viewModel.applyQuickAction("Make a 3-step execution plan")
+
+        XCTAssertEqual(viewModel.messages.last?.role, .user)
+        XCTAssertEqual(viewModel.messages.last?.content, "Make a 3-step execution plan")
+        XCTAssertEqual(viewModel.agentState, .processing)
+    }
+
+    func testClearConversationResetsToSingleSeedMessage() {
+        let viewModel = AppViewModel()
+        viewModel.triggerTool("Create File")
+
+        viewModel.clearConversation()
+
+        XCTAssertEqual(viewModel.messages.count, 1)
+        XCTAssertEqual(viewModel.messages.first?.role, .agent)
+    }
 }

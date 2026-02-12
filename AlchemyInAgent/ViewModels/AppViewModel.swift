@@ -34,6 +34,16 @@ final class AppViewModel: ObservableObject {
         }
     }
 
+    func applyQuickAction(_ prompt: String) {
+        draftCommand = prompt
+        sendCommand()
+    }
+
+    func clearConversation() {
+        messages.removeAll()
+        seedMessages()
+    }
+
     func triggerTool(_ name: String) {
         // Stub action for tool row buttons. Replace with real integrations later.
         let stub = ChatMessage(role: .agent, content: "[Tool Stub] \(name) is not connected yet.")
@@ -45,17 +55,17 @@ final class AppViewModel: ObservableObject {
         latencyMs = Int.random(in: 12...42)
 
         do {
-            try await Task.sleep(for: .milliseconds(Int.random(in: 400...900)))
+            try await Task.sleep(for: .milliseconds(Int.random(in: 350...800)))
 
-            let response = "I understand you want me to: \"\(command)\". " +
-            "I am now analyzing the request, selecting tools, and preparing safe execution steps."
+            let response = "Got it — I'll handle: \"\(command)\". " +
+            "I'm mapping the request into safe action steps and preparing a concise execution plan."
 
             var streamingMessage = ChatMessage(role: .agent, content: "")
             messages.append(streamingMessage)
 
             for character in response {
                 try Task.checkCancellation()
-                try await Task.sleep(for: .milliseconds(18))
+                try await Task.sleep(for: .milliseconds(16))
 
                 if let lastIndex = messages.indices.last,
                    messages[lastIndex].id == streamingMessage.id {
@@ -74,8 +84,8 @@ final class AppViewModel: ObservableObject {
         messages = [
             ChatMessage(
                 role: .agent,
-                content: "Hello! I'm your AI agent with full desktop context. I can browse, code, analyze data, and execute tasks autonomously. What should I help you with?",
-                timestamp: Date().addingTimeInterval(-200)
+                content: "Welcome to AlchemyIn Agent. Ask me to browse, draft plans, summarize information, or execute task flows.",
+                timestamp: Date().addingTimeInterval(-120)
             )
         ]
     }
