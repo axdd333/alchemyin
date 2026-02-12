@@ -19,6 +19,8 @@ Native iOS SwiftUI app implementing an AI agent interface inspired by the curren
 - Cleaner chat cards and header styling for improved readability.
 - Quick action chips for common prompts.
 - In-chat processing indicator while the simulated streaming response is running.
+- Draggable desktop focus panel (drag down to prioritize desktop context and make chat more ephemeral).
+- Optional Input Deck toggle with a clean on-screen trackpad + keyboard control layout.
 
 ## Project Structure
 
