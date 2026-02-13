@@ -27,11 +27,23 @@ struct CommandInputBar: View {
             .padding(.vertical, 10)
 
             Button(action: onSend) {
-                Image(systemName: "paperplane.fill")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white.opacity(isEmpty ? 0.58 : 1))
-                    .frame(width: 42, height: 42)
-                    .background(Circle().fill(Color.white.opacity(isEmpty ? 0.06 : 0.12)))
+                ZStack {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: isEmpty
+                                    ? [Color.white.opacity(0.06), Color.white.opacity(0.04)]
+                                    : [Color(red: 0.40, green: 0.69, blue: 0.89), Color(red: 0.46, green: 0.53, blue: 0.85)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+
+                    Image(systemName: "paperplane.fill")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white.opacity(isEmpty ? 0.58 : 1))
+                }
+                .frame(width: 42, height: 42)
             }
             .buttonStyle(.plain)
             .disabled(isEmpty)
