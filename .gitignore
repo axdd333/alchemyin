@@ -1,0 +1,6 @@
+# macOS
+.DS_Store
+
+# Xcode user-specific state (causes noisy diffs + merge conflicts)
+*.xcuserstate
+**/xcuserdata/
