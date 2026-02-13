@@ -9,6 +9,8 @@ final class AppViewModel: ObservableObject {
     @Published var agentState: AgentState = .ready
     @Published var latencyMs: Int = 8
     @Published var fpsLabel: String = "60 FPS"
+    @Published var isConnected: Bool = false
+    @Published var connectionMessage: String? = "Operator not connected"
 
     private var processingTask: Task<Void, Never>?
 
@@ -48,6 +50,11 @@ final class AppViewModel: ObservableObject {
         agentState = .ready
         latencyMs = 8
         seedMessages()
+    }
+    
+    func setConnection(_ connected: Bool, message: String? = nil) {
+        isConnected = connected
+        connectionMessage = connected ? nil : (message ?? connectionMessage)
     }
 
     func triggerTool(_ name: String) {
@@ -100,9 +107,10 @@ final class AppViewModel: ObservableObject {
         messages = [
             ChatMessage(
                 role: .agent,
-                content: "Welcome to AlchemyIn Agent. Ask me to browse, draft plans, summarize information, or execute task flows.",
+                content: "Welcome to Atelier — by Alchemy. Ask the operator to browse, draft plans, summarize information, or execute task flows.",
                 timestamp: Date().addingTimeInterval(-120)
             )
         ]
     }
 }
+

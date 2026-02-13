@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents who authored a message in the chat timeline.
 enum MessageRole: String, Codable {
-    case agent = "AGENT"
+    case agent = "OPERATOR"
     case user = "YOU"
 }
 
@@ -20,3 +20,4 @@ struct ChatMessage: Identifiable, Equatable {
         self.timestamp = timestamp
     }
 }
+

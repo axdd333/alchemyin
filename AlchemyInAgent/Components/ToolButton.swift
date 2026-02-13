@@ -9,16 +9,20 @@ struct ToolButton: View {
         Button(action: action) {
             Label(title, systemImage: systemImage)
                 .font(.system(size: 14, weight: .medium, design: .rounded))
-                .foregroundStyle(Color(red: 0.92, green: 0.89, blue: 0.82))
+                .foregroundStyle(Color.white.opacity(0.86))
+                .imageScale(.medium)
+                .labelStyle(.automatic)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .minimumScaleFactor(0.9)
+                .fixedSize(horizontal: true, vertical: true)
+                .kerning(0.1)
                 .padding(.vertical, 9)
                 .padding(.horizontal, 12)
-                .background(
+                .background(.ultraThinMaterial, in: Capsule())
+                .overlay(
                     Capsule()
-                        .fill(Color.white.opacity(0.03))
-                        .overlay(
-                            Capsule()
-                                .stroke(Color(red: 0.58, green: 0.50, blue: 0.35).opacity(0.26), lineWidth: 1)
-                        )
+                        .stroke(Color.white.opacity(0.18), lineWidth: 1)
                 )
         }
         .buttonStyle(.plain)
