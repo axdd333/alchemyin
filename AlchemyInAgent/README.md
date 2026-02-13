@@ -15,11 +15,12 @@ Native iOS SwiftUI app implementing an AI agent interface inspired by AlchemyIn,
 
 ## UX Refinements
 
-- Cleaner information hierarchy and reduced UI complexity.
+- Cleaner information hierarchy and reduced UI complexity (single vertical narrative: status → desktop → dialogue → controls).
 - Museum-like palette (deep charcoal, parchment highlights, brass accents).
 - Draggable desktop focus panel (drag down to prioritize desktop context).
 - Ephemeral chat behavior in focus mode (recent messages emphasized, reduced visual weight).
 - Optional Input Deck toggle with a minimal trackpad/keyboard surface.
+- Operational refinement: message history is capped for long-session performance.
 - Launch splash supports a custom logo asset named `AlchemySeal`.
 
 ## Add your logo/icon

@@ -12,6 +12,10 @@ final class AppViewModel: ObservableObject {
 
     private var processingTask: Task<Void, Never>?
 
+    private let maxRetainedMessages = 80
+    private let thinkingDelayMs = 350...800
+    private let streamDelayMs = 14...18
+
     init() {
         seedMessages()
     }
@@ -24,8 +28,7 @@ final class AppViewModel: ObservableObject {
         let trimmed = draftCommand.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
-        let userMessage = ChatMessage(role: .user, content: trimmed)
-        messages.append(userMessage)
+        appendMessage(ChatMessage(role: .user, content: trimmed))
         draftCommand = ""
 
         processingTask?.cancel()
@@ -40,36 +43,37 @@ final class AppViewModel: ObservableObject {
     }
 
     func clearConversation() {
-        messages.removeAll()
+        processingTask?.cancel()
+        processingTask = nil
+        agentState = .ready
+        latencyMs = 8
         seedMessages()
     }
 
     func triggerTool(_ name: String) {
         // Stub action for tool row buttons. Replace with real integrations later.
-        let stub = ChatMessage(role: .agent, content: "[Tool Stub] \(name) is not connected yet.")
-        messages.append(stub)
+        appendMessage(ChatMessage(role: .agent, content: "[Tool Stub] \(name) is not connected yet."))
     }
 
     private func processUserCommand(_ command: String) async {
         agentState = .processing
-        latencyMs = Int.random(in: 12...42)
+        latencyMs = Int.random(in: 12...40)
 
         do {
-            try await Task.sleep(for: .milliseconds(Int.random(in: 350...800)))
+            try await Task.sleep(for: .milliseconds(Int.random(in: thinkingDelayMs)))
 
-            let response = "Got it — I'll handle: \"\(command)\". " +
-            "I'm mapping the request into safe action steps and preparing a concise execution plan."
+            let response = "Understood. I’ll execute: \"\(command)\". " +
+            "I’m outlining safe steps and preparing a concise action plan."
 
-            var streamingMessage = ChatMessage(role: .agent, content: "")
-            messages.append(streamingMessage)
+            let streamingID = UUID()
+            appendMessage(ChatMessage(id: streamingID, role: .agent, content: ""))
 
             for character in response {
                 try Task.checkCancellation()
-                try await Task.sleep(for: .milliseconds(16))
+                try await Task.sleep(for: .milliseconds(Int.random(in: streamDelayMs)))
 
-                if let lastIndex = messages.indices.last,
-                   messages[lastIndex].id == streamingMessage.id {
-                    messages[lastIndex].content.append(character)
+                if let index = messages.firstIndex(where: { $0.id == streamingID }) {
+                    messages[index].content.append(character)
                 }
             }
 
@@ -77,7 +81,19 @@ final class AppViewModel: ObservableObject {
             agentState = .ready
         } catch {
             agentState = .ready
+            latencyMs = 8
         }
+    }
+
+    private func appendMessage(_ message: ChatMessage) {
+        messages.append(message)
+        trimMessagesIfNeeded()
+    }
+
+    private func trimMessagesIfNeeded() {
+        guard messages.count > maxRetainedMessages else { return }
+        let overflow = messages.count - maxRetainedMessages
+        messages.removeFirst(overflow)
     }
 
     private func seedMessages() {

@@ -11,6 +11,18 @@ struct MainAgentView: View {
     private let minDesktopHeight: CGFloat = 160
     private let maxDesktopHeight: CGFloat = 320
 
+    private let tools: [(String, String, String)] = [
+        ("Attach", "paperclip", "Attach Files"),
+        ("Browse", "safari", "Browse Web"),
+        ("Create", "doc.badge.plus", "Create File")
+    ]
+
+    private let quickActions = [
+        "Summarize updates",
+        "Plan next 3 steps",
+        "Draft execution brief"
+    ]
+
     private var focusProgress: CGFloat {
         let range = maxDesktopHeight - minDesktopHeight
         guard range > 0 else { return 0 }
@@ -34,9 +46,8 @@ struct MainAgentView: View {
                 )
 
                 desktopPanel
-
+                quickActionStrip
                 chatSection
-
                 controlsRow
 
                 if showInputDeck {
@@ -44,7 +55,6 @@ struct MainAgentView: View {
                 }
 
                 CommandInputBar(text: $viewModel.draftCommand, onSend: viewModel.sendCommand)
-
                 footer
             }
             .padding(16)
@@ -102,6 +112,25 @@ struct MainAgentView: View {
         )
     }
 
+    private var quickActionStrip: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(quickActions, id: \.self) { prompt in
+                    Button(prompt) {
+                        viewModel.applyQuickAction(prompt)
+                    }
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color(red: 0.91, green: 0.87, blue: 0.80))
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 7)
+                    .background(Capsule().fill(Color.white.opacity(0.05)))
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .opacity(1 - (focusProgress * 0.25))
+    }
+
     private var chatSection: some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -133,14 +162,20 @@ struct MainAgentView: View {
 
     private var controlsRow: some View {
         HStack(spacing: 10) {
-            ToolButton(title: "Attach", systemImage: "paperclip") { viewModel.triggerTool("Attach Files") }
-            ToolButton(title: "Browse", systemImage: "safari") { viewModel.triggerTool("Browse Web") }
-            ToolButton(title: "Create", systemImage: "doc.badge.plus") { viewModel.triggerTool("Create File") }
+            ForEach(tools, id: \.2) { tool in
+                ToolButton(title: tool.0, systemImage: tool.1) {
+                    viewModel.triggerTool(tool.2)
+                }
+            }
 
             Spacer(minLength: 0)
 
-            Button(showInputDeck ? "Hide Deck" : "Input Deck") {
-                showInputDeck.toggle()
+            Button(viewModel.messages.count > 1 ? "Reset" : "Input Deck") {
+                if viewModel.messages.count > 1 {
+                    viewModel.clearConversation()
+                } else {
+                    showInputDeck.toggle()
+                }
             }
             .font(.system(size: 12, weight: .semibold, design: .rounded))
             .foregroundStyle(Color(red: 0.93, green: 0.90, blue: 0.83))
@@ -148,6 +183,18 @@ struct MainAgentView: View {
             .padding(.vertical, 9)
             .background(Capsule().fill(Color.white.opacity(0.08)))
             .buttonStyle(.plain)
+
+            if viewModel.messages.count > 1 {
+                Button(showInputDeck ? "Hide Deck" : "Deck") {
+                    showInputDeck.toggle()
+                }
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundStyle(Color(red: 0.93, green: 0.90, blue: 0.83))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 9)
+                .background(Capsule().fill(Color.white.opacity(0.08)))
+                .buttonStyle(.plain)
+            }
         }
     }
 

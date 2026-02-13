@@ -41,13 +41,26 @@ final class AppViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.agentState, .processing)
     }
 
-    func testClearConversationResetsToSingleSeedMessage() {
+    func testClearConversationResetsStateAndSingleSeedMessage() {
         let viewModel = AppViewModel()
         viewModel.triggerTool("Create File")
+        viewModel.latencyMs = 25
 
         viewModel.clearConversation()
 
         XCTAssertEqual(viewModel.messages.count, 1)
         XCTAssertEqual(viewModel.messages.first?.role, .agent)
+        XCTAssertEqual(viewModel.agentState, .ready)
+        XCTAssertEqual(viewModel.latencyMs, 8)
+    }
+
+    func testMessageRetentionCapsHistory() {
+        let viewModel = AppViewModel()
+
+        for _ in 0..<120 {
+            viewModel.triggerTool("Attach Files")
+        }
+
+        XCTAssertLessThanOrEqual(viewModel.messages.count, 80)
     }
 }
