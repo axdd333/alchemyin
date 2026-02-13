@@ -477,6 +477,7 @@ class ChamberPanel {
         this.onRequestClose = onRequestClose;
         this.currentKey = null;
         this.isVisible = false;
+        this.transitionTimer = null;
 
         // Cache elements
         this.elements = {
@@ -525,6 +526,11 @@ class ChamberPanel {
 
     trapFocus(e) {
         const focusableElements = this.getFocusableElements();
+        if (!focusableElements.length) {
+            e.preventDefault();
+            return;
+        }
+
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
 
@@ -556,6 +562,10 @@ class ChamberPanel {
             return;
         }
 
+        if (this.isVisible && this.currentKey === key) {
+            return;
+        }
+
         this.currentKey = key;
         this.isVisible = true;
 
@@ -581,6 +591,10 @@ class ChamberPanel {
     }
 
     async close() {
+        if (!this.isVisible) {
+            return;
+        }
+
         this.isVisible = false;
         this.currentKey = null;
         
@@ -591,9 +605,16 @@ class ChamberPanel {
     }
 
     waitForTransition() {
+        if (this.transitionTimer) {
+            clearTimeout(this.transitionTimer);
+        }
+
         return new Promise(resolve => {
             const duration = this.isVisible ? CONFIG.timing.panelEnter : CONFIG.timing.panelExit;
-            setTimeout(resolve, duration);
+            this.transitionTimer = setTimeout(() => {
+                this.transitionTimer = null;
+                resolve();
+            }, duration);
         });
     }
 }
@@ -613,6 +634,7 @@ class DepthView {
         this.onRequestClose = onRequestClose;
         this.currentId = null;
         this.isVisible = false;
+        this.transitionTimer = null;
 
         this.elements = {
             kicker: this.root.querySelector('.depth-kicker'),
@@ -659,6 +681,11 @@ class DepthView {
 
     trapFocus(e) {
         const focusableElements = this.getFocusableElements();
+        if (!focusableElements.length) {
+            e.preventDefault();
+            return;
+        }
+
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
 
@@ -687,6 +714,10 @@ class DepthView {
         const doc = this.data[id];
         if (!doc) {
             console.warn(`No document found for id: ${id}`);
+            return;
+        }
+
+        if (this.isVisible && this.currentId === id) {
             return;
         }
 
@@ -721,6 +752,10 @@ class DepthView {
     }
 
     async close() {
+        if (!this.isVisible) {
+            return;
+        }
+
         this.isVisible = false;
         this.currentId = null;
         
@@ -729,9 +764,16 @@ class DepthView {
     }
 
     waitForTransition() {
+        if (this.transitionTimer) {
+            clearTimeout(this.transitionTimer);
+        }
+
         return new Promise(resolve => {
             const duration = this.isVisible ? CONFIG.timing.panelEnter : CONFIG.timing.panelExit;
-            setTimeout(resolve, duration);
+            this.transitionTimer = setTimeout(() => {
+                this.transitionTimer = null;
+                resolve();
+            }, duration);
         });
     }
 }
@@ -743,6 +785,7 @@ class AlchemyApp {
     constructor() {
         this.stateMachine = new AppStateMachine();
         this.components = {};
+        this.routeRequestId = 0;
         
         this.init()
             .then(() => {
@@ -914,10 +957,12 @@ class AlchemyApp {
     }
 
     handleHash() {
+        this.routeRequestId += 1;
+        const requestId = this.routeRequestId;
         const raw = window.location.hash.replace(/^#/, '').trim();
 
         if (!raw) {
-            this.goIdle();
+            this.goIdle(requestId);
             return;
         }
 
@@ -925,21 +970,25 @@ class AlchemyApp {
         if (raw.startsWith('doc/')) {
             const id = raw.slice(4);
             if (DOCUMENTS[id]) {
-                this.openDocument(id);
+                this.openDocument(id, requestId);
             } else {
-                this.goIdle();
+                this.goIdle(requestId);
             }
             return;
         }
 
         // Chamber route
         if (CHAMBERS[raw]) {
-            this.openChamber(raw);
+            this.openChamber(raw, requestId);
             return;
         }
 
         // Unknown route
-        this.goIdle();
+        this.goIdle(requestId);
+    }
+
+    isStaleRequest(requestId) {
+        return requestId !== this.routeRequestId;
     }
 
     navigateTo(route) {
@@ -952,37 +1001,47 @@ class AlchemyApp {
         this.handleHash();
     }
 
-    async goIdle() {
+    async goIdle(requestId = this.routeRequestId) {
+        if (this.isStaleRequest(requestId)) return;
+
         this.stateMachine.transitionTo(APP_STATES.IDLE);
         
         if (this.components.nav) this.components.nav.clearActive();
         if (this.components.chambers) await this.components.chambers.close();
+        if (this.isStaleRequest(requestId)) return;
         if (this.components.depthView) await this.components.depthView.close();
+        if (this.isStaleRequest(requestId)) return;
         
         this.setHeaderCompact(false);
     }
 
-    async openChamber(key) {
+    async openChamber(key, requestId = this.routeRequestId) {
+        if (this.isStaleRequest(requestId)) return;
         if (!this.components.chambers) return;
 
         this.stateMachine.transitionTo(APP_STATES.CHAMBER_OPEN, { chamber: key });
         
         if (this.components.depthView) await this.components.depthView.close();
+        if (this.isStaleRequest(requestId)) return;
         if (this.components.nav) this.components.nav.setActiveByChamber(key);
         
         await this.components.chambers.open(key);
+        if (this.isStaleRequest(requestId)) return;
         this.setHeaderCompact(true);
     }
 
-    async openDocument(id) {
+    async openDocument(id, requestId = this.routeRequestId) {
+        if (this.isStaleRequest(requestId)) return;
         if (!this.components.depthView) return;
 
         this.stateMachine.transitionTo(APP_STATES.DEPTH_OPEN, { document: id });
         
         if (this.components.chambers) await this.components.chambers.close();
+        if (this.isStaleRequest(requestId)) return;
         if (this.components.nav) this.components.nav.clearActive();
         
         await this.components.depthView.open(id);
+        if (this.isStaleRequest(requestId)) return;
         this.setHeaderCompact(true);
     }
 
