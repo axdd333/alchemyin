@@ -25,7 +25,7 @@ struct ToolButton: View {
                 )
                 .overlay(
                     Capsule()
-                        .stroke(Color.white.opacity(0.18), lineWidth: 1)
+                        .stroke(Color.white.opacity(0.16), lineWidth: 1)
                 )
         }
         .buttonStyle(.plain)
