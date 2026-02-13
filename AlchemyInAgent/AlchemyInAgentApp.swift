@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @main
 struct AlchemyInAgentApp: App {
@@ -10,7 +11,7 @@ struct AlchemyInAgentApp: App {
     }
 }
 
-/// Wraps launch splash + main interface for a more native app opening flow.
+/// Launch wrapper with a quiet, gallery-like opening animation.
 struct RootAppView: View {
     @State private var showSplash = true
 
@@ -21,12 +22,12 @@ struct RootAppView: View {
 
             if showSplash {
                 LaunchSplashView()
-                    .transition(.opacity.combined(with: .scale(scale: 1.02)))
+                    .transition(.opacity)
             }
         }
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
-                withAnimation(.easeInOut(duration: 0.35)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                withAnimation(.easeInOut(duration: 0.32)) {
                     showSplash = false
                 }
             }
@@ -35,41 +36,55 @@ struct RootAppView: View {
 }
 
 private struct LaunchSplashView: View {
-    @State private var glow = false
+    @State private var breathe = false
 
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color(red: 0.03, green: 0.04, blue: 0.12), Color.black],
+                colors: [
+                    Color(red: 0.06, green: 0.06, blue: 0.08),
+                    Color(red: 0.08, green: 0.07, blue: 0.10),
+                    Color(red: 0.03, green: 0.03, blue: 0.04)
+                ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
 
-            VStack(spacing: 16) {
+            VStack(spacing: 14) {
                 ZStack {
                     Circle()
-                        .fill(Color.cyan.opacity(0.15))
-                        .frame(width: 120, height: 120)
-                        .blur(radius: glow ? 8 : 2)
+                        .fill(Color(red: 0.74, green: 0.63, blue: 0.43).opacity(0.16))
+                        .frame(width: 122, height: 122)
+                        .blur(radius: breathe ? 8 : 3)
 
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 44, weight: .semibold))
-                        .foregroundStyle(.cyan)
+                    Image("AlchemySeal")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 76, height: 76)
+                        .opacity(0.95)
+                        .overlay {
+                            // fallback symbol when asset is not yet added.
+                            if UIImage(named: "AlchemySeal") == nil {
+                                Image(systemName: "seal")
+                                    .font(.system(size: 42, weight: .light))
+                                    .foregroundStyle(Color(red: 0.86, green: 0.74, blue: 0.48))
+                            }
+                        }
                 }
 
                 Text("AlchemyIn")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .font(.system(size: 34, weight: .medium, design: .serif))
+                    .foregroundStyle(Color(red: 0.94, green: 0.91, blue: 0.85))
 
-                Text("Agent Console")
-                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.65))
+                Text("Agent Atelier")
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.55))
             }
         }
         .onAppear {
-            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
-                glow = true
+            withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                breathe = true
             }
         }
     }

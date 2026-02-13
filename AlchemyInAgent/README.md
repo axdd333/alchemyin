@@ -1,6 +1,6 @@
 # AlchemyInAgent (SwiftUI)
 
-Native iOS SwiftUI app implementing an AI agent interface inspired by the current AlchemyIn visual style.
+Native iOS SwiftUI app implementing an AI agent interface inspired by AlchemyIn, now refined toward a calmer, more tasteful visual style.
 
 ## What's Included
 
@@ -13,39 +13,32 @@ Native iOS SwiftUI app implementing an AI agent interface inspired by the curren
   - `Views/`
   - `Components/`
 
-## New UX Improvements
+## UX Refinements
 
-- Native-style animated launch splash screen before entering chat UI.
-- Cleaner chat cards and header styling for improved readability.
-- Quick action chips for common prompts.
-- In-chat processing indicator while the simulated streaming response is running.
-- Draggable desktop focus panel (drag down to prioritize desktop context and make chat more ephemeral).
-- Optional Input Deck toggle with a clean on-screen trackpad + keyboard control layout.
+- Cleaner information hierarchy and reduced UI complexity.
+- Museum-like palette (deep charcoal, parchment highlights, brass accents).
+- Draggable desktop focus panel (drag down to prioritize desktop context).
+- Ephemeral chat behavior in focus mode (recent messages emphasized, reduced visual weight).
+- Optional Input Deck toggle with a minimal trackpad/keyboard surface.
+- Launch splash supports a custom logo asset named `AlchemySeal`.
 
-## Project Structure
+## Add your logo/icon
 
-- `AlchemyInAgent/`
-  - `AlchemyInAgentApp.swift`
-  - `Models/`
-  - `ViewModels/`
-  - `Views/`
-  - `Components/`
-- `AlchemyInAgentTests/`
-  - `AppViewModelTests.swift`
-- `AlchemyInAgent.xcodeproj/`
+1. Open `AlchemyInAgent.xcodeproj` in Xcode.
+2. Add your logo image into `Assets.xcassets` as `AlchemySeal`.
+3. Run the app again to see it in the splash screen.
 
-## Run in Xcode (no manual file copying needed)
+## Run in Xcode
 
 1. On macOS, open `AlchemyInAgent.xcodeproj`.
-2. In the toolbar, select scheme **AlchemyInAgent**.
-3. Select an iPhone simulator destination (e.g., iPhone 15).
+2. Select scheme **AlchemyInAgent**.
+3. Select an iPhone simulator destination.
 4. Press **⌘R** to run.
 
 ## Run tests
 
 1. Keep scheme as **AlchemyInAgent**.
 2. Press **⌘U** to run unit tests.
-3. You should see `AppViewModelTests` execute in the Test navigator.
 
 ## If Run (⌘R) is disabled
 
@@ -53,15 +46,5 @@ Native iOS SwiftUI app implementing an AI agent interface inspired by the curren
 - Confirm a simulator is selected in the destination picker.
 - Wait for indexing/package resolution to finish.
 - Run Product → Clean Build Folder (`⇧⌘K`) and try again.
-
-## CLI testing on macOS (optional)
-
-```bash
-xcodebuild \
-  -project AlchemyInAgent.xcodeproj \
-  -scheme AlchemyInAgent \
-  -destination 'platform=iOS Simulator,name=iPhone 15' \
-  test
-```
 
 No external dependencies are required.

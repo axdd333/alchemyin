@@ -8,16 +8,16 @@ struct ToolButton: View {
     var body: some View {
         Button(action: action) {
             Label(title, systemImage: systemImage)
-                .font(.system(size: 16, weight: .medium, design: .rounded))
-                .foregroundStyle(.white.opacity(0.88))
-                .padding(.vertical, 10)
-                .padding(.horizontal, 14)
+                .font(.system(size: 14, weight: .medium, design: .rounded))
+                .foregroundStyle(Color(red: 0.92, green: 0.89, blue: 0.82))
+                .padding(.vertical, 9)
+                .padding(.horizontal, 12)
                 .background(
                     Capsule()
-                        .fill(Color.black.opacity(0.2))
+                        .fill(Color.white.opacity(0.03))
                         .overlay(
                             Capsule()
-                                .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                                .stroke(Color(red: 0.58, green: 0.50, blue: 0.35).opacity(0.26), lineWidth: 1)
                         )
                 )
         }
@@ -28,6 +28,6 @@ struct ToolButton: View {
 #Preview {
     ZStack {
         Color.black.ignoresSafeArea()
-        ToolButton(title: "Attach Files", systemImage: "paperclip") {}
+        ToolButton(title: "Attach", systemImage: "paperclip") {}
     }
 }

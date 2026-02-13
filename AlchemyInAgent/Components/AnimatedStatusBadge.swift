@@ -4,30 +4,31 @@ struct AnimatedStatusBadge: View {
     let state: AgentState
     @State private var pulse = false
 
+    private var tint: Color {
+        state == .ready ? Color(red: 0.57, green: 0.72, blue: 0.89) : Color(red: 0.79, green: 0.62, blue: 0.42)
+    }
+
     var body: some View {
         HStack(spacing: 8) {
             Circle()
-                .fill(state.accentColor)
-                .frame(width: 10, height: 10)
-                .scaleEffect(pulse ? 1.2 : 0.85)
-                .opacity(pulse ? 0.65 : 1.0)
+                .fill(tint)
+                .frame(width: 9, height: 9)
+                .scaleEffect(pulse ? 1.15 : 0.9)
+                .opacity(pulse ? 0.65 : 1)
 
             Text(state.statusText.uppercased())
-                .font(.system(size: 16, weight: .medium, design: .rounded))
-                .foregroundStyle(state.accentColor)
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundStyle(tint)
         }
-        .padding(.vertical, 10)
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 9)
         .background(
             Capsule()
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    Capsule()
-                        .stroke(state.accentColor.opacity(0.4), lineWidth: 1)
-                )
+                .fill(Color.white.opacity(0.06))
+                .overlay(Capsule().stroke(tint.opacity(0.35), lineWidth: 1))
         )
         .onAppear {
-            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
                 pulse = true
             }
         }
@@ -35,7 +36,7 @@ struct AnimatedStatusBadge: View {
 }
 
 #Preview {
-    AnimatedStatusBadge(state: .ready)
+    AnimatedStatusBadge(state: .processing)
         .padding()
         .background(.black)
 }

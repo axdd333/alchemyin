@@ -5,29 +5,29 @@ struct CommandInputBar: View {
     let onSend: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             HStack(spacing: 10) {
                 Circle()
-                    .fill(Color.cyan)
+                    .fill(Color(red: 0.74, green: 0.66, blue: 0.46))
                     .frame(width: 6, height: 6)
 
                 TextField("Describe what you want the agent to do…", text: $text, axis: .vertical)
                     .textFieldStyle(.plain)
-                    .foregroundStyle(.white.opacity(0.94))
-                    .font(.system(size: 20, weight: .regular, design: .rounded))
+                    .font(.system(size: 18, weight: .regular, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.9))
                     .lineLimit(1...3)
                     .submitLabel(.send)
                     .onSubmit(onSend)
             }
             .padding(.horizontal, 14)
-            .padding(.vertical, 14)
+            .padding(.vertical, 13)
 
             Button(action: onSend) {
                 Image(systemName: "paperplane")
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(.white)
-                    .frame(width: 46, height: 46)
-                    .background(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.1)))
+                    .frame(width: 44, height: 44)
+                    .background(Circle().fill(Color.white.opacity(0.1)))
             }
             .buttonStyle(.plain)
             .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -36,10 +36,10 @@ struct CommandInputBar: View {
         .padding(8)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.black.opacity(0.32))
+                .fill(Color.white.opacity(0.03))
                 .overlay(
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .stroke(Color.white.opacity(0.18), lineWidth: 1)
+                        .stroke(Color(red: 0.58, green: 0.50, blue: 0.35).opacity(0.24), lineWidth: 1)
                 )
         )
     }
