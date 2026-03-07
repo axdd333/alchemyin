@@ -25,7 +25,6 @@ function buildTemplate(assetBase: string): string {
       data-ready="false"
       data-theme="neutral"
       data-overlay="idle"
-      style="--asset-hero-base:url('${assetBase}media/alchemy-hero-base.svg');--asset-hero-ornament:url('${assetBase}media/alchemy-ornament.svg')"
     >
       <div class="alchemy-shell__wash" aria-hidden="true"></div>
       <div class="alchemy-shell__grain" aria-hidden="true"></div>
@@ -48,33 +47,15 @@ function buildTemplate(assetBase: string): string {
       </header>
 
       <main class="stage">
-        <aside class="info-rail info-rail--left" aria-label="Alchemy method">
-          <article class="info-card">
-            <p class="info-card__eyebrow">Operational doctrine</p>
-            <p class="info-card__copy">
-              Tools should remain legible under pressure, and beautiful enough to trust twice.
-            </p>
-            <div class="info-card__chips" role="list">
-              <span role="listitem">Precision systems</span>
-              <span role="listitem">Disciplined tooling</span>
-              <span role="listitem">Living artifacts</span>
-            </div>
-          </article>
-        </aside>
-
         <section class="hero">
           <div class="hero__frame" aria-label="Alchemy core environment">
             <div class="hero__paper" aria-hidden="true"></div>
-            <div class="hero__mesh" aria-hidden="true"></div>
-            <div class="hero__ornament" aria-hidden="true"></div>
             <div class="hero__axis" aria-hidden="true"></div>
-            <img class="hero__artwork" src="${assetBase}media/alchemy-hero-base.svg" alt="" aria-hidden="true">
+            <img class="hero__artwork" src="${assetBase}media/alchemy-hero.jpg" alt="" aria-hidden="true">
             <canvas id="hero-scene" class="hero__scene" aria-hidden="true"></canvas>
 
             <div class="hero__caption">
-              <p class="hero__kicker" id="ambient-note">
-                A chambered studio for philosophy, systems, artifacts, and oracle work.
-              </p>
+              <p class="hero__kicker" id="ambient-note">A chambered studio for philosophy, systems, artifacts, and oracle work.</p>
               <a href="${fieldNoteRoute}" class="hero__document-link" data-doc-link>
                 Read field note
               </a>
@@ -133,19 +114,6 @@ function buildTemplate(assetBase: string): string {
             </section>
           </div>
         </section>
-
-        <aside class="info-rail info-rail--right" aria-label="Field note">
-          <article class="info-card info-card--note field-note-card" id="field-note-card">
-            <p class="info-card__eyebrow">Field note</p>
-            <h2 class="info-card__title">The American Favela Thesis</h2>
-            <p class="info-card__copy">
-              Notes on infrastructure, precarity, and tools that do not assume stability.
-            </p>
-            <a href="${fieldNoteRoute}" class="info-card__action" data-doc-link>
-              Open dossier
-            </a>
-          </article>
-        </aside>
       </main>
     </div>
   `;
@@ -187,7 +155,6 @@ export class AlchemyApp {
     home: HTMLAnchorElement;
     noteLinks: HTMLAnchorElement[];
     ambientNote: HTMLElement;
-    fieldNoteCard: HTMLElement;
     chamberLabel: HTMLElement;
     chamberTitle: HTMLElement;
     chamberBody: HTMLElement;
@@ -221,7 +188,6 @@ export class AlchemyApp {
       home: this.require<HTMLAnchorElement>('[data-home]'),
       noteLinks: Array.from(this.container.querySelectorAll<HTMLAnchorElement>('[data-doc-link]')),
       ambientNote: this.require<HTMLElement>('#ambient-note'),
-      fieldNoteCard: this.require<HTMLElement>('#field-note-card'),
       chamberLabel: this.require<HTMLElement>('#chamber-label'),
       chamberTitle: this.require<HTMLElement>('#chamber-title'),
       chamberBody: this.require<HTMLElement>('#chamber-body'),
@@ -331,7 +297,6 @@ export class AlchemyApp {
     this.elements.noteLinks.forEach((link) => {
       link.dataset.active = String(route.kind === 'document');
     });
-    this.elements.fieldNoteCard.dataset.active = String(route.kind === 'document');
 
     if (route.kind === 'idle') {
       this.nav.setActive(null);

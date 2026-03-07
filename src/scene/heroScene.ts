@@ -93,9 +93,9 @@ export class HeroScene {
   }
 
   private createLights(): void {
-    const ambient = new AmbientLight(0xffffff, 0.9);
-    const keyLight = new DirectionalLight(0xffffff, 0.75);
-    const fillLight = new DirectionalLight(0xc9d8f0, 0.35);
+    const ambient = new AmbientLight(0xffffff, 0.72);
+    const keyLight = new DirectionalLight(0xffffff, 0.48);
+    const fillLight = new DirectionalLight(0xc9d8f0, 0.2);
 
     keyLight.position.set(4, 6, 7);
     fillLight.position.set(-5, -2, 3);
@@ -150,7 +150,7 @@ export class HeroScene {
           color = mix(color, paper, halo * 0.72);
           color += flare * vec3(0.09, 0.12, 0.16);
 
-          gl_FragColor = vec4(color, vignette * 0.28);
+          gl_FragColor = vec4(color, vignette * 0.14);
         }
       `
     });
@@ -163,7 +163,7 @@ export class HeroScene {
   }
 
   private createParticles(): ShaderMaterial {
-    const count = 240;
+    const count = 180;
     const positions = new Float32Array(count * 3);
     const scales = new Float32Array(count);
     const phases = new Float32Array(count);
@@ -208,7 +208,7 @@ export class HeroScene {
 
           vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);
           gl_PointSize = aScale * 110.0 / -mvPosition.z;
-          vAlpha = 0.45 + 0.55 * (0.5 + 0.5 * sin(uTime * 0.34 + aPhase));
+          vAlpha = 0.35 + 0.4 * (0.5 + 0.5 * sin(uTime * 0.34 + aPhase));
           gl_Position = projectionMatrix * mvPosition;
         }
       `,
@@ -219,7 +219,7 @@ export class HeroScene {
           float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
           float alpha = smoothstep(0.48, 0.0, distanceToCenter) * vAlpha;
           vec3 color = mix(vec3(0.83, 0.65, 0.41), vec3(0.36, 0.56, 0.72), gl_PointCoord.y);
-          gl_FragColor = vec4(color, alpha * 0.72);
+          gl_FragColor = vec4(color, alpha * 0.45);
         }
       `
     });
@@ -237,13 +237,13 @@ export class HeroScene {
     const brassLine = new LineBasicMaterial({
       color: brass,
       transparent: true,
-      opacity: 0.56
+      opacity: 0.34
     });
 
     const inkLine = new LineBasicMaterial({
       color: ink,
       transparent: true,
-      opacity: 0.22
+      opacity: 0.15
     });
 
     const ring = new LineSegments(
@@ -274,7 +274,7 @@ export class HeroScene {
       new LineBasicMaterial({
         color: 0x1e1711,
         transparent: true,
-        opacity: 0.6
+        opacity: 0.36
       })
     );
     this.illustration.add(core);
@@ -284,7 +284,7 @@ export class HeroScene {
       new LineBasicMaterial({
         color: brass,
         transparent: true,
-        opacity: 0.34
+        opacity: 0.22
       })
     );
     baseArc.rotation.z = Math.PI / 4.2;
