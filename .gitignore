@@ -4,3 +4,10 @@
 # Xcode user-specific state (causes noisy diffs + merge conflicts)
 *.xcuserstate
 **/xcuserdata/
+
+# Node / web build outputs
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/

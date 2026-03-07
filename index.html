@@ -1,181 +1,40 @@
-<!DOCTYPE html>
-<html lang="en" class="no-js">
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alchemy · So the Model Holds</title>
-    <meta name="description" content="Alchemy – a systems institute for tools, infrastructure, and artifacts built so the model holds.">
-
-    <!-- Preload critical resources -->
+    <meta
+        name="description"
+        content="Alchemy is a systems institute for tools, infrastructure, and artifacts built so the model holds."
+    >
+    <meta name="theme-color" content="#efe8dc">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-    <!-- Three.js with import maps for future module migration -->
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-            "three/": "https://cdn.jsdelivr.net/npm/three@0.161.0/"
-        }
-    }
-    </script>
-
-    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet"
+    >
 </head>
 <body>
-    <!-- Progressive enhancement: no-js fallback -->
     <noscript>
-        <div class="no-js-message">
-            <h1>Alchemy</h1>
-            <p>So the Model Holds</p>
-            <p>JavaScript is required for the full experience.</p>
+        <div
+            style="min-height:100vh;display:grid;place-items:center;padding:2rem;background:#f3ede2;color:#171512;font-family:'Manrope',system-ui,sans-serif;text-align:center"
+        >
+            <div>
+                <p style="margin:0 0 0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-size:0.75rem;">
+                    Alchemy
+                </p>
+                <h1 style="margin:0 0 0.75rem;font:600 3rem/0.95 'Cormorant Garamond',serif;">
+                    So the model holds.
+                </h1>
+                <p style="max-width:30rem;margin:0 auto;">
+                    JavaScript is required for the full chamber navigation and interactive scene.
+                </p>
+            </div>
         </div>
     </noscript>
-
-    <!-- Atmospheric grain with reduced motion preference -->
-    <div class="noise-overlay" aria-hidden="true"></div>
-
-    <!-- Central vertical axis with variable opacity -->
-    <div class="axis-line" aria-hidden="true"></div>
-
-    <!-- Top inscription with enhanced semantic structure -->
-    <header class="header-layer" role="banner">
-        <div class="header-inner">
-            <h1 class="brand-mark">
-                <span class="brand-mark__word">Alchemy</span>
-            </h1>
-            <p class="brand-sub">So the Model Holds</p>
-        </div>
-    </header>
-
-    <!-- Main environment with enhanced accessibility -->
-    <main class="viewport" id="core-environment" aria-label="Alchemy core environment">
-        <canvas
-            id="artifact-canvas"
-            aria-label="Computational artifact visualization"
-            role="img"
-        ></canvas>
-
-        <!-- Chamber panel with enhanced focus management -->
-        <section
-            id="chamber-panel"
-            class="chamber-panel"
-            aria-hidden="true"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="chamber-title"
-            tabindex="-1"
-        >
-            <div class="chamber-panel__scrim" data-close></div>
-            <article class="chamber-surface">
-                <button
-                    class="chamber-close"
-                    type="button"
-                    aria-label="Close chamber panel"
-                    data-close
-                >
-                    <span aria-hidden="true">&times;</span>
-                </button>
-
-                <header class="chamber-header">
-                    <p class="chamber-label" id="chamber-label"></p>
-                    <h2 class="chamber-title" id="chamber-title"></h2>
-                </header>
-
-                <div class="chamber-body" id="chamber-body"></div>
-            </article>
-        </section>
-
-        <!-- Depth view with enhanced document structure -->
-        <section
-            id="depth-view"
-            class="depth-view"
-            aria-hidden="true"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="depth-title"
-            tabindex="-1"
-        >
-            <div class="depth-view__scrim" data-close></div>
-            <article class="depth-surface">
-                <button
-                    class="depth-close"
-                    type="button"
-                    aria-label="Close document view"
-                    data-close
-                >
-                    <span aria-hidden="true">&times;</span>
-                </button>
-
-                <header class="depth-header">
-                    <p class="depth-kicker" id="depth-kicker"></p>
-                    <h2 class="depth-title" id="depth-title"></h2>
-                    <p class="depth-subtitle" id="depth-subtitle"></p>
-                </header>
-
-                <div class="depth-body" id="depth-body"></div>
-            </article>
-        </section>
-    </main>
-
-    <!-- Enhanced navigation with better semantics -->
-    <nav class="nav-layer" aria-label="Primary navigation">
-        <div class="nav-shell">
-            <ul class="nav-links" role="list">
-                <li>
-                    <a
-                        href="#philosophy"
-                        class="link"
-                        data-chamber="philosophy"
-                        data-route="philosophy"
-                        role="link"
-                    >
-                        <span class="link__text">Philosophy</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#systems"
-                        class="link"
-                        data-chamber="systems"
-                        data-route="systems"
-                        role="link"
-                    >
-                        <span class="link__text">Systems</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#artifacts"
-                        class="link"
-                        data-chamber="artifacts"
-                        data-route="artifacts"
-                        role="link"
-                    >
-                        <span class="link__text">Artifacts</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#oracle"
-                        class="link"
-                        data-chamber="oracle"
-                        data-route="oracle"
-                        role="link"
-                    >
-                        <span class="link__text">Oracle</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Loading state for Three.js -->
-    <div class="loading-state" aria-live="polite" aria-atomic="true">
-        <div class="loading-state__spinner" aria-hidden="true"></div>
-    </div>
-
-    <script src="scripts.js" type="module"></script>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

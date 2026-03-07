@@ -107,7 +107,7 @@ class VoidExperience {
 
     init() {
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(CONFIG.colors.bg);
+        this.scene.background = null;
         
         // Enhanced fog with distance-based falloff
         this.scene.fog = new THREE.FogExp2(CONFIG.colors.bg, 0.06);
@@ -123,11 +123,12 @@ class VoidExperience {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
             antialias: true,
-            alpha: false,
+            alpha: true,
             powerPreference: "high-performance"
         });
         
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.setClearColor(0x000000, 0);
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.0;
@@ -477,7 +478,6 @@ class ChamberPanel {
         this.onRequestClose = onRequestClose;
         this.currentKey = null;
         this.isVisible = false;
-        this.transitionTimer = null;
 
         // Cache elements
         this.elements = {
@@ -526,11 +526,6 @@ class ChamberPanel {
 
     trapFocus(e) {
         const focusableElements = this.getFocusableElements();
-        if (!focusableElements.length) {
-            e.preventDefault();
-            return;
-        }
-
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
 
@@ -562,10 +557,6 @@ class ChamberPanel {
             return;
         }
 
-        if (this.isVisible && this.currentKey === key) {
-            return;
-        }
-
         this.currentKey = key;
         this.isVisible = true;
 
@@ -591,10 +582,6 @@ class ChamberPanel {
     }
 
     async close() {
-        if (!this.isVisible) {
-            return;
-        }
-
         this.isVisible = false;
         this.currentKey = null;
         
@@ -605,16 +592,9 @@ class ChamberPanel {
     }
 
     waitForTransition() {
-        if (this.transitionTimer) {
-            clearTimeout(this.transitionTimer);
-        }
-
         return new Promise(resolve => {
             const duration = this.isVisible ? CONFIG.timing.panelEnter : CONFIG.timing.panelExit;
-            this.transitionTimer = setTimeout(() => {
-                this.transitionTimer = null;
-                resolve();
-            }, duration);
+            setTimeout(resolve, duration);
         });
     }
 }
@@ -634,7 +614,6 @@ class DepthView {
         this.onRequestClose = onRequestClose;
         this.currentId = null;
         this.isVisible = false;
-        this.transitionTimer = null;
 
         this.elements = {
             kicker: this.root.querySelector('.depth-kicker'),
@@ -681,11 +660,6 @@ class DepthView {
 
     trapFocus(e) {
         const focusableElements = this.getFocusableElements();
-        if (!focusableElements.length) {
-            e.preventDefault();
-            return;
-        }
-
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
 
@@ -714,10 +688,6 @@ class DepthView {
         const doc = this.data[id];
         if (!doc) {
             console.warn(`No document found for id: ${id}`);
-            return;
-        }
-
-        if (this.isVisible && this.currentId === id) {
             return;
         }
 
@@ -752,10 +722,6 @@ class DepthView {
     }
 
     async close() {
-        if (!this.isVisible) {
-            return;
-        }
-
         this.isVisible = false;
         this.currentId = null;
         
@@ -764,16 +730,9 @@ class DepthView {
     }
 
     waitForTransition() {
-        if (this.transitionTimer) {
-            clearTimeout(this.transitionTimer);
-        }
-
         return new Promise(resolve => {
             const duration = this.isVisible ? CONFIG.timing.panelEnter : CONFIG.timing.panelExit;
-            this.transitionTimer = setTimeout(() => {
-                this.transitionTimer = null;
-                resolve();
-            }, duration);
+            setTimeout(resolve, duration);
         });
     }
 }
@@ -785,7 +744,6 @@ class AlchemyApp {
     constructor() {
         this.stateMachine = new AppStateMachine();
         this.components = {};
-        this.routeRequestId = 0;
         
         this.init()
             .then(() => {
@@ -838,6 +796,7 @@ class AlchemyApp {
             header: document.querySelector('.header-layer'),
             viewport: document.querySelector('.viewport'),
             navLayer: document.querySelector('.nav-layer'),
+            metaPanel: document.querySelector('.meta-panel'),
             loading: document.querySelector('.loading-state')
         };
 
@@ -865,9 +824,6 @@ class AlchemyApp {
 
         // Performance monitoring
         this.setupPerformanceMonitoring();
-
-        // Ambient parallax for background illustration
-        this.setupBackgroundParallax();
     }
 
     setupPerformanceMonitoring() {
@@ -895,42 +851,13 @@ class AlchemyApp {
             this.dom.navLayer.classList.toggle('nav-layer--dimmed', isOverlayOpen);
         }
 
+        // Dim the positioning tools
+        if (this.dom.metaPanel) {
+            this.dom.metaPanel.classList.toggle('meta-panel--dimmed', isOverlayOpen);
+        }
+
         // Update header
         this.setHeaderCompact(isOverlayOpen);
-    }
-
-    setupBackgroundParallax() {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        if (prefersReducedMotion.matches) return;
-
-        const root = document.documentElement;
-        const maxShift = 2.6;
-        let targetX = 0;
-        let targetY = 0;
-        let currentX = 0;
-        let currentY = 0;
-
-        const applyShift = () => {
-            currentX += (targetX - currentX) * 0.12;
-            currentY += (targetY - currentY) * 0.12;
-
-            root.style.setProperty('--bg-shift-x', `${currentX.toFixed(3)}px`);
-            root.style.setProperty('--bg-shift-y', `${currentY.toFixed(3)}px`);
-
-            requestAnimationFrame(applyShift);
-        };
-
-        applyShift();
-
-        const handlePointerMove = (e) => {
-            const normalizedX = (e.clientX / window.innerWidth - 0.5) * 2;
-            const normalizedY = (e.clientY / window.innerHeight - 0.5) * 2;
-
-            targetX = -normalizedX * maxShift;
-            targetY = -normalizedY * maxShift * 0.8;
-        };
-
-        document.addEventListener('pointermove', handlePointerMove, { passive: true });
     }
 
     setHeaderCompact(isCompact) {
@@ -957,12 +884,10 @@ class AlchemyApp {
     }
 
     handleHash() {
-        this.routeRequestId += 1;
-        const requestId = this.routeRequestId;
         const raw = window.location.hash.replace(/^#/, '').trim();
 
         if (!raw) {
-            this.goIdle(requestId);
+            this.goIdle();
             return;
         }
 
@@ -970,25 +895,21 @@ class AlchemyApp {
         if (raw.startsWith('doc/')) {
             const id = raw.slice(4);
             if (DOCUMENTS[id]) {
-                this.openDocument(id, requestId);
+                this.openDocument(id);
             } else {
-                this.goIdle(requestId);
+                this.goIdle();
             }
             return;
         }
 
         // Chamber route
         if (CHAMBERS[raw]) {
-            this.openChamber(raw, requestId);
+            this.openChamber(raw);
             return;
         }
 
         // Unknown route
-        this.goIdle(requestId);
-    }
-
-    isStaleRequest(requestId) {
-        return requestId !== this.routeRequestId;
+        this.goIdle();
     }
 
     navigateTo(route) {
@@ -1001,47 +922,37 @@ class AlchemyApp {
         this.handleHash();
     }
 
-    async goIdle(requestId = this.routeRequestId) {
-        if (this.isStaleRequest(requestId)) return;
-
+    async goIdle() {
         this.stateMachine.transitionTo(APP_STATES.IDLE);
         
         if (this.components.nav) this.components.nav.clearActive();
         if (this.components.chambers) await this.components.chambers.close();
-        if (this.isStaleRequest(requestId)) return;
         if (this.components.depthView) await this.components.depthView.close();
-        if (this.isStaleRequest(requestId)) return;
         
         this.setHeaderCompact(false);
     }
 
-    async openChamber(key, requestId = this.routeRequestId) {
-        if (this.isStaleRequest(requestId)) return;
+    async openChamber(key) {
         if (!this.components.chambers) return;
 
         this.stateMachine.transitionTo(APP_STATES.CHAMBER_OPEN, { chamber: key });
         
         if (this.components.depthView) await this.components.depthView.close();
-        if (this.isStaleRequest(requestId)) return;
         if (this.components.nav) this.components.nav.setActiveByChamber(key);
         
         await this.components.chambers.open(key);
-        if (this.isStaleRequest(requestId)) return;
         this.setHeaderCompact(true);
     }
 
-    async openDocument(id, requestId = this.routeRequestId) {
-        if (this.isStaleRequest(requestId)) return;
+    async openDocument(id) {
         if (!this.components.depthView) return;
 
         this.stateMachine.transitionTo(APP_STATES.DEPTH_OPEN, { document: id });
         
         if (this.components.chambers) await this.components.chambers.close();
-        if (this.isStaleRequest(requestId)) return;
         if (this.components.nav) this.components.nav.clearActive();
         
         await this.components.depthView.open(id);
-        if (this.isStaleRequest(requestId)) return;
         this.setHeaderCompact(true);
     }
 

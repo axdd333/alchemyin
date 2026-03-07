@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b58a5c" />
+      <stop offset="1" stop-color="#6d4f30" />
+    </linearGradient>
+    <linearGradient id="blue" x1="240" y1="260" x2="1360" y2="700" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#83afc8" />
+      <stop offset="1" stop-color="#365d74" />
+    </linearGradient>
+  </defs>
+
+  <path
+    d="M94 782C28 674 39 436 165 274C323 70 660 80 816 218C957 342 1093 347 1269 214C1390 122 1506 124 1569 181"
+    stroke="url(#gold)"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-opacity=".52"
+    stroke-width="18"
+  />
+  <path
+    d="M53 684C112 834 260 885 453 865C713 837 936 664 1159 645C1334 629 1462 687 1536 802"
+    stroke="url(#gold)"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-opacity=".34"
+    stroke-width="12"
+  />
+  <path
+    d="M224 167C339 124 469 122 609 155C722 182 827 246 925 264C1044 285 1169 256 1293 171"
+    stroke="url(#blue)"
+    stroke-dasharray="18 18"
+    stroke-linecap="round"
+    stroke-opacity=".32"
+    stroke-width="7"
+  />
+  <circle cx="340" cy="280" r="146" stroke="url(#gold)" stroke-opacity=".18" stroke-width="2" />
+  <circle cx="1238" cy="272" r="178" stroke="url(#gold)" stroke-opacity=".22" stroke-width="2" />
+  <circle cx="1180" cy="614" r="210" stroke="url(#blue)" stroke-dasharray="10 12" stroke-opacity=".18" stroke-width="2" />
+  <path
+    d="M1256 332c42 21 84 66 115 136c-55-26-90-67-115-136Z"
+    fill="url(#gold)"
+    fill-opacity=".14"
+  />
+  <path
+    d="M272 645c144-47 298-54 419-9c-118 20-258 35-419 9Z"
+    fill="url(#blue)"
+    fill-opacity=".1"
+  />
+</svg>
