@@ -57,8 +57,8 @@
     font-family: var(--font-body);
     color: var(--ink);
     background:
-      radial-gradient(circle at 50% var(--halo-shift), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 38%),
-      linear-gradient(180deg, #f8f4ed 0%, #ece6da 100%);
+      radial-gradient(circle at 50% var(--halo-shift), rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0) 44%),
+      linear-gradient(180deg, #f9f6ef 0%, #eee9df 100%);
   }
 
   .alchemy-shell[data-theme='philosophy'] {
@@ -121,8 +121,8 @@
 
   .alchemy-shell__wash {
     background:
-      radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 48%),
-      radial-gradient(circle at 90% 32%, rgba(163, 139, 106, 0.1), rgba(163, 139, 106, 0) 30%);
+      radial-gradient(circle at 50% 11%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 52%),
+      radial-gradient(circle at 86% 26%, rgba(163, 139, 106, 0.08), rgba(163, 139, 106, 0) 34%);
     z-index: -2;
   }
 
@@ -191,21 +191,21 @@
     display: grid;
     place-items: center;
     gap: 0.28rem;
-    padding: 0.95rem 1.65rem 0.9rem;
+    padding: 0.78rem 1.45rem 0.76rem;
     border-radius: 999px;
-    border: 1px solid rgba(88, 66, 40, 0.12);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.77), rgba(246, 240, 230, 0.74));
+    border: 1px solid rgba(88, 66, 40, 0.1);
+    background: rgba(251, 247, 239, 0.78);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.84),
-      0 18px 38px rgba(58, 41, 24, 0.09);
-    backdrop-filter: blur(24px) saturate(1.06);
+      0 10px 24px rgba(58, 41, 24, 0.08);
+    backdrop-filter: blur(14px) saturate(1.03);
   }
 
   .masthead__eyebrow {
     margin: 0;
     font-family: var(--font-meta);
-    font-size: 0.62rem;
-    letter-spacing: 0.3em;
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--ink-soft);
   }
@@ -219,16 +219,16 @@
 
   .masthead__logotype {
     font-family: var(--font-display);
-    font-size: clamp(3.25rem, 5.5vw, 4.5rem);
+    font-size: clamp(3rem, 5vw, 4.15rem);
     font-style: italic;
-    font-weight: 600;
-    letter-spacing: -0.045em;
+    font-weight: 500;
+    letter-spacing: -0.035em;
   }
 
   .masthead__motto {
     font-family: var(--font-meta);
-    font-size: 0.72rem;
-    letter-spacing: 0.31em;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--ink-soft);
   }
@@ -242,8 +242,8 @@
   }
 
   .hero {
-    width: min(96vw, 1800px);
-    height: min(84svh, 960px);
+    width: min(98vw, 1880px);
+    height: min(86svh, 980px);
   }
 
   .hero__frame {
@@ -251,24 +251,18 @@
     width: 100%;
     height: 100%;
     border-radius: clamp(18px, 2vw, 30px);
-    border: 1px solid var(--frame-border);
+    border: 1px solid rgba(88, 66, 40, 0.12);
     box-shadow:
-      0 34px 70px rgba(58, 41, 24, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.86);
+      0 22px 48px rgba(58, 41, 24, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.84);
     overflow: clip;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(239, 232, 222, 0.42));
+    background: rgba(248, 244, 236, 0.8);
     isolation: isolate;
     view-transition-name: hero-frame;
   }
 
   .hero__frame::after {
-    content: '';
-    position: absolute;
-    inset: 0.9rem;
-    border-radius: calc(clamp(18px, 2vw, 30px) - 0.9rem);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    pointer-events: none;
-    z-index: 1;
+    display: none;
   }
 
   .hero__paper,
@@ -281,8 +275,8 @@
   .hero__paper {
     inset: 0;
     background:
-      radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0) 30%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(242, 234, 222, 0.28));
+      radial-gradient(circle at 50% 8%, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0) 34%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(242, 234, 222, 0.18));
     z-index: 0;
   }
 
@@ -295,8 +289,8 @@
     background: linear-gradient(
       180deg,
       transparent 0%,
-      rgba(43, 32, 20, 0.12) 18%,
-      rgba(43, 32, 20, 0.05) 82%,
+      rgba(43, 32, 20, 0.08) 18%,
+      rgba(43, 32, 20, 0.03) 82%,
       transparent 100%
     );
     z-index: 2;
@@ -305,22 +299,22 @@
 
   .hero__artwork {
     display: block;
-    inset: clamp(0.9rem, 1.2vw, 1.2rem);
+    inset: clamp(0.72rem, 1vw, 1rem);
     z-index: 2;
-    border-radius: clamp(14px, 1.4vw, 22px);
+    border-radius: clamp(11px, 1.2vw, 17px);
     overflow: clip;
     mix-blend-mode: multiply;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    filter: saturate(1.05) contrast(1.02);
+    filter: saturate(1.04) contrast(1.01);
   }
 
   .hero__scene {
-    inset: clamp(0.9rem, 1.2vw, 1.2rem);
+    inset: clamp(0.72rem, 1vw, 1rem);
     z-index: 3;
-    opacity: 0.24;
+    opacity: 0.13;
     mix-blend-mode: multiply;
     pointer-events: none;
   }
@@ -334,48 +328,42 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 0.8rem;
+    gap: 0.65rem;
   }
 
   .hero__kicker {
     margin: 0;
     max-width: 40rem;
-    padding: 0.52rem 0.9rem;
+    padding: 0.44rem 0.76rem;
     border-radius: 999px;
-    border: 1px solid rgba(88, 66, 40, 0.12);
-    background: var(--paper-glass);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.82),
-      0 14px 32px rgba(58, 41, 24, 0.1);
+    border: 1px solid rgba(88, 66, 40, 0.1);
+    background: rgba(250, 245, 236, 0.64);
     font-family: var(--font-meta);
-    font-size: 0.67rem;
+    font-size: 0.64rem;
     font-weight: 500;
-    letter-spacing: 0.21em;
+    letter-spacing: 0.17em;
     line-height: 1.5;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--ink-soft) 90%, white 10%);
-    backdrop-filter: blur(18px);
+    backdrop-filter: blur(10px);
   }
 
   .hero__document-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-    padding: 0.58rem 0.95rem;
+    gap: 0.42rem;
+    padding: 0.44rem 0.72rem;
     border-radius: 999px;
-    border: 1px solid rgba(88, 66, 40, 0.14);
-    background: color-mix(in srgb, var(--paper-glass) 84%, white 16%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.8),
-      0 12px 26px rgba(58, 41, 24, 0.12);
+    border: 1px solid rgba(88, 66, 40, 0.1);
+    background: rgba(250, 245, 236, 0.58);
     font-family: var(--font-meta);
-    font-size: 0.67rem;
+    font-size: 0.63rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--ink);
     transition: transform 180ms ease;
-    backdrop-filter: blur(18px);
+    backdrop-filter: blur(10px);
   }
 
   .hero__document-link::after {
@@ -389,28 +377,26 @@
     bottom: clamp(1rem, 2.2vw, 1.6rem);
     transform: translateX(-50%);
     z-index: 8;
-    width: min(52rem, calc(100% - 3rem));
+    width: min(50rem, calc(100% - 2.6rem));
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    padding: 0.42rem;
+    padding: 0.3rem;
     border-radius: 999px;
-    border: 1px solid rgba(88, 66, 40, 0.13);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(244, 238, 229, 0.7));
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.85),
-      0 20px 44px rgba(58, 41, 24, 0.11);
-    backdrop-filter: blur(24px) saturate(1.05);
+    border: 1px solid rgba(88, 66, 40, 0.1);
+    background: rgba(251, 247, 240, 0.66);
+    box-shadow: 0 12px 30px rgba(58, 41, 24, 0.08);
+    backdrop-filter: blur(12px) saturate(1.03);
   }
 
   .dock-nav__indicator {
     position: absolute;
     left: 0;
-    bottom: 8px;
+    bottom: 7px;
     height: 2px;
     width: 4rem;
     border-radius: 999px;
     background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 70%, white 30%), color-mix(in srgb, #3f4d5e 54%, var(--accent) 46%));
-    box-shadow: 0 3px 12px rgba(60, 43, 25, 0.18);
+    box-shadow: 0 2px 8px rgba(60, 43, 25, 0.16);
     opacity: 0;
     will-change: transform, width;
     view-transition-name: active-pill;
@@ -421,12 +407,12 @@
     z-index: 2;
     display: grid;
     place-items: center;
-    min-height: 3rem;
+    min-height: 2.8rem;
     border-radius: 999px;
     font-family: var(--font-meta);
-    font-size: 0.74rem;
+    font-size: 0.7rem;
     font-weight: 500;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--ink-soft) 92%, white 8%);
     transition: color 200ms ease;
@@ -463,8 +449,8 @@
     inset: 0;
     background:
       radial-gradient(circle at 50% 36%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 30%),
-      rgba(20, 14, 10, 0.26);
-    backdrop-filter: blur(7px) saturate(0.98);
+      rgba(20, 14, 10, 0.22);
+    backdrop-filter: blur(5px) saturate(0.98);
   }
 
   .overlay__surface {
@@ -472,22 +458,18 @@
     width: min(40rem, calc(100% - 1.6rem));
     max-height: calc(100% - 1.6rem);
     padding: clamp(1.3rem, 2.2vw, 1.9rem);
-    border-radius: 24px;
-    border: 1px solid rgba(88, 66, 40, 0.14);
-    background: linear-gradient(165deg, rgba(255, 255, 255, 0.9), rgba(245, 238, 228, 0.9));
+    border-radius: 20px;
+    border: 1px solid rgba(88, 66, 40, 0.12);
+    background: rgba(251, 247, 240, 0.92);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.88),
-      0 32px 70px rgba(42, 29, 18, 0.22);
+      0 24px 52px rgba(42, 29, 18, 0.2);
     overflow: hidden;
     view-transition-name: chamber-panel;
   }
 
   .overlay__surface::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(125deg, rgba(255, 255, 255, 0) 8%, rgba(255, 255, 255, 0.28) 22%, rgba(255, 255, 255, 0) 42%);
+    display: none;
   }
 
   .overlay__surface--document {
@@ -650,13 +632,13 @@
 
   .alchemy-shell[data-overlay='chamber'] .hero__artwork,
   .alchemy-shell[data-overlay='document'] .hero__artwork {
-    opacity: 0.48;
-    filter: saturate(0.88) contrast(0.96);
+    opacity: 0.62;
+    filter: saturate(0.92) contrast(0.98);
   }
 
   .alchemy-shell[data-overlay='chamber'] .hero__scene,
   .alchemy-shell[data-overlay='document'] .hero__scene {
-    opacity: 0.12;
+    opacity: 0.07;
   }
 
   .alchemy-shell[data-overlay='document'] .hero__document-link,
@@ -692,8 +674,8 @@
     }
 
     .hero {
-      width: min(97vw, 1500px);
-      height: min(81svh, 880px);
+      width: min(98vw, 1540px);
+      height: min(82svh, 900px);
     }
 
     .hero__caption {
@@ -714,7 +696,7 @@
     .masthead__capsule {
       width: min(100%, 35rem);
       border-radius: 22px;
-      padding: 0.82rem 0.9rem 0.86rem;
+      padding: 0.72rem 0.82rem 0.78rem;
     }
 
     .masthead__logotype {
@@ -747,10 +729,18 @@
       right: 0.8rem;
     }
 
+    .hero__document-link {
+      font-size: 0.58rem;
+      letter-spacing: 0.13em;
+    }
+
+    .hero__kicker {
+      display: none;
+    }
+
     .hero__kicker,
     .hero__document-link {
-      font-size: 0.61rem;
-      letter-spacing: 0.16em;
+      max-width: 100%;
     }
 
     .dock-nav {
