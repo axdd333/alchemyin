@@ -45,10 +45,14 @@ function buildTemplate(assetBase: string): string {
 
             <header class="masthead">
               <div class="masthead__capsule">
-                <a href="#" class="masthead__brand" data-home>
+                <a href="#" class="masthead__brand masthead__brand--front" data-home>
                   <span class="masthead__logotype">Alchemy</span>
                   <span class="masthead__motto">So the Model Holds</span>
                 </a>
+                <span class="masthead__brand masthead__brand--back" aria-hidden="true">
+                  <span class="masthead__logotype">Alchemy</span>
+                  <span class="masthead__motto">So the Model Holds</span>
+                </span>
               </div>
             </header>
 
