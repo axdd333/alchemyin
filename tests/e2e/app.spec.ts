@@ -23,7 +23,8 @@ test('keeps chamber routing and keyboard focus behavior intact', async ({ page }
   await load(page, '?test-mode=1');
 
   const artifactsLink = page.locator('.dock-nav__link[data-chamber="artifacts"]');
-  await artifactsLink.click();
+  await artifactsLink.focus();
+  await artifactsLink.press('Enter');
 
   await expect(page.locator('#chamber-title')).toHaveText(
     'Surfaces built to survive strange weather.'
