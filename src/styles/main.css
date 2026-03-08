@@ -245,9 +245,11 @@
   }
 
   .hero {
-    width: min(98vw, 1880px);
+    --hero-ratio: calc(4096 / 2288);
+    --hero-height: min(84svh, 940px);
+    height: var(--hero-height);
+    width: min(96vw, calc(var(--hero-height) * var(--hero-ratio)));
     aspect-ratio: 4096 / 2288;
-    height: auto;
   }
 
   .hero__frame {
@@ -282,6 +284,7 @@
       radial-gradient(circle at 50% 8%, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0) 34%),
       linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(242, 234, 222, 0.18));
     z-index: 0;
+    pointer-events: none;
   }
 
   .hero__axis {
@@ -612,7 +615,8 @@
 @layer responsive {
   @media (max-width: 1024px) {
     .hero {
-      width: min(98vw, 1540px);
+      --hero-height: min(80svh, 860px);
+      width: min(97vw, calc(var(--hero-height) * var(--hero-ratio)));
     }
   }
 
