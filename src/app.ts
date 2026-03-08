@@ -34,15 +34,6 @@ function buildTemplate(assetBase: string): string {
         </div>
       </div>
 
-      <header class="masthead">
-        <div class="masthead__capsule">
-          <a href="#" class="masthead__brand" data-home>
-            <span class="masthead__logotype">Alchemy</span>
-            <span class="masthead__motto">So the Model Holds</span>
-          </a>
-        </div>
-      </header>
-
       <main class="stage">
         <section class="hero">
           <div class="hero__frame" aria-label="Alchemy core environment">
@@ -51,6 +42,15 @@ function buildTemplate(assetBase: string): string {
             <img class="hero__artwork" src="${assetBase}media/alchemy-hero.jpg" alt="" aria-hidden="true">
             <canvas id="hero-scene" class="hero__scene" aria-hidden="true"></canvas>
             <p class="sr-only" id="ambient-note">A chambered studio for philosophy, systems, artifacts, and oracle work.</p>
+
+            <header class="masthead">
+              <div class="masthead__capsule">
+                <a href="#" class="masthead__brand" data-home>
+                  <span class="masthead__logotype">Alchemy</span>
+                  <span class="masthead__motto">So the Model Holds</span>
+                </a>
+              </div>
+            </header>
 
             <nav class="dock-nav" aria-label="Primary">
               <div class="dock-nav__indicator" aria-hidden="true"></div>
