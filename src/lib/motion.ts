@@ -1,11 +1,40 @@
+export const MOTION_TOKENS = {
+  duration: {
+    micro: 180,
+    standard: 320,
+    emphasized: 520,
+    ambient: 720,
+    loadingExit: 640,
+    dockShift: 520,
+    scrimEnter: 280,
+    scrimExit: 220,
+    chamberEnter: 520,
+    chamberExit: 280,
+    documentEnter: 560,
+    documentExit: 320,
+    retarget: 360
+  },
+  easing: {
+    enter: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    settle: 'cubic-bezier(0.16, 1, 0.3, 1)',
+    standard: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    exit: 'cubic-bezier(0.4, 0, 1, 1)',
+    ambient: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
+  }
+} as const;
+
 export function prefersReducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 }
 
-export async function withViewTransition(update: () => void | Promise<void>): Promise<void> {
+export async function withViewTransition(
+  update: () => void | Promise<void>,
+  options: { enabled?: boolean } = {}
+): Promise<void> {
   const startViewTransition = document.startViewTransition;
+  const enabled = options.enabled ?? true;
 
-  if (!startViewTransition || prefersReducedMotion()) {
+  if (!enabled || !startViewTransition || prefersReducedMotion()) {
     await update();
     return;
   }
@@ -40,6 +69,38 @@ export function animateElement(
   }
 
   return animation;
+}
+
+export async function waitForAnimations(
+  animations: Array<Animation | null | undefined>
+): Promise<void> {
+  const pendingAnimations = animations.filter(
+    (animation): animation is Animation => Boolean(animation)
+  );
+
+  if (!pendingAnimations.length) {
+    return;
+  }
+
+  await Promise.all(
+    pendingAnimations.map((animation) => animation.finished.catch(() => undefined))
+  );
+}
+
+export function stopAnimations(element: Element): void {
+  if (typeof element.getAnimations !== 'function') {
+    return;
+  }
+
+  element.getAnimations().forEach((animation) => {
+    animation.cancel();
+  });
+}
+
+export async function nextFrame(): Promise<void> {
+  await new Promise<void>((resolve) => {
+    requestAnimationFrame(() => resolve());
+  });
 }
 
 export async function waitForFonts(): Promise<void> {

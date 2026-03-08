@@ -138,6 +138,10 @@ function isSameRoute(left: AppRoute | null, right: AppRoute): boolean {
   return false;
 }
 
+function isPresentedRoute(route: AppRoute | null): boolean {
+  return Boolean(route && route.kind !== 'idle');
+}
+
 export class AlchemyApp {
   private readonly router = new HashRouter();
   private readonly shell: HTMLElement;
@@ -204,12 +208,14 @@ export class AlchemyApp {
     });
 
     this.chamberDialog = new DialogController(chamberRoot, {
+      kind: 'chamber',
       initialFocus: () => this.elements.chamberClose,
       fallbackFocus: () => this.nav.getLink('philosophy') ?? this.elements.home,
       onRequestClose: () => this.router.navigate({ kind: 'idle' })
     });
 
     this.documentDialog = new DialogController(documentRoot, {
+      kind: 'document',
       initialFocus: () => this.elements.documentClose,
       fallbackFocus: () => this.elements.noteLinks[0] ?? this.elements.home,
       onRequestClose: () => this.router.navigate({ kind: 'idle' })
@@ -234,10 +240,9 @@ export class AlchemyApp {
             return;
           }
 
+          const previousRoute = this.activeRoute;
           this.activeRoute = route;
-          await withViewTransition(() => {
-            this.commitRoute(route);
-          });
+          await this.commitRoute(route, previousRoute);
         });
     });
 
@@ -271,6 +276,12 @@ export class AlchemyApp {
     });
 
     this.elements.chamberCta.addEventListener('click', (event) => {
+      if (this.elements.chamberCta.dataset.destination === 'systems-page') {
+        event.preventDefault();
+        window.location.assign(this.getStandalonePageUrl('systems.html'));
+        return;
+      }
+
       event.preventDefault();
       this.pendingOpener = this.elements.chamberCta;
       this.router.navigate({ kind: 'document', id: 'american-favela' });
@@ -284,10 +295,48 @@ export class AlchemyApp {
     this.shell.dataset.ready = 'true';
   }
 
-  private commitRoute(route: AppRoute): void {
+  private async commitRoute(route: AppRoute, previousRoute: AppRoute | null): Promise<void> {
+    if (route.kind === 'chamber') {
+      this.renderChamber(route.key);
+    }
+
+    if (route.kind === 'document') {
+      this.renderDocument(route.id);
+    }
+
+    if (route.kind === 'idle') {
+      await this.closeDialogs(previousRoute, { restoreFocus: true });
+      await withViewTransition(() => {
+        this.syncShellState(route);
+      }, {
+        enabled: isPresentedRoute(previousRoute)
+      });
+
+      this.pendingOpener = null;
+      return;
+    }
+
+    await withViewTransition(() => {
+      this.syncShellState(route);
+    }, {
+      enabled: true
+    });
+
+    if (route.kind === 'chamber') {
+      await this.transitionToChamber(route, previousRoute);
+      this.pendingOpener = null;
+      return;
+    }
+
+    await this.transitionToDocument(previousRoute);
+    this.pendingOpener = null;
+  }
+
+  private syncShellState(route: AppRoute): void {
     this.shell.dataset.overlay = route.kind;
     this.shell.dataset.theme = this.resolveTheme(route);
     this.elements.ambientNote.textContent = this.resolveAmbientNote(route);
+    this.scene?.setPresentationMode(route.kind === 'idle' ? 'idle' : 'overlay');
 
     this.elements.noteLinks.forEach((link) => {
       link.dataset.active = String(route.kind === 'document');
@@ -295,27 +344,71 @@ export class AlchemyApp {
 
     if (route.kind === 'idle') {
       this.nav.setActive(null);
-      this.chamberDialog.close({ restoreFocus: true });
-      this.documentDialog.close({ restoreFocus: true });
-      this.pendingOpener = null;
       return;
     }
 
     if (route.kind === 'chamber') {
-      this.renderChamber(route.key);
       this.nav.setActive(route.key);
-      this.documentDialog.close({ restoreFocus: false });
-      this.chamberDialog.open(this.pendingOpener ?? this.nav.getLink(route.key));
-      this.pendingOpener = null;
       return;
     }
 
-    const documentContent = DOCUMENTS[route.id];
-    this.renderDocument(route.id);
-    this.nav.setActive(documentContent.theme);
-    this.chamberDialog.close({ restoreFocus: false });
-    this.documentDialog.open(this.pendingOpener ?? this.elements.noteLinks[0] ?? this.elements.home);
-    this.pendingOpener = null;
+    this.nav.setActive(DOCUMENTS[route.id].theme);
+  }
+
+  private async transitionToChamber(route: Extract<AppRoute, { kind: 'chamber' }>, previousRoute: AppRoute | null): Promise<void> {
+    const opener = this.pendingOpener ?? this.nav.getLink(route.key);
+
+    if (previousRoute?.kind === 'document') {
+      await Promise.all([
+        this.documentDialog.close({ restoreFocus: false }),
+        this.chamberDialog.open(opener)
+      ]);
+      return;
+    }
+
+    await this.documentDialog.close({ restoreFocus: false });
+    await this.chamberDialog.open(opener);
+  }
+
+  private async transitionToDocument(previousRoute: AppRoute | null): Promise<void> {
+    const opener = this.pendingOpener ?? this.elements.noteLinks[0] ?? this.elements.home;
+
+    if (previousRoute?.kind === 'chamber') {
+      await Promise.all([
+        this.chamberDialog.close({ restoreFocus: false }),
+        this.documentDialog.open(opener)
+      ]);
+      return;
+    }
+
+    await this.chamberDialog.close({ restoreFocus: false });
+    await this.documentDialog.open(opener);
+  }
+
+  private async closeDialogs(
+    previousRoute: AppRoute | null,
+    options: { restoreFocus: boolean }
+  ): Promise<void> {
+    if (previousRoute?.kind === 'document') {
+      await Promise.all([
+        this.documentDialog.close({ restoreFocus: options.restoreFocus }),
+        this.chamberDialog.close({ restoreFocus: false })
+      ]);
+      return;
+    }
+
+    if (previousRoute?.kind === 'chamber') {
+      await Promise.all([
+        this.chamberDialog.close({ restoreFocus: options.restoreFocus }),
+        this.documentDialog.close({ restoreFocus: false })
+      ]);
+      return;
+    }
+
+    await Promise.all([
+      this.chamberDialog.close({ restoreFocus: false }),
+      this.documentDialog.close({ restoreFocus: false })
+    ]);
   }
 
   private renderChamber(key: ChamberKey): void {
@@ -324,12 +417,23 @@ export class AlchemyApp {
     this.elements.chamberLabel.textContent = chamber.label;
     this.elements.chamberTitle.textContent = chamber.title;
     this.elements.chamberNote.textContent = chamber.accentLabel;
+    this.elements.chamberBody.dataset.layout = key === 'philosophy' ? 'creed' : 'default';
     this.elements.chamberBody.innerHTML = chamber.paragraphs
       .map((paragraph) => `<p>${paragraph}</p>`)
       .join('');
+    this.elements.chamberBody.scrollTop = 0;
+
+    if (key === 'systems') {
+      this.elements.chamberCta.hidden = false;
+      this.elements.chamberCta.dataset.destination = 'systems-page';
+      this.elements.chamberCta.href = this.getStandalonePageUrl('systems.html');
+      this.elements.chamberCta.textContent = chamber.ctaLabel ?? 'Open systems page';
+      return;
+    }
 
     if (chamber.documentId) {
       this.elements.chamberCta.hidden = false;
+      this.elements.chamberCta.dataset.destination = 'document';
       this.elements.chamberCta.href = routeToHash({
         kind: 'document',
         id: chamber.documentId
@@ -337,6 +441,7 @@ export class AlchemyApp {
       this.elements.chamberCta.textContent = chamber.ctaLabel ?? 'Open field note';
     } else {
       this.elements.chamberCta.hidden = true;
+      this.elements.chamberCta.dataset.destination = 'none';
       this.elements.chamberCta.removeAttribute('href');
       this.elements.chamberCta.textContent = '';
     }
@@ -395,6 +500,13 @@ export class AlchemyApp {
 
     this.router.navigate({ kind: 'idle' });
   };
+
+  private getStandalonePageUrl(path: string): string {
+    const url = new URL(path, window.location.href);
+    url.search = window.location.search;
+    url.hash = '';
+    return url.toString();
+  }
 
   private require<T extends HTMLElement>(selector: string): T {
     const node = this.container.querySelector<T>(selector);

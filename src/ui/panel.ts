@@ -1,6 +1,15 @@
-import { animateElement } from '../lib/motion';
+import {
+  MOTION_TOKENS,
+  animateElement,
+  nextFrame,
+  stopAnimations,
+  waitForAnimations
+} from '../lib/motion';
+
+type DialogKind = 'chamber' | 'document';
 
 interface DialogControllerOptions {
+  kind?: DialogKind;
   initialFocus?: () => HTMLElement | null;
   fallbackFocus?: () => HTMLElement | null;
   onRequestClose: () => void;
@@ -9,17 +18,23 @@ interface DialogControllerOptions {
 export class DialogController {
   private isOpen = false;
   private restoreTarget: HTMLElement | null = null;
+  private readonly kind: DialogKind;
+  private readonly scrim: HTMLElement;
   private readonly surface: HTMLElement;
+  private motionToken = 0;
 
   constructor(
     private readonly root: HTMLElement,
     private readonly options: DialogControllerOptions
   ) {
+    const scrim = this.root.querySelector<HTMLElement>('.overlay__scrim');
     const surface = this.root.querySelector<HTMLElement>('[data-panel-surface]');
-    if (!surface) {
-      throw new Error('Dialog surface not found.');
+    if (!scrim || !surface) {
+      throw new Error('Dialog frame not found.');
     }
 
+    this.kind = this.options.kind ?? 'chamber';
+    this.scrim = scrim;
     this.surface = surface;
     this.root.hidden = true;
     this.root.dataset.open = 'false';
@@ -27,65 +42,78 @@ export class DialogController {
     this.bind();
   }
 
-  open(opener: HTMLElement | null = null): void {
+  async open(opener: HTMLElement | null = null): Promise<void> {
     this.restoreTarget =
       opener ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
 
     if (this.isOpen) {
+      await this.retarget();
       this.focusInitial();
       return;
     }
 
+    const token = ++this.motionToken;
     this.isOpen = true;
     this.root.hidden = false;
     this.root.dataset.open = 'true';
     this.root.setAttribute('aria-hidden', 'false');
 
-    animateElement(
-      this.root,
+    stopAnimations(this.scrim);
+    stopAnimations(this.surface);
+
+    const scrimAnimation = animateElement(
+      this.scrim,
       [{ opacity: 0 }, { opacity: 1 }],
       {
-        duration: 260,
-        easing: 'ease-out',
+        duration: MOTION_TOKENS.duration.scrimEnter,
+        easing: MOTION_TOKENS.easing.standard,
         fill: 'both'
       }
     );
 
-    animateElement(
+    const surfaceAnimation = animateElement(
       this.surface,
       [
-        { opacity: 0, transform: 'translateY(24px) scale(0.985)' },
+        { opacity: 0, transform: 'translateY(28px) scale(0.975)' },
         { opacity: 1, transform: 'translateY(0px) scale(1)' }
       ],
       {
-        duration: 460,
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        duration: this.getDurations().enter,
+        easing: MOTION_TOKENS.easing.enter,
         fill: 'both'
       }
     );
 
-    requestAnimationFrame(() => {
-      this.focusInitial();
+    void nextFrame().then(() => {
+      if (token === this.motionToken) {
+        this.focusInitial();
+      }
     });
+
+    await waitForAnimations([scrimAnimation, surfaceAnimation]);
   }
 
-  close(options: { restoreFocus?: boolean } = {}): void {
+  async close(options: { restoreFocus?: boolean } = {}): Promise<void> {
     const restoreFocus = options.restoreFocus ?? true;
 
     if (!this.isOpen && this.root.hidden) {
       return;
     }
 
+    const token = ++this.motionToken;
     this.isOpen = false;
     this.root.dataset.open = 'false';
     this.root.setAttribute('aria-hidden', 'true');
 
+    stopAnimations(this.scrim);
+    stopAnimations(this.surface);
+
     const overlayAnimation = animateElement(
-      this.root,
+      this.scrim,
       [{ opacity: 1 }, { opacity: 0 }],
       {
-        duration: 220,
-        easing: 'ease-in',
+        duration: MOTION_TOKENS.duration.scrimExit,
+        easing: MOTION_TOKENS.easing.exit,
         fill: 'both'
       }
     );
@@ -97,31 +125,50 @@ export class DialogController {
         { opacity: 0, transform: 'translateY(18px) scale(0.99)' }
       ],
       {
-        duration: 220,
-        easing: 'ease-in',
+        duration: this.getDurations().exit,
+        easing: MOTION_TOKENS.easing.exit,
         fill: 'both'
       }
     );
 
-    const finish = (): void => {
-      this.root.hidden = true;
-      if (restoreFocus) {
-        this.restore();
-      }
-    };
+    await waitForAnimations([overlayAnimation, surfaceAnimation]);
 
-    const pendingAnimations = [overlayAnimation, surfaceAnimation].filter(
-      (animation): animation is Animation => Boolean(animation)
-    );
-
-    if (!pendingAnimations.length) {
-      finish();
+    if (token !== this.motionToken) {
       return;
     }
 
-    Promise.all(pendingAnimations.map((animation) => animation.finished.catch(() => undefined))).finally(
-      finish
+    this.root.hidden = true;
+    if (restoreFocus) {
+      this.restore();
+    }
+  }
+
+  async retarget(): Promise<void> {
+    if (!this.isOpen || this.root.hidden) {
+      return;
+    }
+
+    const token = ++this.motionToken;
+    stopAnimations(this.surface);
+
+    const surfaceAnimation = animateElement(
+      this.surface,
+      [
+        { opacity: 0.82, transform: 'translateY(10px) scale(0.992)' },
+        { opacity: 1, transform: 'translateY(0px) scale(1)' }
+      ],
+      {
+        duration: MOTION_TOKENS.duration.retarget,
+        easing: MOTION_TOKENS.easing.enter,
+        fill: 'both'
+      }
     );
+
+    await waitForAnimations([surfaceAnimation]);
+
+    if (token !== this.motionToken) {
+      return;
+    }
   }
 
   destroy(): void {
@@ -151,10 +198,24 @@ export class DialogController {
       return;
     }
 
-    if (event.key === 'Tab') {
+    if (event.key === 'Tab' && this.isOpen) {
       this.trapFocus(event);
     }
   };
+
+  private getDurations(): { enter: number; exit: number } {
+    if (this.kind === 'document') {
+      return {
+        enter: MOTION_TOKENS.duration.documentEnter,
+        exit: MOTION_TOKENS.duration.documentExit
+      };
+    }
+
+    return {
+      enter: MOTION_TOKENS.duration.chamberEnter,
+      exit: MOTION_TOKENS.duration.chamberExit
+    };
+  }
 
   private trapFocus(event: KeyboardEvent): void {
     const focusableElements = this.getFocusableElements();
@@ -181,15 +242,20 @@ export class DialogController {
   }
 
   private focusInitial(): void {
-    const target =
-      this.options.initialFocus?.() ?? this.getFocusableElements()[0] ?? this.surface;
+    const preferredTarget = this.options.initialFocus?.() ?? null;
+    const target = this.isRestorableTarget(preferredTarget)
+      ? preferredTarget
+      : this.getFocusableElements()[0] ?? this.surface;
     target.focus();
   }
 
   private restore(): void {
-    const target = this.restoreTarget?.isConnected
+    const fallbackTarget = this.options.fallbackFocus?.() ?? null;
+    const target = this.isRestorableTarget(this.restoreTarget)
       ? this.restoreTarget
-      : this.options.fallbackFocus?.() ?? null;
+      : this.isRestorableTarget(fallbackTarget)
+        ? fallbackTarget
+        : null;
 
     target?.focus();
   }
@@ -200,5 +266,9 @@ export class DialogController {
         'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
       )
     ).filter((element) => !element.closest('[hidden]'));
+  }
+
+  private isRestorableTarget(element: HTMLElement | null | undefined): element is HTMLElement {
+    return Boolean(element && element.isConnected && !element.closest('[hidden]') && !element.hasAttribute('disabled'));
   }
 }

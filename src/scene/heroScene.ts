@@ -37,6 +37,9 @@ export class HeroScene {
   private resizeObserver?: ResizeObserver;
   private rafId = 0;
   private isRunning = false;
+  private compactViewport = false;
+  private presentation = 1;
+  private presentationTarget = 1;
   private readonly testMode = new URL(window.location.href).searchParams.has('test-mode');
 
   constructor(private readonly canvas: HTMLCanvasElement) {
@@ -92,6 +95,10 @@ export class HeroScene {
     this.renderer.dispose();
   }
 
+  setPresentationMode(mode: 'idle' | 'overlay'): void {
+    this.presentationTarget = mode === 'overlay' ? 0.34 : 1;
+  }
+
   private createLights(): void {
     const ambient = new AmbientLight(0xffffff, 0.72);
     const keyLight = new DirectionalLight(0xffffff, 0.48);
@@ -109,7 +116,8 @@ export class HeroScene {
       depthWrite: false,
       uniforms: {
         uTime: { value: 0 },
-        uPointer: { value: this.pointer }
+        uPointer: { value: this.pointer },
+        uPresentation: { value: this.presentation }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -122,6 +130,7 @@ export class HeroScene {
       fragmentShader: `
         uniform float uTime;
         uniform vec2 uPointer;
+        uniform float uPresentation;
         varying vec2 vUv;
 
         float circle(vec2 uv, vec2 center, float radius, float blur) {
@@ -130,27 +139,47 @@ export class HeroScene {
 
         void main() {
           vec2 uv = vUv;
+          vec2 refracted = uv + vec2(uPointer.x * 0.024, -uPointer.y * 0.02) * (0.35 + uPresentation * 0.65);
           vec2 centered = uv - 0.5;
           float vignette = smoothstep(0.95, 0.12, dot(centered, centered));
-          float pulse = 0.5 + 0.5 * sin(uTime * 0.22);
-          float ribbon = 0.5 + 0.5 * sin((uv.y + uTime * 0.035) * 11.0);
+          float pulse = 0.5 + 0.5 * sin(uTime * 0.18);
+          float ribbon = 0.5 + 0.5 * sin((refracted.y * 12.0 + uTime * 0.16) + refracted.x * 3.2);
           float halo = circle(
-            uv,
+            refracted,
             vec2(0.5 + uPointer.x * 0.05, 0.5 - uPointer.y * 0.04),
-            0.34 + pulse * 0.04,
-            0.28
+            0.33 + pulse * 0.05,
+            0.3
           );
-          float flare = circle(uv, vec2(0.72, 0.34), 0.16, 0.2);
+          float secondaryHalo = circle(
+            refracted,
+            vec2(0.34 - uPointer.x * 0.028, 0.67 + uPointer.y * 0.022),
+            0.21 + pulse * 0.025,
+            0.22
+          );
+          float flare = circle(refracted, vec2(0.72, 0.34), 0.16, 0.2);
+          float sweep = smoothstep(
+            0.8,
+            0.98,
+            sin((refracted.x * 1.26 - refracted.y * 0.72 + uTime * 0.04) * 6.28318) * 0.5 + 0.5
+          );
+          float causticA = sin(refracted.x * 18.0 + uTime * 0.52 + sin(refracted.y * 10.0 - uTime * 0.28)) * 0.5 + 0.5;
+          float causticB = sin(refracted.y * 16.0 - uTime * 0.38 + cos(refracted.x * 13.0 + uTime * 0.32)) * 0.5 + 0.5;
+          float caustics = smoothstep(0.72, 1.0, causticA * causticB);
+          float edgeDistance = min(min(uv.x, uv.y), min(1.0 - uv.x, 1.0 - uv.y));
+          float fresnel = 1.0 - smoothstep(0.03, 0.28, edgeDistance);
 
           vec3 warm = vec3(0.88, 0.74, 0.53);
           vec3 cool = vec3(0.39, 0.57, 0.68);
           vec3 paper = vec3(0.98, 0.96, 0.92);
 
-          vec3 color = mix(warm, cool, clamp(uv.x * 0.82 + ribbon * 0.12, 0.0, 1.0));
-          color = mix(color, paper, halo * 0.72);
+          vec3 color = mix(warm, cool, clamp(refracted.x * 0.8 + ribbon * 0.14, 0.0, 1.0));
+          color = mix(color, paper, halo * 0.68 + secondaryHalo * 0.16);
           color += flare * vec3(0.09, 0.12, 0.16);
+          color += sweep * vec3(0.16, 0.15, 0.14) * (0.04 + uPresentation * 0.06);
+          color += caustics * vec3(0.15, 0.17, 0.2) * (0.02 + uPresentation * 0.05);
+          color += fresnel * vec3(0.13, 0.12, 0.1) * (0.025 + uPresentation * 0.035);
 
-          gl_FragColor = vec4(color, vignette * 0.14);
+          gl_FragColor = vec4(color, vignette * (0.08 + uPresentation * 0.08));
         }
       `
     });
@@ -167,17 +196,18 @@ export class HeroScene {
     const positions = new Float32Array(count * 3);
     const scales = new Float32Array(count);
     const phases = new Float32Array(count);
+    const random = this.testMode ? this.createSeededRandom(1337) : Math.random;
 
     for (let index = 0; index < count; index += 1) {
-      const angle = Math.random() * Math.PI * 2;
-      const radius = 1.2 + Math.random() * 3.8;
+      const angle = random() * Math.PI * 2;
+      const radius = 1.2 + random() * 3.8;
       const offset = index * 3;
 
       positions[offset] = Math.cos(angle) * radius;
-      positions[offset + 1] = (Math.random() - 0.5) * 3.8;
-      positions[offset + 2] = (Math.random() - 0.5) * 4;
-      scales[index] = 0.8 + Math.random() * 1.6;
-      phases[index] = Math.random() * Math.PI * 2;
+      positions[offset + 1] = (random() - 0.5) * 3.8;
+      positions[offset + 2] = (random() - 0.5) * 4;
+      scales[index] = 0.8 + random() * 1.6;
+      phases[index] = random() * Math.PI * 2;
     }
 
     const geometry = new BufferGeometry();
@@ -191,11 +221,13 @@ export class HeroScene {
       blending: AdditiveBlending,
       uniforms: {
         uTime: { value: 0 },
-        uPointer: { value: this.pointer }
+        uPointer: { value: this.pointer },
+        uPresentation: { value: this.presentation }
       },
       vertexShader: `
         uniform float uTime;
         uniform vec2 uPointer;
+        uniform float uPresentation;
         attribute float aScale;
         attribute float aPhase;
         varying float vAlpha;
@@ -204,11 +236,11 @@ export class HeroScene {
           vec3 transformed = position;
           transformed.y += sin(uTime * 0.42 + aPhase) * 0.07;
           transformed.x += cos(uTime * 0.3 + aPhase) * 0.03;
-          transformed.xy += vec2(uPointer.x, -uPointer.y) * 0.08;
+          transformed.xy += vec2(uPointer.x, -uPointer.y) * (0.035 + uPresentation * 0.045);
 
           vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);
-          gl_PointSize = aScale * 110.0 / -mvPosition.z;
-          vAlpha = 0.35 + 0.4 * (0.5 + 0.5 * sin(uTime * 0.34 + aPhase));
+          gl_PointSize = aScale * (78.0 + uPresentation * 32.0) / -mvPosition.z;
+          vAlpha = (0.24 + 0.38 * uPresentation) * (0.5 + 0.5 * sin(uTime * 0.34 + aPhase));
           gl_Position = projectionMatrix * mvPosition;
         }
       `,
@@ -333,29 +365,53 @@ export class HeroScene {
   private render(): void {
     const delta = this.clock.getDelta();
     const elapsed = this.clock.getElapsedTime();
+    const viewportScale = this.compactViewport ? 0.78 : 1;
 
-    this.pointer.lerp(this.pointerTarget, 0.06);
+    this.presentation += (this.presentationTarget - this.presentation) * 0.06;
+    this.pointer.lerp(this.pointerTarget, 0.038);
 
     this.atmosphereMaterial.uniforms.uTime.value = elapsed;
+    this.atmosphereMaterial.uniforms.uPresentation.value = this.presentation;
     this.particleMaterial.uniforms.uTime.value = elapsed;
+    this.particleMaterial.uniforms.uPresentation.value = this.presentation;
 
-    this.illustration.rotation.y += delta * 0.08;
-    this.illustration.rotation.x = this.pointer.y * 0.12;
-    this.illustration.rotation.z = this.pointer.x * 0.08;
-    this.illustration.position.x += (this.pointer.x * 0.35 - this.illustration.position.x) * 0.08;
-    this.illustration.position.y += (this.pointer.y * 0.28 - this.illustration.position.y) * 0.08;
+    this.illustration.rotation.y += delta * (0.032 + this.presentation * 0.028);
+    this.illustration.rotation.x +=
+      ((this.pointer.y * 0.078 * viewportScale * this.presentation) - this.illustration.rotation.x) *
+      0.045;
+    this.illustration.rotation.z +=
+      ((this.pointer.x * 0.06 * viewportScale * this.presentation) - this.illustration.rotation.z) *
+      0.045;
+    this.illustration.position.x +=
+      (this.pointer.x * 0.22 * viewportScale * this.presentation - this.illustration.position.x) * 0.055;
+    this.illustration.position.y +=
+      (this.pointer.y * 0.18 * viewportScale * this.presentation - this.illustration.position.y) * 0.055;
 
-    this.camera.position.x += (this.pointer.x * 0.85 - this.camera.position.x) * 0.06;
-    this.camera.position.y += (-this.pointer.y * 0.5 - this.camera.position.y) * 0.06;
+    this.camera.position.x +=
+      (this.pointer.x * 0.48 * viewportScale * this.presentation - this.camera.position.x) * 0.045;
+    this.camera.position.y +=
+      (-this.pointer.y * 0.28 * viewportScale * this.presentation - this.camera.position.y) * 0.045;
     this.camera.lookAt(0, 0, 0);
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  private createSeededRandom(seed: number): () => number {
+    let state = seed >>> 0;
+
+    return () => {
+      state += 0x6d2b79f5;
+      let result = Math.imul(state ^ (state >>> 15), 1 | state);
+      result ^= result + Math.imul(result ^ (result >>> 7), 61 | result);
+      return ((result ^ (result >>> 14)) >>> 0) / 4294967296;
+    };
   }
 
   private updateSize(): void {
     const { width, height } = this.canvas.getBoundingClientRect();
     const safeWidth = Math.max(width, 1);
     const safeHeight = Math.max(height, 1);
+    this.compactViewport = safeWidth < 960;
 
     this.camera.aspect = safeWidth / safeHeight;
     this.camera.updateProjectionMatrix();
@@ -364,11 +420,11 @@ export class HeroScene {
 
   private readonly handlePointerMove = (event: PointerEvent): void => {
     const bounds = this.canvas.getBoundingClientRect();
-    const localX = (event.clientX - bounds.left) / Math.max(bounds.width, 1);
-    const localY = (event.clientY - bounds.top) / Math.max(bounds.height, 1);
+    const localX = Math.min(Math.max((event.clientX - bounds.left) / Math.max(bounds.width, 1), 0), 1);
+    const localY = Math.min(Math.max((event.clientY - bounds.top) / Math.max(bounds.height, 1), 0), 1);
 
-    this.pointerTarget.x = (localX - 0.5) * 2;
-    this.pointerTarget.y = (localY - 0.5) * 2;
+    this.pointerTarget.x = (localX - 0.5) * 1.35;
+    this.pointerTarget.y = (localY - 0.5) * 1.35;
   };
 
   private readonly handleVisibilityChange = (): void => {

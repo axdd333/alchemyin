@@ -29,6 +29,14 @@ export interface DocumentContent {
   sections: DocumentSection[];
 }
 
+export interface SystemLink {
+  name: string;
+  category: string;
+  href: string;
+  summary: string;
+  status: string;
+}
+
 export type AppRoute =
   | { kind: 'idle' }
   | { kind: 'chamber'; key: ChamberKey }

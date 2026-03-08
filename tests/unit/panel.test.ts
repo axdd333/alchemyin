@@ -10,7 +10,7 @@ describe('DialogController', () => {
     document.body.innerHTML = `
       <button id="opener">Open</button>
       <section id="dialog" aria-hidden="true">
-        <div data-close></div>
+        <div class="overlay__scrim" data-close></div>
         <article data-panel-surface>
           <button id="close">Close</button>
           <a id="cta" href="#doc/american-favela">Read note</a>
@@ -30,11 +30,14 @@ describe('DialogController', () => {
     const controller = new DialogController(dialogRoot, {
       initialFocus: () => closeButton,
       fallbackFocus: () => opener,
-      onRequestClose: () => controller.close()
+      onRequestClose: () => {
+        void controller.close();
+      }
     });
 
     opener.focus();
-    controller.open(opener);
+    await controller.open(opener);
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     await new Promise((resolve) => requestAnimationFrame(resolve));
 
     expect(dialogRoot.hidden).toBe(false);
@@ -62,7 +65,7 @@ describe('DialogController', () => {
 
     expect(document.activeElement).toBe(closeButton);
 
-    controller.close();
+    await controller.close();
     expect(dialogRoot.hidden).toBe(true);
     expect(document.activeElement).toBe(opener);
   });

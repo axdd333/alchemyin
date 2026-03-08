@@ -1,3 +1,4 @@
+import { CREED } from './creed';
 import type { ChamberContent, ChamberKey } from './types';
 
 export const CHAMBER_ORDER: ChamberKey[] = [
@@ -11,13 +12,10 @@ export const CHAMBERS: Record<ChamberKey, ChamberContent> = {
   philosophy: {
     navLabel: 'Philosophy',
     label: 'Chamber I · Philosophy',
-    title: 'What a system assumes about the world.',
-    paragraphs: [
-      'Every tool encodes a set of assumptions. This chamber is where those assumptions are made explicit instead of living quietly in the background.',
-      'We ask: under what conditions does this model still hold, and who carries the cost when it stops?'
-    ],
-    note: 'Assumptions become design material before they become hidden cost.',
-    accentLabel: 'Assumptions · burden · legibility'
+    title: CREED.title,
+    paragraphs: CREED.stanzas.map((stanza) => stanza.join('\n')),
+    note: 'A creed for the work of dreamers, thinkers, and makers.',
+    accentLabel: CREED.note
   },
   systems: {
     navLabel: 'Systems',
@@ -28,7 +26,8 @@ export const CHAMBERS: Record<ChamberKey, ChamberContent> = {
       'We prefer systems that can be explained on a single sheet of paper and maintained by ordinary people, not heroes.'
     ],
     note: 'Infrastructure should be plainspoken enough to survive the night shift.',
-    accentLabel: 'Interfaces · operations · maintainability'
+    accentLabel: 'Interfaces · operations · maintainability',
+    ctaLabel: 'Open systems page'
   },
   artifacts: {
     navLabel: 'Artifacts',
