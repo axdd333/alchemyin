@@ -17,8 +17,6 @@ function buildTemplate(assetBase: string): string {
     `;
   }).join('');
 
-  const fieldNoteRoute = routeToHash({ kind: 'document', id: 'american-favela' });
-
   return `
     <div
       class="alchemy-shell"
@@ -38,7 +36,6 @@ function buildTemplate(assetBase: string): string {
 
       <header class="masthead">
         <div class="masthead__capsule">
-          <p class="masthead__eyebrow">Institute for tools, infrastructure, and strange-weather artifacts</p>
           <a href="#" class="masthead__brand" data-home>
             <span class="masthead__logotype">Alchemy</span>
             <span class="masthead__motto">So the Model Holds</span>
@@ -53,13 +50,7 @@ function buildTemplate(assetBase: string): string {
             <div class="hero__axis" aria-hidden="true"></div>
             <img class="hero__artwork" src="${assetBase}media/alchemy-hero.jpg" alt="" aria-hidden="true">
             <canvas id="hero-scene" class="hero__scene" aria-hidden="true"></canvas>
-
-            <div class="hero__caption">
-              <p class="hero__kicker" id="ambient-note">A chambered studio for philosophy, systems, artifacts, and oracle work.</p>
-              <a href="${fieldNoteRoute}" class="hero__document-link" data-doc-link>
-                Read field note
-              </a>
-            </div>
+            <p class="sr-only" id="ambient-note">A chambered studio for philosophy, systems, artifacts, and oracle work.</p>
 
             <nav class="dock-nav" aria-label="Primary">
               <div class="dock-nav__indicator" aria-hidden="true"></div>
