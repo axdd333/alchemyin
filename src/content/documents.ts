@@ -1,29 +1,32 @@
 import type { DocumentContent, DocumentId } from './types';
 
 export const DOCUMENTS: Record<DocumentId, DocumentContent> = {
-  'american-favela': {
+  'design-intent': {
     theme: 'artifacts',
-    kicker: 'Field Note · AF-01',
-    title: 'The American Favela Thesis',
-    subtitle: 'Notes on infrastructure, precarity, and tools that do not assume stability.',
+    kicker: 'Field Note · DI-01',
+    title: 'Design Intent',
+    subtitle: 'On building surfaces that earn trust before they demand attention.',
     sections: [
       {
-        heading: '1. Scope',
+        heading: '1. Premise',
         paragraphs: [
-          'This document sketches the constraints of operating in environments where formal infrastructure is intermittent, informal, or adversarial.',
-          'It exists to inform how devices, drones, and software should behave when continuity cannot be assumed.'
+          'Every interface makes a promise. The shape of a button, the weight of a heading, the pace of a transition — each is a small contract with the person on the other side.',
+          'Design intent is the discipline of keeping those promises consistent, even when the system behind them is not.'
         ]
       },
       {
-        heading: '2. Design Pressure',
+        heading: '2. Guiding Constraints',
         paragraphs: [
-          'Tools built for unstable contexts must prioritise recoverability, offline usefulness, and graceful degradation over marginal gains in ideal conditions.'
+          'Legibility over decoration. A surface should be readable at arm\'s length, in poor light, and after twelve hours of use.',
+          'Composure over cleverness. Animation exists to orient, not to entertain. If removing it breaks comprehension, the layout was already wrong.',
+          'Honesty over polish. A loading state that names itself is more trustworthy than a skeleton screen that pretends the content has arrived.'
         ]
       },
       {
-        heading: '3. Practical Consequence',
+        heading: '3. Material Sensibility',
         paragraphs: [
-          'A useful artifact must remain legible when power is scarce, attention is fragmented, and the person maintaining the system did not design it.'
+          'Glass, grain, and warm light are not aesthetic choices — they are structural. They signal depth, establish hierarchy, and give the eye a place to rest between actions.',
+          'The goal is not beauty for its own sake. It is the kind of calm that lets someone use a tool for years without fatigue.'
         ]
       }
     ]

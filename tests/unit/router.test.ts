@@ -12,9 +12,9 @@ describe('router', () => {
   });
 
   it('parses document hashes', () => {
-    expect(parseHash('#doc/american-favela')).toEqual({
+    expect(parseHash('#doc/design-intent')).toEqual({
       kind: 'document',
-      id: 'american-favela'
+      id: 'design-intent'
     });
   });
 
@@ -28,8 +28,8 @@ describe('router', () => {
     expect(routeToHash({ kind: 'idle' })).toBe('#');
     expect(routeToHash({ kind: 'chamber', key: 'systems' })).toBe('#systems');
     expect(routeToHash({ kind: 'chamber', key: 'philosophy' })).toBe('#philosophy');
-    expect(routeToHash({ kind: 'document', id: 'american-favela' })).toBe(
-      '#doc/american-favela'
+    expect(routeToHash({ kind: 'document', id: 'design-intent' })).toBe(
+      '#doc/design-intent'
     );
   });
 });

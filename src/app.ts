@@ -271,11 +271,17 @@ export class AlchemyApp {
       link.addEventListener('click', (event) => {
         event.preventDefault();
         this.pendingOpener = link;
-        this.router.navigate({ kind: 'document', id: 'american-favela' });
+        this.router.navigate({ kind: 'document', id: 'design-intent' });
       });
     });
 
     this.elements.chamberCta.addEventListener('click', (event) => {
+      if (this.elements.chamberCta.dataset.destination === 'philosophy-page') {
+        event.preventDefault();
+        window.location.assign(this.getStandalonePageUrl('philosophy.html'));
+        return;
+      }
+
       if (this.elements.chamberCta.dataset.destination === 'systems-page') {
         event.preventDefault();
         window.location.assign(this.getStandalonePageUrl('systems.html'));
@@ -284,7 +290,7 @@ export class AlchemyApp {
 
       event.preventDefault();
       this.pendingOpener = this.elements.chamberCta;
-      this.router.navigate({ kind: 'document', id: 'american-favela' });
+      this.router.navigate({ kind: 'document', id: 'design-intent' });
     });
 
     document.addEventListener('keydown', this.onKeyDown);
@@ -422,6 +428,14 @@ export class AlchemyApp {
       .map((paragraph) => `<p>${paragraph}</p>`)
       .join('');
     this.elements.chamberBody.scrollTop = 0;
+
+    if (key === 'philosophy') {
+      this.elements.chamberCta.hidden = false;
+      this.elements.chamberCta.dataset.destination = 'philosophy-page';
+      this.elements.chamberCta.href = this.getStandalonePageUrl('philosophy.html');
+      this.elements.chamberCta.textContent = chamber.ctaLabel ?? 'Open philosophy page';
+      return;
+    }
 
     if (key === 'systems') {
       this.elements.chamberCta.hidden = false;

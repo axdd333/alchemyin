@@ -13,7 +13,7 @@ describe('DialogController', () => {
         <div class="overlay__scrim" data-close></div>
         <article data-panel-surface>
           <button id="close">Close</button>
-          <a id="cta" href="#doc/american-favela">Read note</a>
+          <a id="cta" href="#doc/design-intent">Read note</a>
         </article>
       </section>
     `;

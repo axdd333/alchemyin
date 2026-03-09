@@ -10,7 +10,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        systems: resolve(__dirname, 'systems.html')
+        systems: resolve(__dirname, 'systems.html'),
+        philosophy: resolve(__dirname, 'philosophy.html')
       }
     }
   },

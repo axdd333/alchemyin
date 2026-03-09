@@ -45,9 +45,9 @@ test('keeps chamber routing and keyboard focus behavior intact', async ({ page }
 });
 
 test('supports direct document routes', async ({ page }) => {
-  await load(page, '?test-mode=1#doc/american-favela');
+  await load(page, '?test-mode=1#doc/design-intent');
 
-  await expect(page.locator('#document-title')).toHaveText('The American Favela Thesis');
+  await expect(page.locator('#document-title')).toHaveText('Design Intent');
   await expect(page.locator('.dock-nav__link[data-chamber="artifacts"]')).toHaveAttribute(
     'data-active',
     'true'
@@ -95,7 +95,7 @@ test('transitions from chamber to document and back to idle with stable focus', 
   await chamberCta.click();
 
   await expect(page.locator('#chamber-dialog')).toBeHidden();
-  await expect(page.locator('#document-title')).toHaveText('The American Favela Thesis');
+  await expect(page.locator('#document-title')).toHaveText('Design Intent');
   await expect(page.locator('.dock-nav__link[data-chamber="artifacts"]')).toHaveAttribute(
     'data-active',
     'true'

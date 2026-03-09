@@ -1,5 +1,5 @@
 export const CHAMBER_KEYS = ['philosophy', 'systems', 'artifacts', 'oracle'] as const;
-export const DOCUMENT_IDS = ['american-favela'] as const;
+export const DOCUMENT_IDS = ['design-intent'] as const;
 
 export type ChamberKey = (typeof CHAMBER_KEYS)[number];
 export type DocumentId = (typeof DOCUMENT_IDS)[number];

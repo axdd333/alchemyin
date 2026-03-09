@@ -15,7 +15,8 @@ export const CHAMBERS: Record<ChamberKey, ChamberContent> = {
     title: CREED.title,
     paragraphs: CREED.stanzas.map((stanza) => stanza.join('\n')),
     note: 'A creed for the work of dreamers, thinkers, and makers.',
-    accentLabel: CREED.note
+    accentLabel: CREED.note,
+    ctaLabel: 'Open philosophy page'
   },
   systems: {
     navLabel: 'Systems',
@@ -39,7 +40,7 @@ export const CHAMBERS: Record<ChamberKey, ChamberContent> = {
     ],
     note: 'Beauty matters here because trust is often built from surfaces first.',
     accentLabel: 'Field tools · ergonomics · strange weather',
-    documentId: 'american-favela',
+    documentId: 'design-intent',
     ctaLabel: 'Open field note'
   },
   oracle: {
